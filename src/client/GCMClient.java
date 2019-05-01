@@ -1,6 +1,7 @@
 package client;
 
 import ocsf.client.*;
+
 import java.io.*;
 
 import application.UIController;
@@ -16,9 +17,7 @@ public class GCMClient extends AbstractClient {
     public GCMClient(UIController uiController, String host, int port) throws IOException
     {
         super(host, port);
-        openConnection();
         this.username = "ANONYMOUS";
-        sendToServer("#login ANONYMOUS");
         this.uiController = uiController;
     }
     
@@ -33,6 +32,7 @@ public class GCMClient extends AbstractClient {
     {
         if (msg.toString().startsWith("#numOfPurchases ")) {
             String num = msg.toString().substring(16);
+            if (Integer.parseInt(num) == -1) num = "NULL";
             uiController.showNumberToUser(num);
         } else {
             System.out.println(msg.toString());
@@ -53,6 +53,22 @@ public class GCMClient extends AbstractClient {
     public void handleIncNumOfPurchases(String username) throws IOException
     {
         sendToServer("#incNumOfPurchases " + username);
+    }
+    
+    public void  handleStartConnection(String ip, int port) {
+
+        setPort(port);
+        setHost(ip);
+        try {
+            if (!isConnected()) {
+                openConnection();
+                System.out.println("You have connected server on port " + port);
+                sendToServer("#login ANONYMOUS");
+            }
+        } catch (IOException e) {
+            System.out.println("Could not connect to the server.\nPlease recheck the server"
+                    + " IP and the port.");
+        }
     }
     
     public void quit()

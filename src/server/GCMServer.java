@@ -106,5 +106,6 @@ public class GCMServer extends AbstractServer
         catch (Exception ex) {
             System.out.println("ERROR - Could not listen for clients!");
         }
+    
     }
 }

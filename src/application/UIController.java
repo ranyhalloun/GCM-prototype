@@ -30,11 +30,18 @@ public class UIController {
     @FXML
     private TextField userName;
 
+    @FXML
+    private TextField IP;
+
+    @FXML
+    private TextField Port;
+    
+    @FXML
+    private Button startConnectionBtn;
     
     public UIController() throws IOException
     {
         gcmClient = new GCMClient(this,"127.0.0.1", 458);
-        numOfPurchases = new TextField();
     }
 
     public void showNumberToUser(String num)
@@ -51,11 +58,24 @@ public class UIController {
     void showNumOfPurchases(ActionEvent event) throws IOException {
         gcmClient.handleShowNumOfPurchases(userName.getText());
     }
+    
+    @FXML
+    void startConnection(ActionEvent event) throws NumberFormatException, IOException {
+        gcmClient.handleStartConnection(IP.getText(), Integer.parseInt(Port.getText()));
+    }
+    
+    void stopConnection() throws IOException {
+        if (gcmClient.isConnected()) {
+            gcmClient.closeConnection();
+            System.out.println("The connection to the Server has been disconnected");
+        }
+    }
 
     void initialize() throws IOException {
         assert incNumOfPurchasesBtn != null : "fx:id=\"incNumOfPurchasesBtn\" was not injected: check your FXML file 'UIScene.fxml'.";
         assert numOfPurchases != null : "fx:id=\"numOfPurchases\" was not injected: check your FXML file 'UIScene.fxml'.";
         assert showNumOfPurchasesBtn != null : "fx:id=\"showNumOfPurchasesBtn\" was not injected: check your FXML file 'UIScene.fxml'.";
+        assert startConnectionBtn != null : "fx:id=\"startConnectionBtn\" was not injected: check your FXML file 'UIScene.fxml'.";
         assert userName != null : "fx:id=\"userName\" was not injected: check your FXML file 'UIScene.fxml'.";
     }
 

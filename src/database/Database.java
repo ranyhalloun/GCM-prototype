@@ -40,7 +40,7 @@ public class Database {
     
     public int getNumOfPurchases(String username) throws SQLException
     {
-        int purchases = 0;
+        int purchases = -1;
         String sql = "SELECT username, numOfPurchases FROM Customers WHERE username = '" + username + "'";
         ResultSet rs = stmt.executeQuery(sql);
         if (rs.next())
