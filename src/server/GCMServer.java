@@ -1,7 +1,6 @@
 package server;
 
 import java.io.IOException;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import ocsf.server.AbstractServer;
@@ -17,7 +16,7 @@ public class GCMServer extends AbstractServer
 
     public GCMServer(int port) {
         super(port);
-        db = new Database();                                                        // TODO: Do we need this?
+        db = new Database();
     }
 
     @Override
@@ -26,7 +25,7 @@ public class GCMServer extends AbstractServer
             client.setInfo("username", msg.toString().substring(7));
             // TODO: Add password.
         }
-        else if (msg.toString().startsWith("#numOfPurchases ")) {
+        else if (msg.toString().startsWith("#numOfPurchases ")) {                   // Handling #numOfPurchases from client
             String username = msg.toString().substring(16);
                 try {
                     client.sendToClient("#numOfPurchases " + db.getNumOfPurchases(username));
@@ -36,7 +35,7 @@ public class GCMServer extends AbstractServer
                     e.printStackTrace();
                 }
         }
-        else if(msg.toString().startsWith("#incNumOfPurchases ")) {
+        else if(msg.toString().startsWith("#incNumOfPurchases ")) {                 // Handling #incNumOfPurchases from client
             String username = msg.toString().substring(19);
             try {
                 db.incNumOfPurchases(username);

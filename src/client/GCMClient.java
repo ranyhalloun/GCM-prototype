@@ -28,22 +28,17 @@ public class GCMClient extends AbstractClient {
     }
 
     @Override
-    protected void handleMessageFromServer(Object msg)      // TODO: handle messages.. 
+    protected void handleMessageFromServer(Object msg)
     {
-        if (msg.toString().startsWith("#numOfPurchases ")) {
+        if (msg.toString().startsWith("#numOfPurchases ")) { // Handling #numOfPurchases message from server
             String num = msg.toString().substring(16);
             if (Integer.parseInt(num) == -1) num = "NULL";
             uiController.showNumberToUser(num);
         } else {
-            System.out.println(msg.toString());
+            System.out.println(msg.toString());              // Other messages are printed to console
         }
 
     }
-
-//    public void handleInputFromUser(String input)         // TODO: handle every input from user..
-//    {
-//        
-//    }
     
     public void handleShowNumOfPurchases(String username) throws IOException
     {
@@ -55,7 +50,7 @@ public class GCMClient extends AbstractClient {
         sendToServer("#incNumOfPurchases " + username);
     }
     
-    public void  handleStartConnection(String ip, int port) {
+    public void  handleStartConnection(String ip, int port) {       // Connecting to server
 
         setPort(port);
         setHost(ip);

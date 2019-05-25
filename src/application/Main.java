@@ -1,5 +1,5 @@
 package application;
-	
+
 import java.io.IOException;
 
 import javafx.application.Application;
@@ -15,6 +15,7 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) throws IOException {
 
+	    // Constructing the scene
 	    FXMLLoader loader = new FXMLLoader();
 	    UIController uiController = new UIController();
 	    loader.setController(uiController);
@@ -22,10 +23,10 @@ public class Main extends Application {
 	    AnchorPane pane = loader.load();
 	    Scene scene = new Scene(pane);
 
+	    // Setting the stage
 	    primaryStage.setScene(scene);
 	    primaryStage.setTitle("GCM - Prototype");
 	    primaryStage.show();
-	    
 	    primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 	        public void handle(WindowEvent we) {
 	            try {
@@ -42,8 +43,4 @@ public class Main extends Application {
 		launch(args);
 	}
 	
-//	@Override
-//	public void stop(){
-//	    System.out.println("Stage is closing");
-//	}
 }

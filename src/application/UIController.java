@@ -2,8 +2,6 @@
 package application;
 
 import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
 
 import client.GCMClient;
 import javafx.event.ActionEvent;
@@ -13,11 +11,9 @@ import javafx.scene.control.TextField;
 
 
 public class UIController {
-
-    private ResourceBundle resources;
-
-    private URL location;
     
+    final public static int DEFAULT_PORT = 458;
+
     private GCMClient gcmClient;
 
     private Button incNumOfPurchasesBtn;
@@ -41,7 +37,7 @@ public class UIController {
     
     public UIController() throws IOException
     {
-        gcmClient = new GCMClient(this,"127.0.0.1", 458);
+        gcmClient = new GCMClient(this,"127.0.0.1", DEFAULT_PORT);
     }
 
     public void showNumberToUser(String num)
