@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="300.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2">
+  <!-- TODO Add Nodes -->
+  <children>
+    <Button fx:id="searchBtn" layoutX="108.0" layoutY="287.0" mnemonicParsing="false" onAction="#searchMap" text="Search" />
+    <TextField id="city_name" fx:id="cityName" layoutX="108.0" layoutY="121.0" onAction="#searchMap" prefWidth="167.0" />
+    <TextField fx:id="attraction" layoutX="108.0" layoutY="163.0" onAction="#searchMap" prefWidth="167.0" />
+    <TextField fx:id="description" layoutX="108.0" layoutY="208.0" onAction="#searchMap" prefWidth="167.0" />
+    <Label layoutX="14.0" layoutY="124.0" text="City name" />
+    <Label layoutX="14.0" layoutY="166.0" text="Attraction" />
+    <Label layoutX="14.0" layoutY="211.0" text="Description" />
+    <Text layoutX="112.0" layoutY="65.0" scaleX="2.399649677552753" scaleY="1.9142022098633302" strokeType="OUTSIDE" strokeWidth="0.0" text="Search map">
+      <font>
+        <Font name="Arial" size="14.0" />
+      </font>
+    </Text>
+  </children>
+</AnchorPane>

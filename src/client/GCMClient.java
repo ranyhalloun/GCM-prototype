@@ -4,22 +4,26 @@ import ocsf.client.*;
 
 import java.io.*;
 
-import application.UIController;
+import application.Main;
 
 // **This class overrides some of the methods defined in the abstract
 // **superclass in order to give more functionality to the client.
 
 public class GCMClient extends AbstractClient {
 
-    String username;
-    UIController uiController;
-    
-    public GCMClient(UIController uiController, String host, int port) throws IOException
-    {
+    public GCMClient(String host, int port) {
         super(host, port);
-        this.username = "ANONYMOUS";
-        this.uiController = uiController;
     }
+
+    String username;
+//    UIController uiController;
+    
+//    public GCMClient(UIController uiController, String host, int port) throws IOException
+//    {
+//        super(host, port);
+//        this.username = "ANONYMOUS";
+//        this.uiController = uiController;
+//    }
     
     public void setUsername(String username) throws IOException
     {
@@ -33,11 +37,18 @@ public class GCMClient extends AbstractClient {
         if (msg.toString().startsWith("#numOfPurchases ")) { // Handling #numOfPurchases message from server
             String num = msg.toString().substring(16);
             if (Integer.parseInt(num) == -1) num = "NULL";
-            uiController.showNumberToUser(num);
+//            uiController.showNumberToUser(num);
         } else {
             System.out.println(msg.toString());              // Other messages are printed to console
         }
 
+    }
+    
+    public void handleSearchMap(String attraction, String cityName, String description)
+    {
+        //Implement here
+        System.out.printf("searching map: attraction: %s, cityName: %s, description: %s%n", attraction, cityName, description);
+        
     }
     
     public void handleShowNumOfPurchases(String username) throws IOException
