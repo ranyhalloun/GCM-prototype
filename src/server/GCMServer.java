@@ -3,6 +3,9 @@ package server;
 import java.io.IOException;
 import java.sql.SQLException;
 
+import commands.Command;
+import commands.CommandType;
+import commands.RegisterCommand;
 import ocsf.server.AbstractServer;
 import ocsf.server.ConnectionToClient;
 
@@ -10,8 +13,8 @@ import database.Database;
 
 public class GCMServer extends AbstractServer
 {
-
-    final public static int DEFAULT_PORT = 458;
+    final private static String ANONYMOUS = "Anonymous";
+    final private static int DEFAULT_PORT = 458;
     Database db;
 
     public GCMServer(int port) {
@@ -19,32 +22,31 @@ public class GCMServer extends AbstractServer
         db = new Database();
     }
 
+    // Handle all commands that are coming from the client
+    // client.setInfo saves info to the client (in a hashmap) you can get the info by using getInfo..
     @Override
-    protected void handleMessageFromClient(Object msg, ConnectionToClient client) { // TODO: Handle other messages/inputs..
-        if (msg.toString().startsWith("#login ")) {
-            client.setInfo("username", msg.toString().substring(7));
-            // TODO: Add password.
-        }
-        else if (msg.toString().startsWith("#numOfPurchases ")) {                   // Handling #numOfPurchases from client
-            String username = msg.toString().substring(16);
-                try {
-                    client.sendToClient("#numOfPurchases " + db.getNumOfPurchases(username));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-        }
-        else if(msg.toString().startsWith("#incNumOfPurchases ")) {                 // Handling #incNumOfPurchases from client
-            String username = msg.toString().substring(19);
-            try {
-                db.incNumOfPurchases(username);
-                client.sendToClient("#numOfPurchases " + db.getNumOfPurchases(username));
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+    protected void handleMessageFromClient(Object msg, ConnectionToClient client) {
+        System.out.println("Handling Message:");
+        Command command = (Command) msg;
+        CommandType type = command.getType();
+        switch(type) {
+            case ConnectionCommand:
+                System.out.println("ConnectionCommand");
+                client.setInfo("username", ANONYMOUS);
+                break;
+            case RegisterCommand:
+                RegisterCommand registerCommand = command.getCommand(RegisterCommand.class);
+                System.out.println("RegisterCommand");
+                System.out.printf("Signing up:%nfirstname: %s, lastname: %s, username: %s, password: %s%n", 
+                        registerCommand.getFirstname(), registerCommand.getLastname(), registerCommand.getUsername(), registerCommand.getPassword());
+                client.setInfo("username", registerCommand.getUsername());
+                break;
+            case SigninCommand:
+                System.out.println("SigninCommand");
+                // client.setInfo("username", registerCommand.getUsername());
+                break;
+        default:
+            break;
         }
     }
     

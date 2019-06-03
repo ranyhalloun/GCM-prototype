@@ -18,6 +18,12 @@ public class loginController {
 
     @FXML
     private URL location;
+    
+    @FXML
+    private Button signinBtn;
+    
+    @FXML
+    private Button registrationBtn;
 
     @FXML
     private Button anonymousBtn;
@@ -33,6 +39,12 @@ public class loginController {
     void goToSearchMap(ActionEvent event) throws IOException {
         System.out.println("Continuing as anonymous...");
         Main.getInstance().continueAsAnonymous();
+    }
+
+    @FXML
+    void goToRegistration(ActionEvent event) throws IOException {
+        System.out.println("Go to Registration View...");
+        Main.getInstance().goToRegistration();
     }
 
     @FXML

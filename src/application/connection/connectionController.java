@@ -11,8 +11,6 @@ import javafx.scene.control.TextField;
 
 public class connectionController {
     
-//    final public static int DEFAULT_PORT = 458;
-
     @FXML
     private TextField IP;
 
@@ -22,11 +20,6 @@ public class connectionController {
     @FXML
     private Button startConnectionBtn;
     
-    public connectionController() throws IOException
-    {
-//        gcmClient = new GCMClient(this,"127.0.0.1", DEFAULT_PORT);
-    }
-
     @FXML
     void startConnection(ActionEvent event) throws NumberFormatException, IOException {
         System.out.printf("Starting connection:%nIP: %s, Port: %s%n",IP.getText(), Integer.parseInt(Port.getText()));

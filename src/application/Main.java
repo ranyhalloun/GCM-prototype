@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import application.connection.connectionController;
 import application.login.loginController;
+import application.login.registrationController;
 import application.searchmap.searchMapController;
 import client.GCMClient;
 import javafx.application.Application;
@@ -36,6 +37,7 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) throws IOException
 	{
+        System.out.printf("client: %s%n", Thread.currentThread().getName());
 	    this.primaryStage = primaryStage;
 	    showConnectionView();
 	}
@@ -56,11 +58,7 @@ public class Main extends Application {
         
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             public void handle(WindowEvent we) {
-                try {
-                    stopConnection();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                stopConnection();
             }
         });
     }
@@ -74,12 +72,25 @@ public class Main extends Application {
         mainLayout.getChildren().setAll(loginView);
 	}
 	
-	public void continueAsAnonymous() throws IOException
+	public void registerNewUser(String firstname, String lastname, String username, String password) throws IOException
+	{
+	    gcmClient.handleRegistration(firstname, lastname, username, password);
+	}
+	
+    public void goToRegistration() throws IOException
+    {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("login/registrationView.fxml"));
+        loader.setController(new registrationController());
+        AnchorPane registrationView = loader.load();
+        mainLayout.getChildren().setAll(registrationView);
+    }
+	
+    public void continueAsAnonymous() throws IOException
 	{
         FXMLLoader loader = new FXMLLoader(getClass().getResource("searchmap/searchMapView.fxml"));
         loader.setController(new searchMapController());
-        AnchorPane loginView = loader.load();
-        mainLayout.getChildren().setAll(loginView);
+        AnchorPane searchMapView = loader.load();
+        mainLayout.getChildren().setAll(searchMapView);
 	}
 	
 	public void connect(String ip, int port) throws IOException
@@ -92,11 +103,16 @@ public class Main extends Application {
         mainLayout.getChildren().setAll(loginView);
 	}
 	
-    void stopConnection() throws IOException
+    void stopConnection()
     {
         if (gcmClient != null) {
             if (gcmClient.isConnected()) {
-                gcmClient.closeConnection();
+                try {
+                    gcmClient.closeConnection();
+                } catch (IOException e) {
+                    System.out.println("Shit");
+                    e.printStackTrace();
+                }
                 System.out.println("The connection to the server has been disconnected");
             }
         }

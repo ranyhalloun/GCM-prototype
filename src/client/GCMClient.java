@@ -5,60 +5,59 @@ import ocsf.client.*;
 import java.io.*;
 
 import application.Main;
+import commands.Command;
+import commands.CommandType;
+import commands.ConnectionCommand;
+import commands.RegisterCommand;
 
 // **This class overrides some of the methods defined in the abstract
 // **superclass in order to give more functionality to the client.
 
 public class GCMClient extends AbstractClient {
-
+    
     public GCMClient(String host, int port) {
         super(host, port);
     }
 
-    String username;
-//    UIController uiController;
-    
-//    public GCMClient(UIController uiController, String host, int port) throws IOException
-//    {
-//        super(host, port);
-//        this.username = "ANONYMOUS";
-//        this.uiController = uiController;
-//    }
-    
-    public void setUsername(String username) throws IOException
+    public void handleRegistration(String firstname, String lastname, String username, String password) throws IOException
     {
-        this.username = username;
-        sendToServer("#login " + username);
+        System.out.println("handleRegistration");
+        Command command = new Command(new RegisterCommand(firstname, lastname, username, password), CommandType.RegisterCommand);
+        sendToServer(command);
+    }
+    
+    public void handleAnonymousConnection()
+    {
+        
     }
 
     @Override
     protected void handleMessageFromServer(Object msg)
     {
-        if (msg.toString().startsWith("#numOfPurchases ")) { // Handling #numOfPurchases message from server
-            String num = msg.toString().substring(16);
-            if (Integer.parseInt(num) == -1) num = "NULL";
+//        if (msg.toString().startsWith("#numOfPurchases ")) { // Handling #numOfPurchases message from server
+//            String num = msg.toString().substring(16);
+//            if (Integer.parseInt(num) == -1) num = "NULL";
 //            uiController.showNumberToUser(num);
-        } else {
-            System.out.println(msg.toString());              // Other messages are printed to console
-        }
-
+//        } else {
+//            System.out.println(msg.toString());              // Other messages are printed to console
+//        }
+        
     }
     
     public void handleSearchMap(String attraction, String cityName, String description)
     {
-        //Implement here
-        System.out.printf("searching map: attraction: %s, cityName: %s, description: %s%n", attraction, cityName, description);
-        
+        // Implement here
+        System.out.printf("Searching map: attraction: %s, cityName: %s, description: %s%n", attraction, cityName, description);
     }
     
     public void handleShowNumOfPurchases(String username) throws IOException
     {
-        sendToServer("#numOfPurchases " + username);
+//        sendToServer("#numOfPurchases " + username);
     }
     
     public void handleIncNumOfPurchases(String username) throws IOException
     {
-        sendToServer("#incNumOfPurchases " + username);
+//        sendToServer("#incNumOfPurchases " + username);
     }
     
     public void  handleStartConnection(String ip, int port) {       // Connecting to server
@@ -69,7 +68,9 @@ public class GCMClient extends AbstractClient {
             if (!isConnected()) {
                 openConnection();
                 System.out.println("You have connected server on port " + port);
-                sendToServer("#login ANONYMOUS");
+//                Command command = new Command(new RegisterCommand(ANONYMOUS, ANONYMOUS, ANONYMOUS, ANONYMOUS), CommandType.RegisterCommand);
+                Command command = new Command(new ConnectionCommand(), CommandType.ConnectionCommand);
+                sendToServer(command);
             }
         } catch (IOException e) {
             System.out.println("Could not connect to the server.\nPlease recheck the server"
