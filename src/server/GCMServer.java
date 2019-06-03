@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import commands.Command;
 import commands.CommandType;
 import commands.RegisterCommand;
+import commands.SigninCommand;
 import ocsf.server.AbstractServer;
 import ocsf.server.ConnectionToClient;
 
@@ -35,50 +36,77 @@ public class GCMServer extends AbstractServer
                 client.setInfo("username", ANONYMOUS);
                 break;
             case RegisterCommand:
-                RegisterCommand registerCommand = command.getCommand(RegisterCommand.class);
-                System.out.println("RegisterCommand");
-                System.out.printf("Signing up:%nfirstname: %s, lastname: %s, username: %s, password: %s%n", 
-                        registerCommand.getFirstname(), registerCommand.getLastname(), registerCommand.getUsername(), registerCommand.getPassword());
-                client.setInfo("username", registerCommand.getUsername());
+                handleRegisterCommand(command, client);
                 break;
             case SigninCommand:
-                System.out.println("SigninCommand");
-                // client.setInfo("username", registerCommand.getUsername());
+                handleSigninCommand(command, client);
                 break;
         default:
             break;
         }
     }
-    
+
+    private void handleRegisterCommand(Command command, ConnectionToClient client) {
+        System.out.println("RegisterCommand");
+        RegisterCommand registerCommand = command.getCommand(RegisterCommand.class);
+        String firstname = registerCommand.getFirstname();
+        String lastname = registerCommand.getLastname();
+        String username = registerCommand.getUsername();
+        String password = registerCommand.getPassword();
+        System.out.printf("Signing up:%nfirstname: %s, lastname: %s, username: %s, password: %s%n", firstname, lastname, username, password);
+        client.setInfo("username", username);
+        try {
+            db.registerNewCustomer(firstname, lastname, username, password);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void handleSigninCommand(Command command, ConnectionToClient client) {
+        System.out.println("SigninCommand");
+        SigninCommand signinCommand = command.getCommand(SigninCommand.class);
+        String username = signinCommand.getUsername();
+        String password = signinCommand.getPassword();
+        client.setInfo("username", username);
+        try {
+            if (db.authenticate(username, password))
+                System.out.println("Logged in successfully!");
+            else
+                System.out.println("Logging in failed.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     protected void serverStarted()
     {
       System.out.println("Server listening for connections on port " + getPort());
     }
-    
+
     protected void serverStopped()
     {
       System.out.println("Server has stopped listening for connections.");
     }
-    
+
     protected void clientConnected(ConnectionToClient client) 
     {
       // display on server and clients that the client has connected.
       String msg = "A Client has connected";
       System.out.println(msg);
     }
-    
+
     synchronized protected void clientDisconnected(ConnectionToClient client)
     {
         String msg = client.getInfo("username").toString() + " has disconnected";
         System.out.println(msg);
     }
-    
+
     synchronized protected void clientException(ConnectionToClient client, Throwable exception) 
     {
         String msg = client.getInfo("username").toString() + " has disconnected";
         System.out.println(msg);
     }
-    
+
     public void quit()
     {
         try {
@@ -87,7 +115,7 @@ public class GCMServer extends AbstractServer
         catch(IOException e) {}
         System.exit(0);
     }
-    
+
     public static void main(String[] args) 
     {
         int port = 0;
@@ -98,7 +126,7 @@ public class GCMServer extends AbstractServer
         catch(Throwable t) {
             port = DEFAULT_PORT; //Set port to 458
         }
-      
+
         GCMServer sv = new GCMServer(port);
       
         try {
@@ -107,6 +135,5 @@ public class GCMServer extends AbstractServer
         catch (Exception ex) {
             System.out.println("ERROR - Could not listen for clients!");
         }
-    
     }
 }

@@ -35,24 +35,43 @@ public class Database {
         }
     }
     
-    public int getNumOfPurchases(String username) throws SQLException
+    // Should we have return value?
+    // What to do incase of error?
+    public void registerNewCustomer(String firstname, String lastname, String username, String password) throws SQLException
     {
-        int purchases = -1;
-        String sql = "SELECT username, numOfPurchases FROM Customers WHERE username = '" + username + "'";
-        ResultSet rs = stmt.executeQuery(sql);
-        if (rs.next())
-            purchases = rs.getInt("numOfPurchases");
-        return purchases;
+        String sql = "INSERT INTO users (firstname, lastname, username, password) VALUES ('" + firstname + "', "
+                + "'" + lastname + "', '" + username + "', '" + password + "')";
+        stmt.executeUpdate(sql);
     }
     
-    public void incNumOfPurchases(String username) throws SQLException
+    public boolean authenticate(String username, String password) throws SQLException
     {
-        String sql = "SELECT username, numOfPurchases FROM Customers WHERE username = '" + username + "'";
+        boolean success = false;
+        String sql = "SELECT username, password FROM users WHERE username = '" + username + "'";
         ResultSet rs = stmt.executeQuery(sql);
-        if (rs.next()) {
-            rs.updateInt("numOfPurchases", rs.getInt("numOfPurchases") + 1);
-            rs.updateRow();
-        }
+        if (rs.next())
+            success = password.equals(rs.getString("password"));
+        return success;
     }
+    
+//    public int getNumOfPurchases(String username) throws SQLException
+//    {
+//        int purchases = -1;
+//        String sql = "SELECT username, numOfPurchases FROM Customers WHERE username = '" + username + "'";
+//        ResultSet rs = stmt.executeQuery(sql);
+//        if (rs.next())
+//            purchases = rs.getInt("numOfPurchases");
+//        return purchases;
+//    }
+//    
+//    public void incNumOfPurchases(String username) throws SQLException
+//    {
+//        String sql = "SELECT username, numOfPurchases FROM Customers WHERE username = '" + username + "'";
+//        ResultSet rs = stmt.executeQuery(sql);
+//        if (rs.next()) {
+//            rs.updateInt("numOfPurchases", rs.getInt("numOfPurchases") + 1);
+//            rs.updateRow();
+//        }
+//    }
     
 }

@@ -37,11 +37,20 @@ public class registrationController {
 
     @FXML
     void registration(ActionEvent event) throws IOException {
+        if (!checkInput(firstname.getText(), lastname.getText(), username.getText(), password.getText())) {
+            System.out.println("Wrong input");
+            // Show popup message...
+        }
         Main.getInstance().registerNewUser(firstname.getText(), lastname.getText(), username.getText(), password.getText());
         // TODO:
         // Handle wrong input
         // When Registering successfully, go to previous view
         // Add button to go to previous view
+    }
+
+    private boolean checkInput(String firstname, String lastname, String username, String password) {
+        // Input is not empty..
+        return true;
     }
 
     @FXML

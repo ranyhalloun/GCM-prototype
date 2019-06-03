@@ -84,6 +84,10 @@ public class Main extends Application {
         AnchorPane registrationView = loader.load();
         mainLayout.getChildren().setAll(registrationView);
     }
+
+    public void signIn(String username, String password) throws IOException {
+        gcmClient.handleSignIn(username, password);        
+    }
 	
     public void continueAsAnonymous() throws IOException
 	{

@@ -9,6 +9,7 @@ import commands.Command;
 import commands.CommandType;
 import commands.ConnectionCommand;
 import commands.RegisterCommand;
+import commands.SigninCommand;
 
 // **This class overrides some of the methods defined in the abstract
 // **superclass in order to give more functionality to the client.
@@ -23,6 +24,13 @@ public class GCMClient extends AbstractClient {
     {
         System.out.println("handleRegistration");
         Command command = new Command(new RegisterCommand(firstname, lastname, username, password), CommandType.RegisterCommand);
+        sendToServer(command);
+    }
+    
+
+    public void handleSignIn(String username, String password) throws IOException {
+        System.out.println("handleSignin");
+        Command command = new Command(new SigninCommand(username, password), CommandType.SigninCommand);
         sendToServer(command);
     }
     
