@@ -49,7 +49,8 @@ public class loginController {
 
     @FXML
     void signIn(ActionEvent event) throws IOException {
-        Main.getInstance().signIn(username.getText(), password.getText());
+        
+    	Main.getInstance().signIn(username.getText(), password.getText());
     }
 
     @FXML

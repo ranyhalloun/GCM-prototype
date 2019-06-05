@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<AnchorPane prefHeight="200.0" prefWidth="300.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="application.errorBoxController">
+   <children>
+      <Label fx:id="messageTxt" layoutX="54.0" layoutY="63.0" prefHeight="37.0" prefWidth="193.0" />
+      <Button fx:id="closeBtn" layoutX="125.0" layoutY="151.0" mnemonicParsing="false" onAction="#close" text="Close" />
+   </children>
+</AnchorPane>
