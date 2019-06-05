@@ -3,15 +3,14 @@ package server;
 import java.io.IOException;
 import java.sql.SQLException;
 
-import application.Main;
 import commands.Command;
 import commands.CommandType;
 import commands.RegisterCommand;
 import commands.SigninCommand;
+import database.Database;
 import ocsf.server.AbstractServer;
 import ocsf.server.ConnectionToClient;
 
-import database.Database;
 
 public class GCMServer extends AbstractServer
 {
@@ -47,7 +46,7 @@ public class GCMServer extends AbstractServer
         }
     }
 
-    private void handleRegisterCommand(Command command, ConnectionToClient client){
+    private void handleRegisterCommand(Command command, ConnectionToClient client) {
     	System.out.println("RegisterCommand");
         RegisterCommand registerCommand = command.getCommand(RegisterCommand.class);
         String firstname = registerCommand.getFirstname();
@@ -83,17 +82,9 @@ public class GCMServer extends AbstractServer
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-        
-        //back to the previous view
-        try {
-			Main.getInstance().continueAsAnonymous();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		}     
     }
-
+    
     private void handleSigninCommand(Command command, ConnectionToClient client) {
         System.out.println("SigninCommand");
         SigninCommand signinCommand = command.getCommand(SigninCommand.class);

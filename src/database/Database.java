@@ -1,25 +1,17 @@
 package database;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import application.Main;
-
-
-
 
 public class Database {
     
     static private final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
     static private final String DB = "ejI4Uj5gY7";
-    //static private final String DB = "wgjWrab1HZ";
     static private final String DB_URL = "jdbc:mysql://remotemysql.com/"+ DB + "?useSSL=false";
-    //static private final String USER = "wgjWrab1HZ";
-    //static private final String PASS = "RElRKksRJo";
     static private final String USER = "ejI4Uj5gY7";
     static private final String PASS = "R0soiZY0p3";
     
@@ -44,7 +36,7 @@ public class Database {
     }
     
     // Should we have return value?
-    // What to do incase of error?
+    // What to do in case of error?
     public void registerNewCustomer(String firstname, String lastname, String username, String password, String email, String phone) throws SQLException
     {
     	String sql = "INSERT INTO Users (username, password, firstName, lastName, emailAddress, phoneNumber) VALUES ('"
@@ -54,10 +46,6 @@ public class Database {
     	sql = "INSERT INTO Customers (customerUsername) VALUES ('"
     	+ username + "')";
     	stmt.executeUpdate(sql);
-    	
-        /*String sql = "INSERT INTO users (firstname, lastname, username, password) VALUES ('" + firstname + "', "
-                + "'" + lastname + "', '" + username + "', '" + password + "')";
-        stmt.executeUpdate(sql);*/
     }
     
     public boolean authenticate(String username, String password) throws SQLException

@@ -112,9 +112,7 @@ public class Main extends Application {
         
     	System.out.println(message);
     	
-    	
     }
-
     
 	public void connect(String ip, int port) throws IOException
 	{
