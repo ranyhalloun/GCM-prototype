@@ -12,6 +12,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -72,10 +73,12 @@ public class Main extends Application {
         mainLayout.getChildren().setAll(loginView);
 	}
 	
-	public void registerNewUser(String firstname, String lastname, String username, String password) throws IOException
-	{
-	    gcmClient.handleRegistration(firstname, lastname, username, password);
+	public void registerNewUser(String firstname, String lastname, String username, String password, String email, String phone) throws IOException
+	{	
+	    gcmClient.handleRegistration(firstname, lastname, username, password, email, phone);
+	    
 	}
+	
 	
     public void goToRegistration() throws IOException
     {
@@ -84,7 +87,7 @@ public class Main extends Application {
         AnchorPane registrationView = loader.load();
         mainLayout.getChildren().setAll(registrationView);
     }
-
+    
     public void signIn(String username, String password) throws IOException {
         gcmClient.handleSignIn(username, password);        
     }
@@ -97,14 +100,27 @@ public class Main extends Application {
         mainLayout.getChildren().setAll(searchMapView);
 	}
 	
-	public void connect(String ip, int port) throws IOException
-	{
-        gcmClient = new GCMClient("127.0.0.1", DEFAULT_PORT);
-	    gcmClient.handleStartConnection(ip, port);
+    public void goToLogin() throws IOException {
 	    FXMLLoader loader = new FXMLLoader(getClass().getResource("login/loginView.fxml"));
         loader.setController(new loginController());
 	    AnchorPane loginView = loader.load();
         mainLayout.getChildren().setAll(loginView);
+    }
+    
+    
+    public void error(String message) throws IOException {
+        
+    	System.out.println(message);
+    	
+    	
+    }
+
+    
+	public void connect(String ip, int port) throws IOException
+	{
+        gcmClient = new GCMClient("127.0.0.1", DEFAULT_PORT);
+	    gcmClient.handleStartConnection(ip, port);
+	    goToLogin();
 	}
 	
     void stopConnection()

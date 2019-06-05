@@ -9,16 +9,20 @@ public class RegisterCommand implements Serializable {
     private String lastname;
     private String username;
     private String password;
+    private String email;
+    private String phone;
     
     // Output
     private boolean success;
     
     // Constructor
-    public RegisterCommand(String firstname, String lastname, String username, String password) {
+    public RegisterCommand(String firstname, String lastname, String username, String password, String email, String phone) {
         this.firstname = firstname;
         this.lastname = lastname;
         this.username = username;
         this.password = password;
+        this.email = email;
+        this.phone = phone;
         this.success = false;
     }
     
@@ -42,6 +46,14 @@ public class RegisterCommand implements Serializable {
     
     public String getPassword() {
         return this.password;
+    }
+    
+    public String getEmail() {
+        return this.email;
+    }
+    
+    public String getPhone() {
+        return this.phone;
     }
     
     public boolean getSuccess() {

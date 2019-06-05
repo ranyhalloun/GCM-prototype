@@ -20,10 +20,10 @@ public class GCMClient extends AbstractClient {
         super(host, port);
     }
 
-    public void handleRegistration(String firstname, String lastname, String username, String password) throws IOException
+    public void handleRegistration(String firstname, String lastname, String username, String password, String email, String phone) throws IOException
     {
         System.out.println("handleRegistration");
-        Command command = new Command(new RegisterCommand(firstname, lastname, username, password), CommandType.RegisterCommand);
+        Command command = new Command(new RegisterCommand(firstname, lastname, username, password, email, phone), CommandType.RegisterCommand);
         sendToServer(command);
     }
     

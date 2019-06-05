@@ -29,13 +29,22 @@ public class searchMapController {
 
     @FXML
     private Button searchBtn;
-
+    
+    @FXML
+    private Button backBtn;
 
     @FXML
     void searchMap(ActionEvent event) throws IOException {
         Main.getInstance().searchMap(attraction.getText(), cityName.getText(), description.getText());
     }
 
+    
+    @FXML
+    void back(ActionEvent event) throws IOException {
+    	System.out.println("Back to login view");
+        Main.getInstance().goToLogin();
+    }
+    
     @FXML
     void initialize() {
         assert attraction != null : "fx:id=\"attraction\" was not injected: check your FXML file 'searchMapView.fxml'.";

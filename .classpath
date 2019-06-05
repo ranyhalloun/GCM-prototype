@@ -8,6 +8,14 @@
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JavaFX11"/>
 	<classpathentry kind="con" path="org.eclipse.fx.ide.jdt.core.JAVAFX_CONTAINER"/>
-	<classpathentry kind="lib" path="C:/mysql-connector-java-8.0.16/mysql-connector-java-8.0.16.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Pierre Cardo/git/GCM-prototype/build/dist/libs/javafx.base.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Pierre Cardo/git/GCM-prototype/build/dist/libs/javafx.controls.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Pierre Cardo/git/GCM-prototype/build/dist/libs/javafx.fxml.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Pierre Cardo/git/GCM-prototype/build/dist/libs/javafx.graphics.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Pierre Cardo/git/GCM-prototype/build/dist/libs/javafx.media.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Pierre Cardo/git/GCM-prototype/build/dist/libs/javafx.swing.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Pierre Cardo/git/GCM-prototype/build/dist/libs/javafx.web.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Pierre Cardo/git/GCM-prototype/build/dist/libs/javafx-swt.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Pierre Cardo/git/GCM-prototype/build/dist/libs/mysql-connector-java-8.0.16.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -3,6 +3,7 @@ package server;
 import java.io.IOException;
 import java.sql.SQLException;
 
+import application.Main;
 import commands.Command;
 import commands.CommandType;
 import commands.RegisterCommand;
@@ -46,20 +47,51 @@ public class GCMServer extends AbstractServer
         }
     }
 
-    private void handleRegisterCommand(Command command, ConnectionToClient client) {
-        System.out.println("RegisterCommand");
+    private void handleRegisterCommand(Command command, ConnectionToClient client){
+    	System.out.println("RegisterCommand");
         RegisterCommand registerCommand = command.getCommand(RegisterCommand.class);
         String firstname = registerCommand.getFirstname();
         String lastname = registerCommand.getLastname();
         String username = registerCommand.getUsername();
         String password = registerCommand.getPassword();
-        System.out.printf("Signing up:%nfirstname: %s, lastname: %s, username: %s, password: %s%n", firstname, lastname, username, password);
+        String email = registerCommand.getEmail();
+        String phone = registerCommand.getPhone();
+        System.out.printf("Signing up:%nfirstname: %s, lastname: %s, username: %s, password: %s, email: %s, phone: %s%n", firstname, lastname, username, password, email, phone);
         client.setInfo("username", username);
+        
+        
         try {
-            db.registerNewCustomer(firstname, lastname, username, password);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        	//trying to handle error input
+        	
+        	/*if(db.usernameExist(username))
+				try {
+					Main.getInstance().error("username exists!");
+					return;
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+        	if((firstname.isEmpty() || lastname.isEmpty() || username.isEmpty() || password.isEmpty() || email.isEmpty() || phone.isEmpty()))
+    			try {
+    				Main.getInstance().error("Fill all the fields please!");
+    				return;
+    			} catch (IOException e1) {
+    				// TODO Auto-generated catch block
+    				e1.printStackTrace();
+    			}*/
+			db.registerNewCustomer(firstname, lastname, username, password, email, phone);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
+        //back to the previous view
+        try {
+			Main.getInstance().continueAsAnonymous();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
     private void handleSigninCommand(Command command, ConnectionToClient client) {
