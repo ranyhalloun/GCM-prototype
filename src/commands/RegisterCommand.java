@@ -13,7 +13,7 @@ public class RegisterCommand implements Serializable {
     private String phone;
     
     // Output
-    private boolean success;
+    private int success;
     
     // Constructor
     public RegisterCommand(String firstname, String lastname, String username, String password, String email, String phone) {
@@ -23,11 +23,11 @@ public class RegisterCommand implements Serializable {
         this.password = password;
         this.email = email;
         this.phone = phone;
-        this.success = false;
+        this.success = -1;
     }
     
     // Setters
-    public void setSuccess(boolean success) {
+    public void setSuccess(int success) {
         this.success = success;
     }
     
@@ -56,7 +56,7 @@ public class RegisterCommand implements Serializable {
         return this.phone;
     }
     
-    public boolean getSuccess() {
+    public int getSuccess() {
         return this.success;
     }
     

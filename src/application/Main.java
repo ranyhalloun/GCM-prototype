@@ -18,7 +18,7 @@ import javafx.stage.WindowEvent;
 
 
 public class Main extends Application {
-    
+
     private static Main main;
     private Stage primaryStage;
     private static AnchorPane mainLayout;
@@ -26,7 +26,7 @@ public class Main extends Application {
     
     final public static int DEFAULT_PORT = 458;
 
-    
+
     public static Main getInstance()
     {
         if (main == null) {
@@ -34,7 +34,7 @@ public class Main extends Application {
         }
         return main;
     }
-    
+
 	@Override
 	public void start(Stage primaryStage) throws IOException
 	{
@@ -42,7 +42,7 @@ public class Main extends Application {
 	    this.primaryStage = primaryStage;
 	    showConnectionView();
 	}
-	
+
 	private void showConnectionView() throws IOException
 	{
 	    // Constructing the scene
@@ -63,7 +63,7 @@ public class Main extends Application {
             }
         });
     }
-	
+
 	public void searchMap(String attraction, String cityName, String description) throws IOException
 	{
 	    gcmClient.handleSearchMap(attraction, cityName, description);
@@ -72,14 +72,12 @@ public class Main extends Application {
         AnchorPane loginView = loader.load();
         mainLayout.getChildren().setAll(loginView);
 	}
-	
-	public void registerNewUser(String firstname, String lastname, String username, String password, String email, String phone) throws IOException
+
+	public void registerNewUser(String firstname, String lastname, String username, String password, String email, String phone) throws IOException, InterruptedException
 	{	
 	    gcmClient.handleRegistration(firstname, lastname, username, password, email, phone);
-	    
 	}
-	
-	
+
     public void goToRegistration() throws IOException
     {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("login/registrationView.fxml"));
@@ -87,40 +85,39 @@ public class Main extends Application {
         AnchorPane registrationView = loader.load();
         mainLayout.getChildren().setAll(registrationView);
     }
-    
+
     public void signIn(String username, String password) throws IOException {
-        gcmClient.handleSignIn(username, password);        
+        gcmClient.handleSignIn(username, password);
     }
-	
-    public void continueAsAnonymous() throws IOException
+
+    public void goToSearchMap() throws IOException
 	{
         FXMLLoader loader = new FXMLLoader(getClass().getResource("searchmap/searchMapView.fxml"));
         loader.setController(new searchMapController());
         AnchorPane searchMapView = loader.load();
         mainLayout.getChildren().setAll(searchMapView);
 	}
-	
+
     public void goToLogin() throws IOException {
 	    FXMLLoader loader = new FXMLLoader(getClass().getResource("login/loginView.fxml"));
         loader.setController(new loginController());
 	    AnchorPane loginView = loader.load();
         mainLayout.getChildren().setAll(loginView);
     }
-    
-    
+
     public void error(String message) throws IOException {
         
     	System.out.println(message);
     	
     }
-    
+
 	public void connect(String ip, int port) throws IOException
 	{
         gcmClient = new GCMClient("127.0.0.1", DEFAULT_PORT);
 	    gcmClient.handleStartConnection(ip, port);
 	    goToLogin();
 	}
-	
+
     void stopConnection()
     {
         if (gcmClient != null) {
@@ -128,7 +125,6 @@ public class Main extends Application {
                 try {
                     gcmClient.closeConnection();
                 } catch (IOException e) {
-                    System.out.println("Shit");
                     e.printStackTrace();
                 }
                 System.out.println("The connection to the server has been disconnected");
@@ -136,10 +132,9 @@ public class Main extends Application {
         }
         System.out.println("Exiting...");
     }
-	
+
 	public static void main(String[] args)
 	{
 		launch(args);
 	}
-	
 }

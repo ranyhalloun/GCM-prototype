@@ -3,6 +3,7 @@ package client;
 import ocsf.client.*;
 
 import java.io.*;
+import java.util.concurrent.TimeUnit;
 
 import application.Main;
 import commands.Command;
@@ -10,30 +11,69 @@ import commands.CommandType;
 import commands.ConnectionCommand;
 import commands.RegisterCommand;
 import commands.SigninCommand;
+import application.login.registrationController;
 
 // **This class overrides some of the methods defined in the abstract
 // **superclass in order to give more functionality to the client.
 
 public class GCMClient extends AbstractClient {
-    
+    private Command command;
+    private CommandType type;
+    private boolean commandRequest;
+
     public GCMClient(String host, int port) {
         super(host, port);
+        commandRequest = false;
     }
 
     public void handleRegistration(String firstname, String lastname, String username, String password, String email, String phone) throws IOException
     {
+        commandRequest = true;
         System.out.println("handleRegistration");
-        Command command = new Command(new RegisterCommand(firstname, lastname, username, password, email, phone), CommandType.RegisterCommand);
+        command = new Command(new RegisterCommand(firstname, lastname, username, password, email, phone), CommandType.RegisterCommand);
         sendToServer(command);
+        waitForServerResponse();
+        handleRegisterCommandFromServer();
     }
-    
+
+    private void handleRegisterCommandFromServer() throws IOException
+    {
+        System.out.println("handleRegisterCommandFromServer");
+        int success = command.getCommand(RegisterCommand.class).getSuccess();
+        switch (success) {
+        case -1:
+            System.out.println("There is a problem in the database connection");
+            break;
+        case 0:
+            System.out.println("Username exists. Please choose another username.");
+            break;
+        case 1:
+            System.out.println("Registration completed!");
+            Main.getInstance().goToLogin();
+            break;
+        }
+    }
 
     public void handleSignIn(String username, String password) throws IOException {
+        commandRequest = true;
         System.out.println("handleSignin");
-        Command command = new Command(new SigninCommand(username, password), CommandType.SigninCommand);
+        command = new Command(new SigninCommand(username, password), CommandType.SigninCommand);
         sendToServer(command);
+        waitForServerResponse();
+        handleSigninCommandFromServer();
     }
-    
+
+    private void handleSigninCommandFromServer() throws IOException {
+        System.out.println("handleSigninCommandFromServer");
+        boolean success = command.getCommand(SigninCommand.class).getSuccess();
+        if (success) {
+            System.out.println("You have successfully signed in!");
+            Main.getInstance().goToSearchMap();
+        } else {
+            System.out.println("Sign in failed.");
+        }
+    }
+
     public void handleAnonymousConnection()
     {
         
@@ -42,42 +82,37 @@ public class GCMClient extends AbstractClient {
     @Override
     protected void handleMessageFromServer(Object msg)
     {
-//        if (msg.toString().startsWith("#numOfPurchases ")) { // Handling #numOfPurchases message from server
-//            String num = msg.toString().substring(16);
-//            if (Integer.parseInt(num) == -1) num = "NULL";
-//            uiController.showNumberToUser(num);
-//        } else {
-//            System.out.println(msg.toString());              // Other messages are printed to console
-//        }
-        
+        System.out.println("Handling message from server");
+        command = (Command) msg;
+        type = command.getType();
+        System.out.println("Command type: " + type.toString());
+        commandRequest = false;
     }
-    
+
     public void handleSearchMap(String attraction, String cityName, String description)
     {
         // Implement here
         System.out.printf("Searching map: attraction: %s, cityName: %s, description: %s%n", attraction, cityName, description);
     }
-    
+
     public void handleShowNumOfPurchases(String username) throws IOException
     {
 //        sendToServer("#numOfPurchases " + username);
     }
-    
+
     public void handleIncNumOfPurchases(String username) throws IOException
     {
 //        sendToServer("#incNumOfPurchases " + username);
     }
-    
-    public void  handleStartConnection(String ip, int port) {       // Connecting to server
 
+    public void handleStartConnection(String ip, int port) {       // Connecting to server
         setPort(port);
         setHost(ip);
         try {
             if (!isConnected()) {
                 openConnection();
                 System.out.println("You have connected server on port " + port);
-//                Command command = new Command(new RegisterCommand(ANONYMOUS, ANONYMOUS, ANONYMOUS, ANONYMOUS), CommandType.RegisterCommand);
-                Command command = new Command(new ConnectionCommand(), CommandType.ConnectionCommand);
+                command = new Command(new ConnectionCommand(), CommandType.ConnectionCommand);
                 sendToServer(command);
             }
         } catch (IOException e) {
@@ -85,7 +120,18 @@ public class GCMClient extends AbstractClient {
                     + " IP and the port.");
         }
     }
-    
+
+    private void waitForServerResponse()
+    {
+        while (commandRequest) {
+            try {
+                TimeUnit.MILLISECONDS.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }        
+    }
+
     public void quit()
     {
       try {
@@ -94,12 +140,11 @@ public class GCMClient extends AbstractClient {
       catch(IOException e) {}
       System.exit(0);
     }
-    
+
     protected void connectionException(Exception exception)
     {
       System.out.println
         ("The connection to the Server (" + getHost() + ", " + getPort() + 
         ") has been disconnected");
     }
-
 }

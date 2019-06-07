@@ -38,7 +38,7 @@ public class loginController {
     @FXML
     void goToSearchMap(ActionEvent event) throws IOException {
         System.out.println("Continuing as anonymous...");
-        Main.getInstance().continueAsAnonymous();
+        Main.getInstance().goToSearchMap();
     }
 
     @FXML

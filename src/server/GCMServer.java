@@ -37,6 +37,12 @@ public class GCMServer extends AbstractServer
                 break;
             case RegisterCommand:
                 handleRegisterCommand(command, client);
+                try {
+                    client.sendToClient(command);
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
                 break;
             case SigninCommand:
                 handleSigninCommand(command, client);
@@ -57,46 +63,46 @@ public class GCMServer extends AbstractServer
         String phone = registerCommand.getPhone();
         System.out.printf("Signing up:%nfirstname: %s, lastname: %s, username: %s, password: %s, email: %s, phone: %s%n", firstname, lastname, username, password, email, phone);
         client.setInfo("username", username);
-        
-        
+              
         try {
-        	//trying to handle error input
-        	
-        	/*if(db.usernameExist(username))
-				try {
-					Main.getInstance().error("username exists!");
-					return;
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-        	if((firstname.isEmpty() || lastname.isEmpty() || username.isEmpty() || password.isEmpty() || email.isEmpty() || phone.isEmpty()))
-    			try {
-    				Main.getInstance().error("Fill all the fields please!");
-    				return;
-    			} catch (IOException e1) {
-    				// TODO Auto-generated catch block
-    				e1.printStackTrace();
-    			}*/
-			db.registerNewCustomer(firstname, lastname, username, password, email, phone);
+        	if (db.usernameExist(username))
+        	    registerCommand.setSuccess(0);
+        	else {
+    			db.registerNewCustomer(firstname, lastname, username, password, email, phone);
+                registerCommand.setSuccess(1);
+        	}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}     
+		}
+        try {
+            client.sendToClient(command);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     
     private void handleSigninCommand(Command command, ConnectionToClient client) {
-        System.out.println("SigninCommand");
+        System.out.println("server: handling SigninCommand");
         SigninCommand signinCommand = command.getCommand(SigninCommand.class);
         String username = signinCommand.getUsername();
         String password = signinCommand.getPassword();
-        client.setInfo("username", username);
+        // authenticate
         try {
-            if (db.authenticate(username, password))
+            if (db.authenticate(username, password)) {
+                client.setInfo("username", username);
                 System.out.println("Logged in successfully!");
-            else
+                signinCommand.setSuccess(true);
+            } else {
                 System.out.println("Logging in failed.");
+                signinCommand.setSuccess(false);
+            }
         } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        // sendToClient
+        try {
+            client.sendToClient(command);
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
