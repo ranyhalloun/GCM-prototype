@@ -1,13 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
 <?import java.lang.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="400.0" prefWidth="300.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2">
+<AnchorPane prefHeight="321.0" prefWidth="318.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
   <!-- TODO Add Nodes -->
   <children>
-    <ListView prefHeight="400.0" prefWidth="300.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+    <ListView layoutX="1.0" prefHeight="324.0" prefWidth="318.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="0.0" />
+      <Label layoutX="102.0" layoutY="16.0" text="TableView Maps">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </Label>
+      <Button fx:id="backBtn" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#back" prefHeight="25.0" prefWidth="70.0" text="Back" />
+      <TableView fx:id="tableView" layoutX="13.0" layoutY="49.0" onMouseClicked="#userClickOnTable" prefHeight="237.0" prefWidth="286.0">
+        <columns>
+          <TableColumn fx:id="mapIDColumn" prefWidth="75.0" text="MapID" />
+          <TableColumn fx:id="descriptionColumn" prefWidth="108.0" text="Description" />
+            <TableColumn fx:id="cityColumn" minWidth="0.0" prefWidth="129.0" text="City" />
+        </columns>
+      </TableView>
+      <Button fx:id="displayMapBtn" layoutX="115.0" layoutY="299.0" mnemonicParsing="false" onAction="#displayMap" text="Display Map" />
   </children>
 </AnchorPane>

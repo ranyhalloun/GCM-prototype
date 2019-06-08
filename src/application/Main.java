@@ -1,16 +1,33 @@
 package application;
 
+import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.net.URL;
+
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+
+import com.sun.prism.Image;
 
 import application.connection.connectionController;
 import application.login.loginController;
 import application.login.registrationController;
+import application.searchmap.Map;
+import application.searchmap.mapImageController;
 import application.searchmap.searchMapController;
+import application.searchmap.searchMapResultController;
+import application.errorBox.errorBoxController;
+
 import client.GCMClient;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.TableView;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -22,8 +39,9 @@ public class Main extends Application {
     private static Main main;
     private Stage primaryStage;
     private static AnchorPane mainLayout;
-    private static GCMClient gcmClient;
-    
+    private static GCMClient gcmClient;    
+
+
     final public static int DEFAULT_PORT = 458;
 
     
@@ -59,22 +77,22 @@ public class Main extends Application {
         
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             public void handle(WindowEvent we) {
-                stopConnection();
+               stopConnection();
             }
         });
     }
 	
-	public void searchMap(String attraction, String cityName, String description) throws IOException
+	public void goToSearchMapResult(String attraction, String cityName, String description) throws IOException
 	{
 	    gcmClient.handleSearchMap(attraction, cityName, description);
         FXMLLoader loader = new FXMLLoader(getClass().getResource("searchmap/searchMapResultView.fxml"));
-        loader.setController(new loginController());
+        loader.setController(new searchMapResultController());
         AnchorPane loginView = loader.load();
         mainLayout.getChildren().setAll(loginView);
 	}
 	
 	public void registerNewUser(String firstname, String lastname, String username, String password, String email, String phone) throws IOException
-	{	
+	{
 	    gcmClient.handleRegistration(firstname, lastname, username, password, email, phone);
 	    
 	}
@@ -89,15 +107,14 @@ public class Main extends Application {
     }
     
     public void signIn(String username, String password) throws IOException {
-        gcmClient.handleSignIn(username, password);        
+        gcmClient.handleSignIn(username, password);
+        
+        
     }
 	
     public void continueAsAnonymous() throws IOException
 	{
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("searchmap/searchMapView.fxml"));
-        loader.setController(new searchMapController());
-        AnchorPane searchMapView = loader.load();
-        mainLayout.getChildren().setAll(searchMapView);
+    	goToSearchMap();
 	}
 	
     public void goToLogin() throws IOException {
@@ -109,13 +126,37 @@ public class Main extends Application {
     
     
     public void error(String message) throws IOException {
-        
-    	System.out.println(message);
-    	
-    	
+    	System.out.println("hello");
+    	goToLogin();
     }
 
+    public void goToSearchMap() throws IOException{
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("searchmap/searchMapView.fxml"));
+        loader.setController(new searchMapController());
+        AnchorPane searchMapView = loader.load();
+        mainLayout.getChildren().setAll(searchMapView);
+    }
     
+    public void goToMapImage(Map map) throws IOException{
+    	FXMLLoader loader = new FXMLLoader(getClass().getResource("searchmap/mapImage.fxml"));
+        AnchorPane imageMapView = loader.load();
+        mainLayout.getChildren().setAll(imageMapView);
+    	//displayImage(map.getImagePath());
+        
+    	//AnchorPane tableViewParent = loader.load();
+    	//Scene tableViewScene = new Scene(tableViewParent);
+    	
+    	/*mapImageController controller = loader.getController();
+    	if(controller == null){
+    		System.out.println("walaAhbla");
+    	}
+    	
+    	controller.initData(tableView.getSelectionModel().getSelectedItem());
+    	
+    	tableViewParent = loader.load();
+        AnchorPane mapImage = loader.load();
+        mainLayout.getChildren().setAll(tableViewParent);*/
+    }
 	public void connect(String ip, int port) throws IOException
 	{
         gcmClient = new GCMClient("127.0.0.1", DEFAULT_PORT);
@@ -139,6 +180,17 @@ public class Main extends Application {
         System.out.println("Exiting...");
     }
 	
+   // example to input:"https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Printable_map_haifa_israel_g_view_level_12_eng_svg.svg/250px-Printable_map_haifa_israel_g_view_level_12_eng_svg.svg.png" 
+   public void displayImage(String path) throws IOException {
+	   URL url = new URL(path);
+	   BufferedImage image = ImageIO.read(url);
+	    
+       JFrame frame = new JFrame();
+       frame.setSize(300, 300);
+       JLabel label = new JLabel(new ImageIcon(image));
+       frame.add(label);
+       frame.setVisible(true);
+   }
 	public static void main(String[] args)
 	{
 		launch(args);

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<AnchorPane prefHeight="400.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.searchmap.mapImageController">
+   <children>
+      <Label layoutX="109.0" layoutY="27.0" prefHeight="21.0" prefWidth="82.0" text="Map Image">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </Label>
+      <ImageView fitHeight="234.0" fitWidth="283.0" layoutX="11.0" layoutY="79.0" pickOnBounds="true" preserveRatio="true" />
+      <Button fx:id="backBtn" layoutX="14.0" layoutY="15.0" mnemonicParsing="false" onAction="#back" text="Back" />
+   </children>
+</AnchorPane>

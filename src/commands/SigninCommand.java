@@ -2,6 +2,11 @@ package commands;
 
 import java.io.Serializable;
 
+enum Role 
+{ 
+    C, W; 
+}
+
 public class SigninCommand implements Serializable {
     
     // Input
@@ -10,6 +15,7 @@ public class SigninCommand implements Serializable {
     
     // Output
     private boolean success;
+    private String role;								//change it to enum
     
     // Constructor
     public SigninCommand(String username, String password) {
@@ -23,6 +29,10 @@ public class SigninCommand implements Serializable {
         this.success = success;
     }
     
+    public void setRole(String role) {
+    	this.role = role;
+    }
+    
     // Getters
     public String getUsername() {
         return this.username;
@@ -34,5 +44,9 @@ public class SigninCommand implements Serializable {
     
     public boolean getSuccess() {
         return this.success;
+    }
+    
+    public String getRole() {
+    	return this.role;
     }
 }

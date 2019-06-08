@@ -10,6 +10,7 @@ import commands.CommandType;
 import commands.ConnectionCommand;
 import commands.RegisterCommand;
 import commands.SigninCommand;
+import commands.SearchMapCommand;
 
 // **This class overrides some of the methods defined in the abstract
 // **superclass in order to give more functionality to the client.
@@ -49,13 +50,45 @@ public class GCMClient extends AbstractClient {
 //        } else {
 //            System.out.println(msg.toString());              // Other messages are printed to console
 //        }
+//    	if(msg.toString().equals("username exists!")) {
+//    		Main.getInstance().error(msg.toString());
+//    	}
+    	
+    	
+    	System.out.println("Handling Message from server:");
+        Command command = (Command) msg;
+        CommandType type = command.getType();
+        switch(type) {
+            case RegisterCommand:
+			try {
+				Main.getInstance().error(command.getCommand(RegisterCommand.class).getError());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+                break;
+            case SigninCommand:
+                //add handling message
+            	if(command.getCommand(SigninCommand.class).getRole().equals("C"))
+					try {
+						Main.getInstance().goToSearchMapResult("","","");
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+                break;
+        default:
+            break;
+        }
         
     }
     
-    public void handleSearchMap(String attraction, String cityName, String description)
+    public void handleSearchMap(String attraction, String cityName, String description) throws IOException
     {
         // Implement here
         System.out.printf("Searching map: attraction: %s, cityName: %s, description: %s%n", attraction, cityName, description);
+        Command command = new Command(new SearchMapCommand(attraction, cityName, description), CommandType.SearchMapCommand);
+        sendToServer(command);
     }
     
     public void handleShowNumOfPurchases(String username) throws IOException

@@ -35,7 +35,7 @@ public class searchMapController {
 
     @FXML
     void searchMap(ActionEvent event) throws IOException {
-        Main.getInstance().searchMap(attraction.getText(), cityName.getText(), description.getText());
+        Main.getInstance().goToSearchMapResult(attraction.getText(), cityName.getText(), description.getText());
     }
 
     

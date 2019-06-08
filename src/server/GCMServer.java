@@ -8,6 +8,7 @@ import commands.Command;
 import commands.CommandType;
 import commands.RegisterCommand;
 import commands.SigninCommand;
+import commands.SearchMapCommand;
 import ocsf.server.AbstractServer;
 import ocsf.server.ConnectionToClient;
 
@@ -42,6 +43,8 @@ public class GCMServer extends AbstractServer
             case SigninCommand:
                 handleSigninCommand(command, client);
                 break;
+            case SearchMapCommand:
+            	handleSearchMapCommand(command, client);
         default:
             break;
         }
@@ -63,9 +66,12 @@ public class GCMServer extends AbstractServer
         try {
         	//trying to handle error input
         	
-        	/*if(db.usernameExist(username))
-				try {
-					Main.getInstance().error("username exists!");
+        	if(db.usernameExist(username))
+				
+        		try {
+					registerCommand.setError("username exists!");
+					System.out.println(command.getCommand(RegisterCommand.class).getError());
+					client.sendToClient(command);
 					return;
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
@@ -78,7 +84,7 @@ public class GCMServer extends AbstractServer
     			} catch (IOException e1) {
     				// TODO Auto-generated catch block
     				e1.printStackTrace();
-    			}*/
+    			}
 			db.registerNewCustomer(firstname, lastname, username, password, email, phone);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -86,12 +92,12 @@ public class GCMServer extends AbstractServer
 		}
         
         //back to the previous view
-        try {
-			Main.getInstance().continueAsAnonymous();
+        /*try {
+			Main.getInstance().goToLogin();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
     }
 
     private void handleSigninCommand(Command command, ConnectionToClient client) {
@@ -101,15 +107,47 @@ public class GCMServer extends AbstractServer
         String password = signinCommand.getPassword();
         client.setInfo("username", username);
         try {
-            if (db.authenticate(username, password))
-                System.out.println("Logged in successfully!");
+            if (db.authenticate(username, password, signinCommand))
+                {
+            	System.out.println("Logged successfully!");
+            	try {
+					client.sendToClient(command);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+                }
             else
                 System.out.println("Logging in failed.");
+            	
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
+    
+    private void handleSearchMapCommand(Command command, ConnectionToClient client) 
+    {
+    	System.out.println("SearchMapCommand");
+        SearchMapCommand searchMapCommand = command.getCommand(SearchMapCommand.class);
+        String attraction = searchMapCommand.getAttraction();
+        String cityName = searchMapCommand.getcityName();
+        String description = searchMapCommand.getDescription();
+        
+        //client.setInfo("username", username);
+        
+       try {
+		if (db.searchMap(attraction, cityName, description)) {
+		    	System.out.println("Map found!");
+		    }
+		else
+		    System.out.println("There is no maps with these inputs");
+	} catch (SQLException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+
+    }
     protected void serverStarted()
     {
       System.out.println("Server listening for connections on port " + getPort());

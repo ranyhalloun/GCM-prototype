@@ -4,7 +4,8 @@ public enum CommandType
 {
     ConnectionCommand(1),
     RegisterCommand(2),
-    SigninCommand(3);
+    SigninCommand(3),
+	SearchMapCommand(4);
     
     private int CommandTypeValue;
 
