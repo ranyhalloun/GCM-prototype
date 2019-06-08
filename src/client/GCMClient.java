@@ -11,6 +11,7 @@ import commands.ConnectionCommand;
 import commands.RegisterCommand;
 import commands.SigninCommand;
 import commands.SearchMapCommand;
+import commands.InsertMapCommand;
 
 // **This class overrides some of the methods defined in the abstract
 // **superclass in order to give more functionality to the client.
@@ -33,6 +34,13 @@ public class GCMClient extends AbstractClient {
         System.out.println("handleSignin");
         Command command = new Command(new SigninCommand(username, password), CommandType.SigninCommand);
         sendToServer(command);
+    }
+    
+    public void handleInsertNewMap(int id, String cityName, String description, String imagePath) throws IOException
+    {
+    	System.out.println("handleInsertNewMap");
+    	Command command = new Command(new InsertMapCommand(id, cityName, description, imagePath), CommandType.InsertMapCommand);;
+    	sendToServer(command);
     }
     
     public void handleAnonymousConnection()

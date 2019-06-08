@@ -56,6 +56,7 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) throws IOException
 	{
+		
         System.out.printf("client: %s%n", Thread.currentThread().getName());
 	    this.primaryStage = primaryStage;
 	    showConnectionView();
@@ -156,6 +157,10 @@ public class Main extends Application {
     	tableViewParent = loader.load();
         AnchorPane mapImage = loader.load();
         mainLayout.getChildren().setAll(tableViewParent);*/
+    }
+    
+    public void insertNewMap(int id, String cityName, String description, String imagePath) throws IOException {
+	    gcmClient.handleInsertNewMap(id, cityName, description, imagePath);
     }
 	public void connect(String ip, int port) throws IOException
 	{

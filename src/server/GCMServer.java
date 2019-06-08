@@ -45,6 +45,8 @@ public class GCMServer extends AbstractServer
                 break;
             case SearchMapCommand:
             	handleSearchMapCommand(command, client);
+            /*case InsertMapCommand:
+            	handleInsertNewMapCommand(command, client);*/
         default:
             break;
         }
@@ -146,6 +148,8 @@ public class GCMServer extends AbstractServer
 		// TODO Auto-generated catch block
 		e.printStackTrace();
 	}
+       
+      
 
     }
     protected void serverStarted()

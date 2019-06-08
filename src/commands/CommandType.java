@@ -5,7 +5,8 @@ public enum CommandType
     ConnectionCommand(1),
     RegisterCommand(2),
     SigninCommand(3),
-	SearchMapCommand(4);
+	SearchMapCommand(4),
+	InsertMapCommand(5);
     
     private int CommandTypeValue;
 

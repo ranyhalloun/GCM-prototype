@@ -39,6 +39,21 @@ public class Database {
         }
     }
     
+    //check if input error!!
+    public void insertNewMap(String cityName, int id, String description, String imagePath) throws SQLException {
+    	if(!cityExist(cityName))
+    		insertNewCity(cityName, 1);
+    	String sql = "INSERT INTO Maps (cityName, id, description, imagePath) VALUES ('"
+    	    	+ cityName + "', " + "'" + id + "', " + "'" + description + "', " + "'" + imagePath + "')";
+    	stmt.executeUpdate(sql);
+    }
+    
+    public void insertNewCity(String name, int version) throws SQLException {
+    	String sql = "INSERT INTO Cities (name, version) VALUES ('"
+    	    	+ name + "', " + "'" + version + "')";
+    	stmt.executeUpdate(sql);
+    }
+    
     // Should we have return value?
     // What to do incase of error?
     public void registerNewCustomer(String firstname, String lastname, String username, String password, String email, String phone) throws SQLException
@@ -50,10 +65,6 @@ public class Database {
     	sql = "INSERT INTO Customers (customerUsername) VALUES ('"
     	+ username + "')";
     	stmt.executeUpdate(sql);
-    	
-        /*String sql = "INSERT INTO users (firstname, lastname, username, password) VALUES ('" + firstname + "', "
-                + "'" + lastname + "', '" + username + "', '" + password + "')";
-        stmt.executeUpdate(sql);*/
     }
     
     public boolean authenticate(String username, String password, SigninCommand signinCommand) throws SQLException
@@ -70,6 +81,13 @@ public class Database {
     public boolean usernameExist(String username) throws SQLException{
         
         String sql = "SELECT username FROM Users WHERE username = '" + username + "'";
+        ResultSet rs = stmt.executeQuery(sql);
+            
+        return rs.next();
+    }
+    
+    public boolean cityExist(String cityName) throws SQLException {
+    	String sql = "SELECT name FROM Cities WHERE name = '" + cityName + "'";
         ResultSet rs = stmt.executeQuery(sql);
             
         return rs.next();
@@ -173,6 +191,8 @@ public class Database {
     	
         return success;
     }
+   
+   
     
 //    public int getNumOfPurchases(String username) throws SQLException
 //    {
