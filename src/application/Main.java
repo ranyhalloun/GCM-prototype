@@ -2,10 +2,14 @@ package application;
 
 import java.io.IOException;
 
+import Users.UserType;
 import application.connection.connectionController;
+import application.gcmWorker.gcmWorkerController;
+import application.insertMap.insertMapController;
 import application.login.loginController;
 import application.login.registrationController;
 import application.searchmap.searchMapController;
+import application.searchmap.searchMapResultController;
 import client.GCMClient;
 import javafx.application.Application;
 import javafx.event.EventHandler;
@@ -23,6 +27,7 @@ public class Main extends Application {
     private Stage primaryStage;
     private static AnchorPane mainLayout;
     private static GCMClient gcmClient;
+    private static UserType userType;
     
     final public static int DEFAULT_PORT = 458;
 
@@ -51,7 +56,7 @@ public class Main extends Application {
         loader.setController(new connectionController());
 	    mainLayout = loader.load();
 	    Scene scene = new Scene(mainLayout);
-	    
+
 	    // Setting the stage
 	    primaryStage.setScene(scene);
         primaryStage.setTitle("GCM Application");
@@ -68,13 +73,13 @@ public class Main extends Application {
 	{
 	    gcmClient.handleSearchMap(attraction, cityName, description);
         FXMLLoader loader = new FXMLLoader(getClass().getResource("searchmap/searchMapResultView.fxml"));
-        loader.setController(new loginController());
-        AnchorPane loginView = loader.load();
-        mainLayout.getChildren().setAll(loginView);
+        loader.setController(new searchMapResultController());
+        AnchorPane searchMapResultView = loader.load();
+        mainLayout.getChildren().setAll(searchMapResultView);
 	}
 
 	public void registerNewUser(String firstname, String lastname, String username, String password, String email, String phone) throws IOException, InterruptedException
-	{	
+	{
 	    gcmClient.handleRegistration(firstname, lastname, username, password, email, phone);
 	}
 
@@ -88,6 +93,14 @@ public class Main extends Application {
 
     public void signIn(String username, String password) throws IOException {
         gcmClient.handleSignIn(username, password);
+    }
+    
+    public void goToGCMWorkerServices() throws IOException
+    {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("gcmWorker/gcmWorkerView.fxml"));
+        loader.setController(new gcmWorkerController());
+        AnchorPane gcmWorkerView = loader.load();
+        mainLayout.getChildren().setAll(gcmWorkerView);
     }
 
     public void goToSearchMap() throws IOException
@@ -104,11 +117,24 @@ public class Main extends Application {
 	    AnchorPane loginView = loader.load();
         mainLayout.getChildren().setAll(loginView);
     }
+    
+    public void insertNewMap(int id, String cityName, String description, String imagePath) throws IOException {
+        gcmClient.handleInsertNewMap(id, cityName, description, imagePath);
+    }
+    
+    public void goToInsertNewMap() throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("insertMap/insertMap.fxml"));
+        loader.setController(new insertMapController());
+        AnchorPane insertMapView = loader.load();
+        mainLayout.getChildren().setAll(insertMapView);
+    }
+    
+    public void updateUserType(UserType userType) {
+        Main.userType = userType;
+    }
 
     public void error(String message) throws IOException {
-        
     	System.out.println(message);
-    	
     }
 
 	public void connect(String ip, int port) throws IOException

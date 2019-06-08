@@ -3,6 +3,7 @@ package server;
 import java.io.IOException;
 import java.sql.SQLException;
 
+import Users.UserType;
 import commands.Command;
 import commands.CommandType;
 import commands.RegisterCommand;
@@ -40,7 +41,6 @@ public class GCMServer extends AbstractServer
                 try {
                     client.sendToClient(command);
                 } catch (IOException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
                 break;
@@ -89,9 +89,11 @@ public class GCMServer extends AbstractServer
         // authenticate
         try {
             if (db.authenticate(username, password)) {
-                client.setInfo("username", username);
-                System.out.println("Logged in successfully!");
                 signinCommand.setSuccess(true);
+                signinCommand.setRole(UserType.valueOf(db.getRole(username)));
+                System.out.println("Logged in successfully!\nRole: " + db.getRole(username));
+                client.setInfo("username", username);
+                client.setInfo("role", db.getRole(username));
             } else {
                 System.out.println("Logging in failed.");
                 signinCommand.setSuccess(false);

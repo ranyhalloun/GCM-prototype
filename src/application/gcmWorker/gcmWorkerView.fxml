@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="300.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2">
+  <!-- TODO Add Nodes -->
+  <children>
+    <Text layoutX="104.0" layoutY="72.0" scaleX="2.251344625915683" scaleY="1.6466797285746746" strokeType="OUTSIDE" strokeWidth="0.0" text="GCM Worker">
+      <font>
+        <Font size="16.0" fx:id="x1" />
+      </font>
+    </Text>
+    <VBox layoutX="59.0" layoutY="139.0" prefHeight="214.0" prefWidth="190.0">
+      <children>
+        <Button fx:id="searchMapBtn" font="$x1" mnemonicParsing="false" onAction="#goToSearchMap" prefWidth="166.0" text="Search Map">
+          <VBox.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" fx:id="x2" />
+          </VBox.margin>
+        </Button>
+        <Button fx:id="insertMapBtn" font="$x1" mnemonicParsing="false" onAction="#goToInsertMap" prefWidth="166.0" text="Insert Map" VBox.margin="$x2" />
+        <Button fx:id="requestApprovalBtn" font="$x1" mnemonicParsing="false" onAction="#requestApproval" prefWidth="166.0" text="Request Approval" VBox.margin="$x2" />
+      </children>
+    </VBox>
+    <Button id="logout" fx:id="logoutBtn" font="$x1" layoutX="27.0" layoutY="338.0" mnemonicParsing="false" onAction="#logout" text="Logout" />
+  </children>
+</AnchorPane>

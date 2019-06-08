@@ -2,6 +2,8 @@ package commands;
 
 import java.io.Serializable;
 
+import Users.UserType;
+
 public class SigninCommand implements Serializable {
     
     // Input
@@ -10,6 +12,8 @@ public class SigninCommand implements Serializable {
     
     // Output
     private boolean success;
+    private UserType role;
+    
     
     // Constructor
     public SigninCommand(String username, String password) {
@@ -23,6 +27,10 @@ public class SigninCommand implements Serializable {
         this.success = success;
     }
     
+    public void setRole(UserType role) {
+        this.role = role;
+    }
+    
     // Getters
     public String getUsername() {
         return this.username;
@@ -34,5 +42,9 @@ public class SigninCommand implements Serializable {
     
     public boolean getSuccess() {
         return this.success;
+    }
+    
+    public UserType getRole() {
+        return this.role;
     }
 }

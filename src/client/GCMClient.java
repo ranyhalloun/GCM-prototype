@@ -5,11 +5,14 @@ import ocsf.client.*;
 import java.io.*;
 import java.util.concurrent.TimeUnit;
 
+import Users.UserType;
 import application.Main;
 import commands.Command;
 import commands.CommandType;
 import commands.ConnectionCommand;
+import commands.InsertMapCommand;
 import commands.RegisterCommand;
+import commands.SearchMapCommand;
 import commands.SigninCommand;
 import application.login.registrationController;
 
@@ -20,6 +23,7 @@ public class GCMClient extends AbstractClient {
     private Command command;
     private CommandType type;
     private boolean commandRequest;
+    private UserType userType;
 
     public GCMClient(String host, int port) {
         super(host, port);
@@ -67,8 +71,26 @@ public class GCMClient extends AbstractClient {
         System.out.println("handleSigninCommandFromServer");
         boolean success = command.getCommand(SigninCommand.class).getSuccess();
         if (success) {
+            userType = command.getCommand(SigninCommand.class).getRole();
+            Main.getInstance().updateUserType(userType);
             System.out.println("You have successfully signed in!");
-            Main.getInstance().goToSearchMap();
+            System.out.println("Role: " + userType);
+            switch(userType) {
+                case Anonymous:
+                case Customer:
+                case Worker:
+                    Main.getInstance().goToSearchMap();
+                    break;
+                case GCMWorker:
+                    Main.getInstance().goToGCMWorkerServices();
+                    break;
+                case GCMManager:
+                    // GCMManager Windows
+                    break;
+                case CompanyManager:
+                    // CompanyManager Windows
+                    break;
+            }
         } else {
             System.out.println("Sign in failed.");
         }
@@ -89,10 +111,19 @@ public class GCMClient extends AbstractClient {
         commandRequest = false;
     }
 
-    public void handleSearchMap(String attraction, String cityName, String description)
+    public void handleSearchMap(String attraction, String cityName, String description) throws IOException
     {
         // Implement here
         System.out.printf("Searching map: attraction: %s, cityName: %s, description: %s%n", attraction, cityName, description);
+        Command command = new Command(new SearchMapCommand(attraction, cityName, description), CommandType.SearchMapCommand);
+        sendToServer(command);
+    }
+    
+    public void handleInsertNewMap(int id, String cityName, String description, String imagePath) throws IOException
+    {
+        System.out.println("handleInsertNewMap");
+        Command command = new Command(new InsertMapCommand(id, cityName, description, imagePath), CommandType.InsertMapCommand);;
+        sendToServer(command);
     }
 
     public void handleShowNumOfPurchases(String username) throws IOException
