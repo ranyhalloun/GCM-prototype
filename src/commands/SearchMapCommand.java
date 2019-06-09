@@ -9,7 +9,7 @@ public class SearchMapCommand implements Serializable {
     private String description;
 
     // Output
-    private boolean success;
+    private int success;
     private String error = "";
 
     // Constructor
@@ -17,11 +17,11 @@ public class SearchMapCommand implements Serializable {
         this.attraction = attraction;
         this.cityName = cityName;
         this.description = description;
-        this.success = false;
+        this.success = -1;
     }
 
     // Setters
-    public void setSuccess(boolean success) {
+    public void setSuccess(int success) {
         this.success = success;
     }
 
@@ -42,7 +42,7 @@ public class SearchMapCommand implements Serializable {
         return this.description;
     }
 
-    public boolean getSuccess() {
+    public int getSuccess() {
         return this.success;
     }
 

@@ -9,6 +9,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import Users.UserType;
 
 public class searchMapController {
 
@@ -42,7 +43,25 @@ public class searchMapController {
     @FXML
     void back(ActionEvent event) throws IOException {
     	System.out.println("Back to login view");
-        Main.getInstance().goToLogin();
+    	switch(Main.getInstance().getUserType()) {
+    		case Anonymous:
+    		case Worker:
+    			Main.getInstance().goToLogin();
+    			break;
+    		case Customer:
+    			Main.getInstance().goToCostumerServices();
+    			break;
+    		case GCMWorker:
+    			Main.getInstance().goToGCMWorkerServices();
+    			break;
+            case GCMManager:
+                // GCMManager Windows
+                break;
+            case CompanyManager:
+                // CompanyManager Windows
+                break;
+            	
+    	}
     }
     
     @FXML

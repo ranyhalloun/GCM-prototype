@@ -4,6 +4,9 @@ import java.io.IOException;
 
 import Users.UserType;
 import application.connection.connectionController;
+import application.customer.Customer;
+import application.customer.customerProfileController;
+import application.customer.customerServicesController;
 import application.gcmWorker.gcmWorkerController;
 import application.insertMap.insertMapController;
 import application.login.loginController;
@@ -14,6 +17,7 @@ import client.GCMClient;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
@@ -82,6 +86,11 @@ public class Main extends Application {
 	{
 	    gcmClient.handleRegistration(firstname, lastname, username, password, email, phone);
 	}
+	
+	public void editCustomerInfo(Customer customer, boolean newUsername) throws IOException
+	{
+		gcmClient.handleEditingCustomerInfo(customer, newUsername);
+	}
 
     public void goToRegistration() throws IOException
     {
@@ -93,6 +102,15 @@ public class Main extends Application {
 
     public void signIn(String username, String password) throws IOException {
         gcmClient.handleSignIn(username, password);
+    }
+    
+    
+    public void goToCostumerServices() throws IOException{
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("customer/customerServicesView.fxml"));
+        loader.setController(new customerServicesController());
+        AnchorPane customerServicesView = loader.load();
+        mainLayout.getChildren().setAll(customerServicesView);
+
     }
     
     public void goToGCMWorkerServices() throws IOException
@@ -129,14 +147,29 @@ public class Main extends Application {
         mainLayout.getChildren().setAll(insertMapView);
     }
     
+    public void goToCustomerProfile() throws IOException{
+    	Customer customer = new Customer();
+    	gcmClient.handleGetCustomerInfo(customer);
+    	FXMLLoader loader = new FXMLLoader(getClass().getResource("customer/customerProfileView.fxml"));
+        loader.setController(new customerProfileController());
+        Parent root = (Parent)loader.load();
+        
+        customerProfileController controller = loader.getController();
+        controller.getCustomer(customer);
+        mainLayout.getChildren().setAll(root);
+    }
+    
     public void updateUserType(UserType userType) {
         Main.userType = userType;
     }
-
+    
+    public UserType getUserType() {
+    	return userType;
+    }
     public void error(String message) throws IOException {
     	System.out.println(message);
     }
-
+    
 	public void connect(String ip, int port) throws IOException
 	{
         gcmClient = new GCMClient("127.0.0.1", DEFAULT_PORT);
@@ -158,7 +191,7 @@ public class Main extends Application {
         }
         System.out.println("Exiting...");
     }
-
+    
 	public static void main(String[] args)
 	{
 		launch(args);

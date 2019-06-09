@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import application.customer.Customer;
+
 
 public class Database {
     
@@ -49,12 +51,14 @@ public class Database {
     }
     
     //check if input error!!
-    public void insertNewMap(String cityName, int id, String description, String imagePath) throws SQLException {
-        if(!cityExist(cityName))
+    public boolean insertNewMap(int id, String cityName, String description, String imagePath) throws SQLException {
+    	if(!cityExist(cityName))
             insertNewCity(cityName, 1);
         String sql = "INSERT INTO Maps (cityName, id, description, imagePath) VALUES ('"
                 + cityName + "', " + "'" + id + "', " + "'" + description + "', " + "'" + imagePath + "')";
         stmt.executeUpdate(sql);
+        
+        return true;
     }
 
     public void insertNewCity(String name, int version) throws SQLException {
@@ -195,6 +199,23 @@ public class Database {
         }
 
         return success;
+    }
+    
+    public Customer getCustomerInfo(Object object) throws SQLException {
+        String sql = "SELECT username, password, firstName, lastName, emailAddress, PhoneNumber FROM Users WHERE username = '" + object + "'";
+        ResultSet rs = stmt.executeQuery(sql);
+        rs.next();
+        return new Customer(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6));
+    }
+    
+    public boolean editCustomerInfo(Customer customer, boolean newUsername) throws SQLException {
+    	if(newUsername&usernameExist(customer.getUsername())) {
+    		return false;
+    	}
+    	String sql = "UPDATE Users SET username = '" + customer.getUsername() + "', password = '" + customer.getPassword() + "', firstName = '" + customer.getFirstName() +
+    				"', lastName = '" + customer.getLastName() + "', emailAddress = '" + customer.getEmail() + "', phoneNumber = '" + customer.getPhone() + "' WHERE username = '" + customer.getUsername() + "'";
+    	stmt.executeUpdate(sql);
+    	return true;
     }
     
     

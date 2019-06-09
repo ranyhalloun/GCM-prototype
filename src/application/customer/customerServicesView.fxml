@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<AnchorPane prefHeight="400.0" prefWidth="300.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8">
+   <children>
+      <Button fx:id="logOutBtn" layoutX="14.0" layoutY="345.0" mnemonicParsing="false" onAction="#logOut" text="Log out" />
+      <Label layoutX="82.0" layoutY="62.0" prefHeight="21.0" prefWidth="137.0" text="Customer Services">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </Label>
+      <Button fx:id="searchMapBtn" layoutX="112.0" layoutY="175.0" mnemonicParsing="false" onAction="#searchMap" text="SearchMap" />
+      <Button fx:id="myProfileBtn" layoutX="17.0" layoutY="20.0" mnemonicParsing="false" onAction="#myProfile" text="My Profile" />
+   </children>
+</AnchorPane>
