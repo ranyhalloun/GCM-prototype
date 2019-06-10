@@ -2,13 +2,23 @@ package server;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
+import Entities.SearchMapResult;
 import Users.UserType;
+import application.customer.Customer;
 import commands.Command;
 import commands.CommandType;
+import commands.EditCustomerInfoCommand;
+import commands.GetCitiesQueueCommand;
+import commands.GetCustomerInfoCommand;
 import commands.RegisterCommand;
+import commands.RequestApprovalCommand;
 import commands.SigninCommand;
+import commands.SearchMapCommand;
+import commands.InsertMapCommand;
 import database.Database;
+import javafx.collections.ObservableList;
 import ocsf.server.AbstractServer;
 import ocsf.server.ConnectionToClient;
 
@@ -46,6 +56,61 @@ public class GCMServer extends AbstractServer
                 break;
             case SigninCommand:
                 handleSigninCommand(command, client);
+                try {
+                    client.sendToClient(command);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case SearchMapCommand:
+                System.out.println(client.getInfo("username"));
+            	handleSearchMapCommand(command, client);
+            	try {
+                    client.sendToClient(command);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            	break;
+            case InsertMapCommand:
+            	handleInsertMapCommand(command, client);
+            	try {
+                    client.sendToClient(command);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            	break;
+            case GetCustomerInfoCommand:
+            	handleGetCustomerInfoCommand(command, client);
+            	try {
+                    client.sendToClient(command);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            	break;
+            case EditCustomerInfoCommand:
+            	handleEditCustomerInfoCommand(command, client);
+            	try {
+                    client.sendToClient(command);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            	break;
+            case RequestApprovalCommand:
+                handleRequestApprovalCommand(command, client);
+                try {
+                    client.sendToClient(command);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
+
+            case GetCitiesQueueCommand:
+                handleGetCitiesQueueCommand(command, client);
+                try {
+                    client.sendToClient(command);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 break;
         default:
             break;
@@ -89,14 +154,14 @@ public class GCMServer extends AbstractServer
         // authenticate
         try {
             if (db.authenticate(username, password)) {
-                signinCommand.setSuccess(true);
+                signinCommand.setSuccess(1);
                 signinCommand.setRole(UserType.valueOf(db.getRole(username)));
-                System.out.println("Logged in successfully!\nRole: " + db.getRole(username));
+                //System.out.println("Logged in successfully!\nRole: " + db.getRole(username));
                 client.setInfo("username", username);
                 client.setInfo("role", db.getRole(username));
             } else {
-                System.out.println("Logging in failed.");
-                signinCommand.setSuccess(false);
+                //System.out.println("Logging in failed.");
+                signinCommand.setSuccess(0);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -108,6 +173,118 @@ public class GCMServer extends AbstractServer
             e.printStackTrace();
         }
     }
+    
+    private void handleSearchMapCommand(Command command, ConnectionToClient client) 
+    {
+    	System.out.println("SearchMapCommand");
+        SearchMapCommand searchMapCommand = command.getCommand(SearchMapCommand.class);
+        String attraction = searchMapCommand.getAttraction();
+        String cityName = searchMapCommand.getcityName();
+        String description = searchMapCommand.getDescription();
+        
+       try {
+           SearchMapResult result = db.searchMap(attraction, cityName, description);
+           searchMapCommand.setSearchMapResult(result);
+           searchMapCommand.setSuccess(true);
+       } catch (SQLException e) {
+           searchMapCommand.setSuccess(false);
+           e.printStackTrace();
+       }
+       // sendToClient
+       try {
+           client.sendToClient(command);
+       } catch (IOException e) {
+           e.printStackTrace();
+       }
+    }
+    
+    private void handleInsertMapCommand(Command command, ConnectionToClient client)
+    {
+    	System.out.println("InsertNewMapCommand");
+        InsertMapCommand insertMapCommand = command.getCommand(InsertMapCommand.class);
+        int mapID = insertMapCommand.getID();
+        String cityName = insertMapCommand.getCityName();
+        String description = insertMapCommand.getDescription();
+        String imagePath = insertMapCommand.getImagePath();
+        
+        try {
+    		if(db.insertNewMap(mapID, cityName, description, imagePath))
+    		//System.out.println("Map inserted");
+    			insertMapCommand.setSuccess(1);  
+    		else
+    			insertMapCommand.setSuccess(0);
+           } catch (SQLException e) {
+    			// TODO Auto-generated catch block
+    			e.printStackTrace();
+           }
+    }
+    
+    private void handleGetCustomerInfoCommand(Command command, ConnectionToClient client)
+    {
+    	System.out.println("GetCustomerInfoCommand");
+        GetCustomerInfoCommand getCustomerInfoCommand = command.getCommand(GetCustomerInfoCommand.class);
+    	try {
+    		Customer customer = db.getCustomerInfo(client.getInfo("username"));
+    		//System.out.println("Map inserted");
+			getCustomerInfoCommand.setSuccess(true);
+			getCustomerInfoCommand.setUsername(customer.getUsername());
+			getCustomerInfoCommand.setPassword(customer.getPassword());
+			getCustomerInfoCommand.setFirstName(customer.getFirstName());
+			getCustomerInfoCommand.setLastName(customer.getLastName());
+			getCustomerInfoCommand.setEmail(customer.getEmail());
+			getCustomerInfoCommand.setPhone(customer.getPhone());
+			
+           } catch (SQLException e) {
+    			// TODO Auto-generated catch block
+    			e.printStackTrace();
+           }
+    }
+    
+    private void handleEditCustomerInfoCommand(Command command, ConnectionToClient client)
+    {
+    	System.out.println("EditCustomerInfoCommand");
+        EditCustomerInfoCommand editCustomerInfoCommand = command.getCommand(EditCustomerInfoCommand.class);
+        Customer customer = editCustomerInfoCommand.getCustomer();
+        String oldUsername = editCustomerInfoCommand.getNewUsername();
+        try {
+            if(db.editCustomerInfo(customer, oldUsername)) {
+                editCustomerInfoCommand.setSuccess(true);
+                client.setInfo("username", customer.getUsername());
+            }
+			else
+				editCustomerInfoCommand.setSuccess(false);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+    }
+    
+    private void handleGetCitiesQueueCommand(Command command, ConnectionToClient client) {
+        System.out.println("GetCitiesQueueCommand");
+        GetCitiesQueueCommand getCitiesQueueCommand = command.getCommand(GetCitiesQueueCommand.class);
+        try {
+            getCitiesQueueCommand.setSuccess(true);
+            getCitiesQueueCommand.setCities(db.getCitiesQueue());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void handleRequestApprovalCommand(Command command, ConnectionToClient client)
+    {
+        System.out.println("RequestApprovalCommand");
+        RequestApprovalCommand requestApprovalCommand = command.getCommand(RequestApprovalCommand.class);
+        String cityName = requestApprovalCommand.getCityName();
+        try {
+            if(db.requestApproval(cityName)) {
+                requestApprovalCommand.setSuccess(true);
+            }
+            else
+                requestApprovalCommand.setSuccess(false);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     protected void serverStarted()
     {

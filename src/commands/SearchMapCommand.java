@@ -1,5 +1,9 @@
 package commands;
 import java.io.Serializable;
+import java.util.ArrayList;
+
+import Entities.Map;
+import Entities.SearchMapResult;
 
 public class SearchMapCommand implements Serializable {
 
@@ -10,7 +14,7 @@ public class SearchMapCommand implements Serializable {
 
     // Output
     private boolean success;
-    private String error = "";
+    private SearchMapResult searchMapResult;
 
     // Constructor
     public SearchMapCommand(String attraction, String cityName, String description) {
@@ -18,6 +22,7 @@ public class SearchMapCommand implements Serializable {
         this.cityName = cityName;
         this.description = description;
         this.success = false;
+        this.searchMapResult = new SearchMapResult();
     }
 
     // Setters
@@ -25,8 +30,8 @@ public class SearchMapCommand implements Serializable {
         this.success = success;
     }
 
-    public void setError(String error) {
-        this.error = error;
+    public void setSearchMapResult(SearchMapResult searchMapResult) {
+        this.searchMapResult = searchMapResult;
     }
 
     // Getters
@@ -46,8 +51,7 @@ public class SearchMapCommand implements Serializable {
         return this.success;
     }
 
-    public String getError() {
-        return this.error;
+    public SearchMapResult getSearchMapResult() {
+        return searchMapResult;
     }
-
 }

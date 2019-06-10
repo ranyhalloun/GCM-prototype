@@ -9,7 +9,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-
+import Users.UserType;
 
 public class loginController {
 
@@ -38,6 +38,7 @@ public class loginController {
     @FXML
     void goToSearchMap(ActionEvent event) throws IOException {
         System.out.println("Continuing as anonymous...");
+        Main.getInstance().updateUserType(UserType.Anonymous);
         Main.getInstance().goToSearchMap();
     }
 

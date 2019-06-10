@@ -6,7 +6,11 @@ public enum CommandType
     RegisterCommand(2),
     SigninCommand(3),
     SearchMapCommand(4),
-    InsertMapCommand(5);
+    InsertMapCommand(5),
+    GetCustomerInfoCommand(6),
+    EditCustomerInfoCommand(7),
+    RequestApprovalCommand(8),
+    GetCitiesQueueCommand(9);
     
     private int CommandTypeValue;
 

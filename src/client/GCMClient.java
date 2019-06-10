@@ -4,16 +4,25 @@ import ocsf.client.*;
 
 import java.io.*;
 import java.util.concurrent.TimeUnit;
+import java.util.ArrayList;
 
 import Users.UserType;
 import application.Main;
+import application.arrayOfStrings;
+import application.boolObject;
+import application.customer.Customer;
 import commands.Command;
 import commands.CommandType;
 import commands.ConnectionCommand;
+import commands.EditCustomerInfoCommand;
+import commands.GetCitiesQueueCommand;
+import commands.GetCustomerInfoCommand;
 import commands.InsertMapCommand;
 import commands.RegisterCommand;
+import commands.RequestApprovalCommand;
 import commands.SearchMapCommand;
 import commands.SigninCommand;
+import javafx.collections.ObservableList;
 import application.login.registrationController;
 
 // **This class overrides some of the methods defined in the abstract
@@ -69,33 +78,171 @@ public class GCMClient extends AbstractClient {
 
     private void handleSigninCommandFromServer() throws IOException {
         System.out.println("handleSigninCommandFromServer");
-        boolean success = command.getCommand(SigninCommand.class).getSuccess();
-        if (success) {
-            userType = command.getCommand(SigninCommand.class).getRole();
+        int success = command.getCommand(SigninCommand.class).getSuccess();
+        switch (success) {
+        case -1:
+            System.out.println("There is a problem in the database connection");
+            break;
+        case 1:
+        	userType = command.getCommand(SigninCommand.class).getRole();
             Main.getInstance().updateUserType(userType);
             System.out.println("You have successfully signed in!");
             System.out.println("Role: " + userType);
             switch(userType) {
                 case Anonymous:
-                case Customer:
                 case Worker:
                     Main.getInstance().goToSearchMap();
                     break;
+                case Customer:
+                	Main.getInstance().goToCostumerServices();
+                	break;
                 case GCMWorker:
                     Main.getInstance().goToGCMWorkerServices();
                     break;
                 case GCMManager:
-                    // GCMManager Windows
+                    Main.getInstance().goToGCMManagerServices();
                     break;
                 case CompanyManager:
                     // CompanyManager Windows
                     break;
             }
-        } else {
+            break;
+        case 0:
             System.out.println("Sign in failed.");
+            break;
         }
     }
 
+    public void handleSearchMap(String attraction, String cityName, String description) throws IOException
+    {
+    	commandRequest = true;
+        System.out.println("handleSearchMap");
+    	System.out.printf("Searching map: attraction: %s, cityName: %s, description: %s%n", attraction, cityName, description);
+        Command command = new Command(new SearchMapCommand(attraction, cityName, description), CommandType.SearchMapCommand);
+        sendToServer(command);
+        waitForServerResponse();
+        handleSearchMapFromServer();
+    }
+    
+    public void handleSearchMapFromServer() throws IOException {
+    	System.out.println("handleSearchMapFromServer");
+        boolean success = command.getCommand(SearchMapCommand.class).getSuccess();
+        if (!success) {
+            System.out.println("Error occured.");
+            return;
+        }
+        Main.getInstance().cityInfo(command.getCommand(SearchMapCommand.class).getSearchMapResult());
+    }
+    
+    public void handleInsertNewMap(int id, String cityName, String description, String imagePath) throws IOException
+    {
+    	commandRequest = true;
+        System.out.println("handleInsertNewMap");
+        Command command = new Command(new InsertMapCommand(id, cityName, description, imagePath), CommandType.InsertMapCommand);;
+        sendToServer(command);
+        waitForServerResponse();
+        handleInsertNewMapFromServer();
+    }
+    
+    public void handleInsertNewMapFromServer() {
+    	System.out.println("handleInsertNewMapFromServer");
+        int success = command.getCommand(InsertMapCommand.class).getSuccess();
+        switch (success) {
+        case -1:
+            System.out.println("There is a problem in the database connection");
+            break;
+        case 0:
+            System.out.println("Map exists. Please choose another map(change mapID).");
+            break;
+        case 1:
+            System.out.println("Map insertion completed!");
+            break;
+        }
+    }
+    public void handleGetCustomerInfo(Customer customer) throws IOException
+    {
+    	
+    	commandRequest = true;
+        System.out.println("handleGetCustomerInfo");
+        Command command = new Command(new GetCustomerInfoCommand(), CommandType.GetCustomerInfoCommand);;
+        sendToServer(command);
+        waitForServerResponse();
+        handleGetCustomerInfoFromServer(customer);
+        System.out.println(customer.getPassword());
+
+    }
+    
+    public void handleGetCustomerInfoFromServer(Customer customer) {
+    	System.out.println("handleGetCustomerInfoFromServer");
+        boolean success = command.getCommand(GetCustomerInfoCommand.class).getSuccess();
+        customer.setUsername(command.getCommand(GetCustomerInfoCommand.class).getUsername());
+        customer.setPassword(command.getCommand(GetCustomerInfoCommand.class).getPassword());
+        customer.setFirstName(command.getCommand(GetCustomerInfoCommand.class).getFirstName());
+        customer.setLastName(command.getCommand(GetCustomerInfoCommand.class).getLastName());
+        customer.setEmail(command.getCommand(GetCustomerInfoCommand.class).getEmail());
+        customer.setPhone(command.getCommand(GetCustomerInfoCommand.class).getPhone());
+        if(success)
+            System.out.println("Customer info got successfully!");
+        else
+            System.out.println("There is a problem in the database connection");
+    }
+    
+    public void handleGetCitiesQueue(arrayOfStrings cities) throws IOException {
+        commandRequest = true;
+        System.out.println("handleGetCitiesQueue");
+        Command command = new Command(new GetCitiesQueueCommand(), CommandType.GetCitiesQueueCommand);
+        sendToServer(command);
+        waitForServerResponse();
+        handleGetCitiesQueueFromServer(cities);
+    }
+    
+    public void handleGetCitiesQueueFromServer(arrayOfStrings cities) {
+        System.out.println("handleGetCitiesQueueFromServer");
+        boolean success = command.getCommand(GetCitiesQueueCommand.class).getSuccess();
+        cities.setArrayList(command.getCommand(GetCitiesQueueCommand.class).getCities());
+        if(success)
+            System.out.println("Cities info got successfully!");
+        else
+            System.out.println("There is a problem in the database connection");
+    }
+    
+    public void handleEditingCustomerInfo(Customer customer, String oldUsername, boolObject exists) throws IOException
+    {
+    	commandRequest = true;
+        System.out.println("handleEditingCusotmerInfo");
+        Command command = new Command(new EditCustomerInfoCommand(customer, oldUsername), CommandType.EditCustomerInfoCommand);
+        sendToServer(command);
+        waitForServerResponse();
+        handleEditingCustomerInfoFromServer(customer, exists);
+    }
+    
+    public void handleEditingCustomerInfoFromServer(Customer customer, boolObject exists) {
+        System.out.println("handleEditingCustomerInfoFromServer");
+        exists.setValue(!command.getCommand(EditCustomerInfoCommand.class).getSuccess());
+        if (!exists.getValue())
+            System.out.println("Customer info updated successfully!");
+        else
+            System.out.println("User name exists!");
+    }
+
+    public void handleRequestApproval(String cityName) throws IOException {
+        commandRequest = true;
+        System.out.println("handleRequestApproval");
+        Command command = new Command(new RequestApprovalCommand(cityName), CommandType.RequestApprovalCommand);
+        sendToServer(command);
+        waitForServerResponse();
+        handleRequestApprovalFromServer(cityName);
+    }
+
+    public void handleRequestApprovalFromServer(String cityName) {
+        System.out.println("handleEditingCustomerInfoFromServer");
+        boolean success = command.getCommand(RequestApprovalCommand.class).getSuccess();
+        if (success)
+            System.out.println("Request have sent successfully!");
+        else
+            System.out.println("CityName doesn't exist! OR already sent");
+    }
+    
     public void handleAnonymousConnection()
     {
         
@@ -109,21 +256,6 @@ public class GCMClient extends AbstractClient {
         type = command.getType();
         System.out.println("Command type: " + type.toString());
         commandRequest = false;
-    }
-
-    public void handleSearchMap(String attraction, String cityName, String description) throws IOException
-    {
-        // Implement here
-        System.out.printf("Searching map: attraction: %s, cityName: %s, description: %s%n", attraction, cityName, description);
-        Command command = new Command(new SearchMapCommand(attraction, cityName, description), CommandType.SearchMapCommand);
-        sendToServer(command);
-    }
-    
-    public void handleInsertNewMap(int id, String cityName, String description, String imagePath) throws IOException
-    {
-        System.out.println("handleInsertNewMap");
-        Command command = new Command(new InsertMapCommand(id, cityName, description, imagePath), CommandType.InsertMapCommand);;
-        sendToServer(command);
     }
 
     public void handleShowNumOfPurchases(String username) throws IOException

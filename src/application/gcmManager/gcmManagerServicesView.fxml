@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<AnchorPane prefHeight="400.0" prefWidth="300.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8">
+   <children>
+      <Label layoutX="61.0" layoutY="53.0" prefHeight="36.0" prefWidth="179.0" text="GCM Manager Services">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Label>
+      <Button fx:id="searchMapBtn" layoutX="104.0" layoutY="129.0" mnemonicParsing="false" onAction="#searchMap" prefHeight="36.0" prefWidth="101.0" text="Search Map" />
+      <Button fx:id="insertMapBtn" layoutX="105.0" layoutY="182.0" mnemonicParsing="false" onAction="#insertMap" prefHeight="36.0" prefWidth="101.0" text="Insert Map" />
+      <Button fx:id="checkRequestsBtn" layoutX="105.0" layoutY="233.0" mnemonicParsing="false" onAction="#checkRequests" prefHeight="36.0" prefWidth="101.0" text="Check Requests" />
+      <Button fx:id="logOutBtn" layoutX="14.0" layoutY="339.0" mnemonicParsing="false" onAction="#logOut" prefHeight="36.0" prefWidth="71.0" text="Log out" />
+   </children>
+</AnchorPane>

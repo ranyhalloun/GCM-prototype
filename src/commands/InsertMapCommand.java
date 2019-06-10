@@ -9,7 +9,7 @@ public class InsertMapCommand implements Serializable {
     private String imagePath;
     
     // Output
-    private boolean success;
+    private int success;
     private String error = "";
     
     // Constructor
@@ -18,11 +18,11 @@ public class InsertMapCommand implements Serializable {
         this.cityName = cityName;
         this.description = description;
         this.imagePath = imagePath;
-        this.success = false;
+        this.success = -1;
     }
     
     // Setters
-    public void setSuccess(boolean success) {
+    public void setSuccess(int success) {
         this.success = success;
     }
     
@@ -47,7 +47,7 @@ public class InsertMapCommand implements Serializable {
         return this.imagePath;
     }
     
-    public boolean getSuccess() {
+    public int getSuccess() {
         return this.success;
     }
     
