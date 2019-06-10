@@ -1,13 +1,18 @@
 package application;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
+import Entities.Map;
 import Users.UserType;
 import application.connection.connectionController;
 import application.customer.Customer;
 import application.customer.customerProfileController;
 import application.customer.customerServicesController;
+import application.gcmManager.gcmManagerServicesController;
+import application.gcmManager.requestListController;
 import application.gcmWorker.gcmWorkerController;
+import application.gcmWorker.requestApprovalController;
 import application.insertMap.insertMapController;
 import application.login.loginController;
 import application.login.registrationController;
@@ -15,6 +20,8 @@ import application.searchmap.searchMapController;
 import application.searchmap.searchMapResultController;
 import client.GCMClient;
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -87,9 +94,14 @@ public class Main extends Application {
 	    gcmClient.handleRegistration(firstname, lastname, username, password, email, phone);
 	}
 	
-	public void editCustomerInfo(Customer customer, boolean newUsername) throws IOException
+	public void editCustomerInfo(Customer customer, String oldUsername, boolObject exists) throws IOException
 	{
-		gcmClient.handleEditingCustomerInfo(customer, newUsername);
+		gcmClient.handleEditingCustomerInfo(customer, oldUsername, exists);
+	}
+	
+	public void requestApproval(String cityName) throws IOException
+	{
+		gcmClient.handleRequestApproval(cityName);
 	}
 
     public void goToRegistration() throws IOException
@@ -119,6 +131,14 @@ public class Main extends Application {
         loader.setController(new gcmWorkerController());
         AnchorPane gcmWorkerView = loader.load();
         mainLayout.getChildren().setAll(gcmWorkerView);
+    }
+    
+    public void goToGCMManagerServices() throws IOException
+    {
+    	FXMLLoader loader = new FXMLLoader(getClass().getResource("gcmManager/gcmManagerServicesView.fxml"));
+        loader.setController(new gcmManagerServicesController());
+        AnchorPane gcmManagerServicesView = loader.load();
+        mainLayout.getChildren().setAll(gcmManagerServicesView);
     }
 
     public void goToSearchMap() throws IOException
@@ -157,6 +177,27 @@ public class Main extends Application {
         customerProfileController controller = loader.getController();
         controller.getCustomer(customer);
         mainLayout.getChildren().setAll(root);
+    }
+    
+    public void goToCheckRequests() throws IOException{
+        //ObservableList<String> cities = FXCollections.observableArrayList();
+    	arrayOfStrings cities = new arrayOfStrings();
+    	gcmClient.handleGetCitiesQueue(cities);
+    	FXMLLoader loader = new FXMLLoader(getClass().getResource("gcmManager/requestListView.fxml"));
+        loader.setController(new requestListController());
+        Parent root = (Parent)loader.load();
+        
+        requestListController controller = loader.getController();
+        controller.getCities(cities.getArrayList());
+        mainLayout.getChildren().setAll(root);
+    	
+    }
+    
+    public void goToRequestApproval() throws IOException{
+    	FXMLLoader loader = new FXMLLoader(getClass().getResource("gcmWorker/requestApprovalView.fxml"));
+        loader.setController(new requestApprovalController());
+        AnchorPane insertMapView = loader.load();
+        mainLayout.getChildren().setAll(insertMapView);
     }
     
     public void updateUserType(UserType userType) {

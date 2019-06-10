@@ -8,7 +8,9 @@ public enum CommandType
     SearchMapCommand(4),
     InsertMapCommand(5),
     GetCustomerInfoCommand(6),
-    EditCustomerInfoCommand(7);
+    EditCustomerInfoCommand(7),
+    RequestApprovalCommand(8),
+    GetCitiesQueueCommand(9);
     
     private int CommandTypeValue;
 

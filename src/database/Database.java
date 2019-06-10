@@ -5,8 +5,10 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 import application.customer.Customer;
+import javafx.collections.ObservableList;
 
 
 public class Database {
@@ -54,7 +56,7 @@ public class Database {
     public boolean insertNewMap(int id, String cityName, String description, String imagePath) throws SQLException {
     	if(!cityExist(cityName))
             insertNewCity(cityName, 1);
-        String sql = "INSERT INTO Maps (cityName, id, description, imagePath) VALUES ('"
+        String sql = "INSERT INTO GCMMaps (cityName, id, description, imagePath) VALUES ('"
                 + cityName + "', " + "'" + id + "', " + "'" + description + "', " + "'" + imagePath + "')";
         stmt.executeUpdate(sql);
         
@@ -62,13 +64,29 @@ public class Database {
     }
 
     public void insertNewCity(String name, int version) throws SQLException {
-        String sql = "INSERT INTO Cities (name, version) VALUES ('"
+        String sql = "INSERT INTO GCMCities (name, version) VALUES ('"
                 + name + "', " + "'" + version + "')";
         stmt.executeUpdate(sql);
     }
     
+    public boolean requestApproval(String cityName) throws SQLException {
+    	if(!cityExist(cityName) || cityWaiting(cityName)) {
+    		return false;
+    	}
+    	String sql = "INSERT INTO CitiesQueue (name) VALUES ('" + cityName + "')";
+        stmt.executeUpdate(sql);
+    	return true;
+    }
+    
     public boolean cityExist(String cityName) throws SQLException {
-        String sql = "SELECT name FROM Cities WHERE name = '" + cityName + "'";
+        String sql = "SELECT name FROM GCMCities WHERE name = '" + cityName + "'";
+        ResultSet rs = stmt.executeQuery(sql);
+
+        return rs.next();
+    }
+    
+    public boolean cityWaiting(String cityName) throws SQLException {
+        String sql = "SELECT name FROM CitiesQueue WHERE name = '" + cityName + "'";
         ResultSet rs = stmt.executeQuery(sql);
 
         return rs.next();
@@ -166,7 +184,7 @@ public class Database {
 
         else if (!cityName.isEmpty() && attraction.isEmpty() && !description.isEmpty()) {
             success = true;
-
+            
             sql = "SELECT description FROM Maps WHERE description LIKE '%" + description + "%' AND cityName = '"
                     + cityName + "'";
             rs = stmt.executeQuery(sql);
@@ -208,15 +226,22 @@ public class Database {
         return new Customer(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6));
     }
     
-    public boolean editCustomerInfo(Customer customer, boolean newUsername) throws SQLException {
-    	if(newUsername&usernameExist(customer.getUsername())) {
+    public ArrayList<String> getCitiesQueue() throws SQLException {
+        ArrayList<String> cities = new ArrayList<String>();
+    	String sql = "SELECT name FROM CitiesQueue";
+        ResultSet rs = stmt.executeQuery(sql);
+        while (rs.next())
+            cities.add(rs.getString(1));
+        return cities;
+    }
+    
+    public boolean editCustomerInfo(Customer customer, String oldUsername) throws SQLException {
+    	if((!(customer.getUsername().equals(oldUsername)))&&usernameExist(customer.getUsername())) {
     		return false;
     	}
     	String sql = "UPDATE Users SET username = '" + customer.getUsername() + "', password = '" + customer.getPassword() + "', firstName = '" + customer.getFirstName() +
-    				"', lastName = '" + customer.getLastName() + "', emailAddress = '" + customer.getEmail() + "', phoneNumber = '" + customer.getPhone() + "' WHERE username = '" + customer.getUsername() + "'";
+    				"', lastName = '" + customer.getLastName() + "', emailAddress = '" + customer.getEmail() + "', phoneNumber = '" + customer.getPhone() + "' WHERE username = '" + oldUsername + "'";
     	stmt.executeUpdate(sql);
     	return true;
     }
-    
-    
 }

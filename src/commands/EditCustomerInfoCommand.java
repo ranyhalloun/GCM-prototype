@@ -1,20 +1,21 @@
 package commands;
 
 import application.customer.Customer;
+import java.io.Serializable;
 
-public class EditCustomerInfoCommand {
+public class EditCustomerInfoCommand implements Serializable{
 	//input
 	private Customer customer;
-	private boolean newUsername;
+	private String oldUsername;
 	
 	//output
-	private int success;
+	private boolean success;
 	
 	
-	public EditCustomerInfoCommand(Customer customer, boolean newUsername) {
+	public EditCustomerInfoCommand(Customer customer, String oldUsername) {
 		this.customer = customer;
-		this.newUsername = newUsername;
-		this.success = -1;
+		this.oldUsername = oldUsername;
+		this.success = false;
 	}
 	
 	//Getters
@@ -22,16 +23,16 @@ public class EditCustomerInfoCommand {
 		return this.customer;
 	}
 	
-	public boolean getNewUsername() {
-		return this.newUsername;
+	public String getNewUsername() {
+		return this.oldUsername;
 	}
 	
-	public int getSuccess() {
+	public boolean getSuccess() {
 		return this.success;
 	}
 	
 	//Setters
-	public void setSuccess(int success) {
+	public void setSuccess(boolean success) {
 		this.success = success;
 	}
 }

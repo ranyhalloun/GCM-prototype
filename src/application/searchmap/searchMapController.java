@@ -55,7 +55,7 @@ public class searchMapController {
     			Main.getInstance().goToGCMWorkerServices();
     			break;
             case GCMManager:
-                // GCMManager Windows
+            	Main.getInstance().goToGCMManagerServices();
                 break;
             case CompanyManager:
                 // CompanyManager Windows

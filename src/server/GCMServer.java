@@ -2,18 +2,22 @@ package server;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import Users.UserType;
 import application.customer.Customer;
 import commands.Command;
 import commands.CommandType;
 import commands.EditCustomerInfoCommand;
+import commands.GetCitiesQueueCommand;
 import commands.GetCustomerInfoCommand;
 import commands.RegisterCommand;
+import commands.RequestApprovalCommand;
 import commands.SigninCommand;
 import commands.SearchMapCommand;
 import commands.InsertMapCommand;
 import database.Database;
+import javafx.collections.ObservableList;
 import ocsf.server.AbstractServer;
 import ocsf.server.ConnectionToClient;
 
@@ -58,6 +62,7 @@ public class GCMServer extends AbstractServer
                 }
                 break;
             case SearchMapCommand:
+            	System.out.println(client.getInfo("username"));
             	handleSearchMapCommand(command, client);
             	try {
                     client.sendToClient(command);
@@ -89,7 +94,24 @@ public class GCMServer extends AbstractServer
                     e.printStackTrace();
                 }
             	break;
-            
+            	
+            case RequestApprovalCommand:
+            	handleRequestApprovalCommand(command, client);
+            	try {
+                    client.sendToClient(command);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            	break;
+            	
+            case GetCitiesQueueCommand:
+            	handleGetCitiesQueueCommand(command, client);
+            	try {
+                    client.sendToClient(command);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            	break;
         default:
             break;
         }
@@ -205,7 +227,7 @@ public class GCMServer extends AbstractServer
     	try {
     		Customer customer = db.getCustomerInfo(client.getInfo("username"));
     		//System.out.println("Map inserted");
-			getCustomerInfoCommand.setSuccess(1);
+			getCustomerInfoCommand.setSuccess(true);
 			getCustomerInfoCommand.setUsername(customer.getUsername());
 			getCustomerInfoCommand.setPassword(customer.getPassword());
 			getCustomerInfoCommand.setFirstName(customer.getFirstName());
@@ -224,19 +246,48 @@ public class GCMServer extends AbstractServer
     	System.out.println("EditCustomerInfoCommand");
         EditCustomerInfoCommand editCustomerInfoCommand = command.getCommand(EditCustomerInfoCommand.class);
         Customer customer = editCustomerInfoCommand.getCustomer();
-        boolean newUsername = editCustomerInfoCommand.getNewUsername();
+        String oldUsername = editCustomerInfoCommand.getNewUsername();
         try {
-			if(db.editCustomerInfo(customer, newUsername)) {
-				editCustomerInfoCommand.setSuccess(1);
+			if(db.editCustomerInfo(customer, oldUsername)) {
+				editCustomerInfoCommand.setSuccess(true);
+				client.setInfo("username", customer.getUsername());
 			}
 			else
-				editCustomerInfoCommand.setSuccess(0);
+				editCustomerInfoCommand.setSuccess(false);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     }
-
+    
+    private void handleGetCitiesQueueCommand(Command command, ConnectionToClient client) {
+    	System.out.println("GetCitiesQueueCommand");
+    	GetCitiesQueueCommand getCitiesQueueCommand = command.getCommand(GetCitiesQueueCommand.class);
+        try {
+			getCitiesQueueCommand.setSuccess(true);
+			getCitiesQueueCommand.setCities(db.getCitiesQueue());
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+    
+    private void handleRequestApprovalCommand(Command command, ConnectionToClient client)
+    {
+    	System.out.println("RequestApprovalCommand");
+        RequestApprovalCommand requestApprovalCommand = command.getCommand(RequestApprovalCommand.class);
+        String cityName = requestApprovalCommand.getCityName();
+        try {
+			if(db.requestApproval(cityName)) {
+				requestApprovalCommand.setSuccess(true);
+			}
+			else
+				requestApprovalCommand.setSuccess(false);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
 
     protected void serverStarted()
     {

@@ -43,8 +43,8 @@ public class insertMapController {
     			Main.getInstance().goToGCMWorkerServices();
     			break;
             case GCMManager:
-                // GCMManager Windows
-                break;
+            	Main.getInstance().goToGCMManagerServices();
+            	break;
             case CompanyManager:
                 // CompanyManager Windows
                 break;

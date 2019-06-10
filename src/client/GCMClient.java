@@ -3,20 +3,26 @@ package client;
 import ocsf.client.*;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import Users.UserType;
 import application.Main;
+import application.arrayOfStrings;
+import application.boolObject;
 import application.customer.Customer;
 import commands.Command;
 import commands.CommandType;
 import commands.ConnectionCommand;
 import commands.EditCustomerInfoCommand;
+import commands.GetCitiesQueueCommand;
 import commands.GetCustomerInfoCommand;
 import commands.InsertMapCommand;
 import commands.RegisterCommand;
+import commands.RequestApprovalCommand;
 import commands.SearchMapCommand;
 import commands.SigninCommand;
+import javafx.collections.ObservableList;
 import application.login.registrationController;
 
 // **This class overrides some of the methods defined in the abstract
@@ -94,7 +100,7 @@ public class GCMClient extends AbstractClient {
                     Main.getInstance().goToGCMWorkerServices();
                     break;
                 case GCMManager:
-                    // GCMManager Windows
+                    Main.getInstance().goToGCMManagerServices();
                     break;
                 case CompanyManager:
                     // CompanyManager Windows
@@ -169,39 +175,77 @@ public class GCMClient extends AbstractClient {
         sendToServer(command);
         waitForServerResponse();
         handleGetCustomerInfoFromServer(customer);
-        System.out.println(customer.getPassword());
-
     }
     
     public void handleGetCustomerInfoFromServer(Customer customer) {
     	System.out.println("handleGetCustomerInfoFromServer");
-        int success = command.getCommand(GetCustomerInfoCommand.class).getSuccess();
+        boolean success = command.getCommand(GetCustomerInfoCommand.class).getSuccess();
         customer.setUsername(command.getCommand(GetCustomerInfoCommand.class).getUsername());
         customer.setPassword(command.getCommand(GetCustomerInfoCommand.class).getPassword());
         customer.setFirstName(command.getCommand(GetCustomerInfoCommand.class).getFirstName());
         customer.setLastName(command.getCommand(GetCustomerInfoCommand.class).getLastName());
         customer.setEmail(command.getCommand(GetCustomerInfoCommand.class).getEmail());
         customer.setPhone(command.getCommand(GetCustomerInfoCommand.class).getPhone());
-        switch (success) {
-        case -1:
-            System.out.println("There is a problem in the database connection");
-            break;
-        case 1:
-            System.out.println("Customer info got successfully!");
-            break;
-           }
+        if(success)
+        	System.out.println("Customer info got successfully!");
+        else
+        	System.out.println("There is a problem in the database connection");
     }
     
-    public void handleEditingCustomerInfo(Customer customer, boolean newUsername) throws IOException
+    public void handleGetCitiesQueue(arrayOfStrings cities) throws IOException {
+    	commandRequest = true;
+        System.out.println("handleGetCitiesQueue");
+        Command command = new Command(new GetCitiesQueueCommand(), CommandType.GetCitiesQueueCommand);
+        sendToServer(command);
+        waitForServerResponse();
+        handleGetCitiesQueueFromServer(cities);
+    }
+    
+    public void handleGetCitiesQueueFromServer(arrayOfStrings cities) {
+    	System.out.println("handleGetCitiesQueueFromServer");
+        boolean success = command.getCommand(GetCitiesQueueCommand.class).getSuccess();
+        cities.setArrayList(command.getCommand(GetCitiesQueueCommand.class).getCities());
+        if(success)
+        	System.out.println("Cities info got successfully!");
+        else
+        	System.out.println("There is a problem in the database connection");
+    }
+    
+    public void handleEditingCustomerInfo(Customer customer, String oldUsername, boolObject exists) throws IOException
     {
     	commandRequest = true;
         System.out.println("handleEditingCusotmerInfo");
-        Command command = new Command(new EditCustomerInfoCommand(customer, newUsername), CommandType.EditCustomerInfoCommand);
+        Command command = new Command(new EditCustomerInfoCommand(customer, oldUsername), CommandType.EditCustomerInfoCommand);
         sendToServer(command);
-        System.out.println("HEllloooooo");
         waitForServerResponse();
-        handleGetCustomerInfoFromServer(customer);
-        System.out.println(customer.getPassword());
+        handleEditingCustomerInfoFromServer(customer, exists);
+    }
+    
+    public void handleEditingCustomerInfoFromServer(Customer customer, boolObject exists) {
+    	System.out.println("handleEditingCustomerInfoFromServer");
+        exists.setValue(!command.getCommand(EditCustomerInfoCommand.class).getSuccess());
+        if (!exists.getValue())
+            System.out.println("Customer info updated successfully!");
+        else
+            System.out.println("User name exists!");
+    }
+    
+    public void handleRequestApproval(String cityName) throws IOException {
+    	commandRequest = true;
+        System.out.println("handleRequestApproval");
+        Command command = new Command(new RequestApprovalCommand(cityName), CommandType.RequestApprovalCommand);
+        sendToServer(command);
+        waitForServerResponse();
+        handleRequestApprovalFromServer(cityName);
+    }
+    
+    public void handleRequestApprovalFromServer(String cityName) {
+    	System.out.println("handleEditingCustomerInfoFromServer");
+        boolean success = command.getCommand(RequestApprovalCommand.class).getSuccess();
+        if (success)
+            System.out.println("Request have sent successfully!");
+        else
+            System.out.println("CityName doesn't exist! OR already sent");
     }
     
     public void handleAnonymousConnection()

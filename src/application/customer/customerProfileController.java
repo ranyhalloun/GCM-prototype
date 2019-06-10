@@ -2,6 +2,7 @@ package application.customer;
 import java.io.IOException;
 
 import application.Main;
+import application.boolObject;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -68,19 +69,18 @@ public class customerProfileController {
 
 	    @FXML
 	    void save(ActionEvent event) throws IOException {
+	    	boolObject exists = new boolObject();
 	    	Customer newCustomer = new Customer(username.getText(),password.getText(),firstName.getText(),
 	    									lastName.getText(), email.getText(), phone.getText());
-	    	if(!newCustomer.getUsername().equals(customer.getUsername()))
-	    	{
-	    		//check if username exists in DB
-	    		Main.getInstance().editCustomerInfo(newCustomer, true);
-	    	}
-	    	else {
-	    		Main.getInstance().editCustomerInfo(newCustomer, false);
-	    	}
-	    	getCustomer(newCustomer);
-	    	viewState();
+	    	String oldUsername = customer.getUsername();
+	    	Main.getInstance().editCustomerInfo(newCustomer, oldUsername, exists);
 	    	
+	    	if(!exists.getValue()) {
+	    		getCustomer(newCustomer);
+	    		viewState();
+	    	}
+	    	else
+	    		getCustomer(customer);
 	    }
 
 	    @FXML

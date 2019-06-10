@@ -10,16 +10,16 @@ public class GetCustomerInfoCommand implements Serializable{
     private String password;
     private String email;
     private String phone;
-	private int success;
+	private boolean success;
     private String error = "";
     
     // Constructor
         public GetCustomerInfoCommand(){
-        	this.success = -1;
+        	this.success = false;
         }
 
     // Setters
-    public void setSuccess(int success) {
+    public void setSuccess(boolean success) {
         this.success = success;
     }
     
@@ -63,7 +63,7 @@ public class GetCustomerInfoCommand implements Serializable{
   		return this.phone;
   	}
 
-    public int getSuccess() {
+    public boolean getSuccess() {
         return this.success;
     }
     
