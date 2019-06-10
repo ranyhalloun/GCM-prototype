@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<AnchorPane prefHeight="400.0" prefWidth="300.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8">
+   <children>
+      <Button fx:id="sendBtn" layoutX="103.0" layoutY="249.0" mnemonicParsing="false" onAction="#send" prefHeight="43.0" prefWidth="94.0" text="Send">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Button>
+      <Label layoutX="58.0" layoutY="61.0" prefHeight="43.0" prefWidth="185.0" text="Request Approval">
+         <font>
+            <Font name="System Bold" size="22.0" />
+         </font>
+      </Label>
+      <Button fx:id="backBtn" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#back" text="Back" />
+      <TextField fx:id="cityName" layoutX="76.0" layoutY="151.0" prefHeight="43.0" prefWidth="149.0" promptText="City Name" />
+   </children>
+</AnchorPane>

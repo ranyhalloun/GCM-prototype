@@ -50,8 +50,9 @@ public class gcmWorkerController {
     }
 
     @FXML
-    void requestApproval(ActionEvent event) {
-        
+    void requestApproval(ActionEvent event) throws IOException {
+        System.out.println("Going to requestApproval");
+        Main.getInstance().goToRequestApproval();
     }
 
     @FXML
@@ -60,8 +61,6 @@ public class gcmWorkerController {
         assert logoutBtn != null : "fx:id=\"logoutBtn\" was not injected: check your FXML file 'gcmWorkerView.fxml'.";
         assert requestApprovalBtn != null : "fx:id=\"requestApprovalBtn\" was not injected: check your FXML file 'gcmWorkerView.fxml'.";
         assert searchMapBtn != null : "fx:id=\"searchMapBtn\" was not injected: check your FXML file 'gcmWorkerView.fxml'.";
-
-
     }
 
 }

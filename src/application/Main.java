@@ -27,7 +27,12 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import java.util.ArrayList;
+import application.gcmManager.gcmManagerServicesController;
+import application.gcmManager.requestListController;
+import application.gcmWorker.requestApprovalController;
 
 public class Main extends Application {
 
@@ -112,10 +117,44 @@ public class Main extends Application {
 	    gcmClient.handleRegistration(firstname, lastname, username, password, email, phone);
 	}
 	
-	public void editCustomerInfo(Customer customer, boolean newUsername) throws IOException
+	public void editCustomerInfo(Customer customer, String oldUsername, boolObject exists) throws IOException
 	{
-		gcmClient.handleEditingCustomerInfo(customer, newUsername);
+        gcmClient.handleEditingCustomerInfo(customer, oldUsername, exists);
 	}
+	
+	public void requestApproval(String cityName) throws IOException
+    {
+        gcmClient.handleRequestApproval(cityName);
+    }
+	
+	public void goToGCMManagerServices() throws IOException
+    {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("gcmManager/gcmManagerServicesView.fxml"));
+        loader.setController(new gcmManagerServicesController());
+        AnchorPane gcmManagerServicesView = loader.load();
+        mainLayout.getChildren().setAll(gcmManagerServicesView);
+    }
+	
+	public void goToCheckRequests() throws IOException{
+        //ObservableList<String> cities = FXCollections.observableArrayList();
+        arrayOfStrings cities = new arrayOfStrings();
+        gcmClient.handleGetCitiesQueue(cities);
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("gcmManager/requestListView.fxml"));
+        loader.setController(new requestListController());
+        Parent root = (Parent)loader.load();
+
+        requestListController controller = loader.getController();
+        controller.getCities(cities.getArrayList());
+        mainLayout.getChildren().setAll(root);
+
+    }
+
+    public void goToRequestApproval() throws IOException{
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("gcmWorker/requestApprovalView.fxml"));
+        loader.setController(new requestApprovalController());
+        AnchorPane insertMapView = loader.load();
+        mainLayout.getChildren().setAll(insertMapView);
+    }
 
     public void goToRegistration() throws IOException
     {
