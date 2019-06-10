@@ -39,7 +39,6 @@ public class searchMapController {
         Main.getInstance().searchMap(attraction.getText(), cityName.getText(), description.getText());
     }
 
-    
     @FXML
     void back(ActionEvent event) throws IOException {
     	System.out.println("Back to login view");

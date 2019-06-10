@@ -3,6 +3,7 @@ package server;
 import java.io.IOException;
 import java.sql.SQLException;
 
+import Entities.SearchMapResult;
 import Users.UserType;
 import application.customer.Customer;
 import commands.Command;
@@ -160,21 +161,20 @@ public class GCMServer extends AbstractServer
         String cityName = searchMapCommand.getcityName();
         String description = searchMapCommand.getDescription();
         
-        //client.setInfo("username", username);
-        
        try {
-		if (db.searchMap(attraction, cityName, description)) {
-		    	//System.out.println("Map found!");
-			searchMapCommand.setSuccess(1);
-		}
-		else
-		    //System.out.println("There is no maps with these inputs");
-			searchMapCommand.setSuccess(0);
+           SearchMapResult result = db.searchMap(attraction, cityName, description);
+           searchMapCommand.setSearchMapResult(result);
+           searchMapCommand.setSuccess(true);
        } catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+           searchMapCommand.setSuccess(false);
+           e.printStackTrace();
        }
-       
+       // sendToClient
+       try {
+           client.sendToClient(command);
+       } catch (IOException e) {
+           e.printStackTrace();
+       }
     }
     
     private void handleInsertMapCommand(Command command, ConnectionToClient client)

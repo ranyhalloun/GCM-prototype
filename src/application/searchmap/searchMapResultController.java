@@ -5,12 +5,15 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import Entities.Map;
+import Entities.SearchMapResult;
 import application.Main;
+import application.customer.customerServicesController;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -20,6 +23,14 @@ import javafx.scene.control.Button;
 
 
 public class searchMapResultController {
+    
+    private SearchMapResult searchMapResult;
+    
+    public searchMapResultController(SearchMapResult searchMapResult)
+    {
+        this.searchMapResult = searchMapResult;
+        System.out.println("Num of maps: " + Integer.toString(searchMapResult.getMaps().size()));
+    }
 
     @FXML
     private TableColumn<Map, Integer> mapIDColumn;
@@ -39,21 +50,28 @@ public class searchMapResultController {
     @FXML
     private TableView<Map> tableView;
 
+    // Arraylist of Maps
+    public searchMapResultController()
+    {
+        
+    }
+    
     @FXML
     void back(ActionEvent event) throws IOException {
         System.out.println("Back to SearchMap view");
-        Main.getInstance().goToSearchMap();
+        Main.getInstance().cityInfo(searchMapResult);
     }
     
     @FXML
     void displayMap(ActionEvent event) throws IOException {
-        //Main.getInstance().goToMapImage(tableView.getSelectionModel().getSelectedItem());      
+        Main.getInstance().goToMapInfo(tableView.getSelectionModel().getSelectedItem(), searchMapResult);
     }
     
     //This method will enable the displayMap button once a row in the table is selected
     @FXML
     public void userClickOnTable() {
-        this.displayMapBtn.setDisable(false);
+        if(tableView.getSelectionModel().getSelectedItem()!=null)
+            this.displayMapBtn.setDisable(false);
     }
 
     @FXML
@@ -72,9 +90,9 @@ public class searchMapResultController {
     
     public ObservableList<Map> getMaps(){
         ObservableList<Map> maps = FXCollections.observableArrayList();
-        maps.add(new Map(1,"Best city", "Haifa", "https://www.google.com/maps/vt/data=mCYx3nrsT4at7jFwH_pM1-tcK0Xw0BWrMxNJ62AwCJEYfitBviFUgSbP42GZN7-T1vv7mJVjpcfZJNTj4ZezvbVYFQcu8msFd1zyCIi79BZXXF4seZ7Kcyi4gBLCCRnZyK5sL6llvyPorSL-Pixyk6_-KYEHiMcgWe2eQTbwlnnBYh8g5gY81HS73kDLGx6Pr9Eb7R_F50jQGnIAyn0VyNnNYwYkP9E"));
-        maps.add(new Map(2,"Nighty city", "Tel Aviv","https://www.google.com/maps/vt/data=nfhY5fd0yhDxcSp6mZys4XtGwT7hOaJDJt5btBtE25N3ktViJYOtijsl1nFMNdtsTtzKOclf3Gm6dDQB3h6LYLNi20sFTRyRS9RXHPE40CqL215LqPKfS6fYTZUI4e48_mw67X3BJAF_iqkGDAyy929gjiZ22uMFm389wytR25JgDIFsF6h_m78i8mkIiRquNI4k5X3jcSVXXiTGfWIVXl1Ej6y8gzI"));
-        
+        for (Map map : searchMapResult.getMaps()) {
+            maps.add(map);
+        }
         return maps;
     }
 

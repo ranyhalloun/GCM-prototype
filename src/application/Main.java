@@ -2,6 +2,8 @@ package application;
 
 import java.io.IOException;
 
+import Entities.Map;
+import Entities.SearchMapResult;
 import Users.UserType;
 import application.connection.connectionController;
 import application.customer.Customer;
@@ -11,6 +13,8 @@ import application.gcmWorker.gcmWorkerController;
 import application.insertMap.insertMapController;
 import application.login.loginController;
 import application.login.registrationController;
+import application.searchmap.cityController;
+import application.searchmap.mapController;
 import application.searchmap.searchMapController;
 import application.searchmap.searchMapResultController;
 import client.GCMClient;
@@ -76,11 +80,32 @@ public class Main extends Application {
 	public void searchMap(String attraction, String cityName, String description) throws IOException
 	{
 	    gcmClient.handleSearchMap(attraction, cityName, description);
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("searchmap/searchMapResultView.fxml"));
-        loader.setController(new searchMapResultController());
-        AnchorPane searchMapResultView = loader.load();
-        mainLayout.getChildren().setAll(searchMapResultView);
 	}
+	
+	public void cityInfo(SearchMapResult searchMapResult) throws IOException
+	{
+	    FXMLLoader loader = new FXMLLoader(getClass().getResource("searchmap/cityView.fxml"));
+	    loader.setController(new cityController(searchMapResult));
+        AnchorPane cityView = loader.load();
+        mainLayout.getChildren().setAll(cityView);
+	}
+	
+	public void goToMapsTable(SearchMapResult searchMapResult) throws IOException
+	{
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("searchmap/searchMapResultView.fxml"));
+        loader.setController(new searchMapResultController(searchMapResult));
+        AnchorPane searchMapView = loader.load();
+        mainLayout.getChildren().setAll(searchMapView);
+	}
+	
+	
+	   public void goToMapInfo(Map map, SearchMapResult searchMapResult) throws IOException
+	    {
+	        FXMLLoader loader = new FXMLLoader(getClass().getResource("searchmap/mapView.fxml"));
+	        loader.setController(new mapController(map, searchMapResult));
+	        AnchorPane mapView = loader.load();
+	        mainLayout.getChildren().setAll(mapView);
+	    }
 
 	public void registerNewUser(String firstname, String lastname, String username, String password, String email, String phone) throws IOException, InterruptedException
 	{

@@ -109,30 +109,23 @@ public class GCMClient extends AbstractClient {
 
     public void handleSearchMap(String attraction, String cityName, String description) throws IOException
     {
-        // Implement here
     	commandRequest = true;
         System.out.println("handleSearchMap");
     	System.out.printf("Searching map: attraction: %s, cityName: %s, description: %s%n", attraction, cityName, description);
         Command command = new Command(new SearchMapCommand(attraction, cityName, description), CommandType.SearchMapCommand);
         sendToServer(command);
         waitForServerResponse();
-        handleSearchMapFromServer(attraction, cityName, description);
+        handleSearchMapFromServer();
     }
     
-    public void handleSearchMapFromServer(String attraction, String cityName, String description) throws IOException {
+    public void handleSearchMapFromServer() throws IOException {
     	System.out.println("handleSearchMapFromServer");
-        int success = command.getCommand(SearchMapCommand.class).getSuccess();
-        switch (success) {
-        case -1:
-            System.out.println("There is a problem in the database connection");
-            break;
-        case 0:
-            System.out.println("Map doesn't exist. Please choose another input.");
-            break;
-        case 1:
-            System.out.println("Results are in the table!");
-            break;
+        boolean success = command.getCommand(SearchMapCommand.class).getSuccess();
+        if (!success) {
+            System.out.println("Error occured.");
+            return;
         }
+        Main.getInstance().cityInfo(command.getCommand(SearchMapCommand.class).getSearchMapResult());
     }
     
     public void handleInsertNewMap(int id, String cityName, String description, String imagePath) throws IOException
