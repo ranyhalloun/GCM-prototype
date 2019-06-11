@@ -50,16 +50,21 @@ public class searchMapResultController {
     @FXML
     private TableView<Map> tableView;
 
-    // Arraylist of Maps
-    public searchMapResultController()
-    {
-        
-    }
     
     @FXML
     void back(ActionEvent event) throws IOException {
         System.out.println("Back to SearchMap view");
-        Main.getInstance().cityInfo(searchMapResult);
+        boolean searchMapByCity = searchMapResult.getSearchByCity();
+        boolean searchMapByAttraction = searchMapResult.getSearchByAttraction();
+        boolean searchMapByDescription = searchMapResult.getSearchByDescription();
+        
+        if(searchMapByCity&&!searchMapByAttraction&&!searchMapByDescription)
+        	Main.getInstance().cityInfo(searchMapResult);
+        else if(!searchMapByCity&&searchMapByAttraction&&!searchMapByDescription)
+        	Main.getInstance().attractionInfo(searchMapResult);
+        else
+        	Main.getInstance().goToSearchMap();
+        	
     }
     
     @FXML

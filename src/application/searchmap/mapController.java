@@ -64,10 +64,18 @@ public class mapController {
     private Button backBtn;
     
     @FXML
+    private Button displayMapBtn;
+    
+    @FXML
     void back(ActionEvent event) throws IOException {
         Main.getInstance().goToMapsTable(searchMapResult);
     }
-
+    
+    @FXML
+    void displayMap(ActionEvent event) {
+    	//Main.getInstance().displayImage(map)
+    }
+    
     @FXML
     void initialize() {
         assert attractionsTable != null : "fx:id=\"attractionsTable\" was not injected: check your FXML file 'mapView.fxml'.";
@@ -84,8 +92,8 @@ public class mapController {
         version.setText(Integer.toString(map.getVersion()));
         mapID.setText(Integer.toString(map.getMapID()));
         mapDescription.setText(map.getDescription());
-        
     }
+    
     
     public ObservableList<Attraction> getAttractions(){
         ObservableList<Attraction> attractions = FXCollections.observableArrayList();

@@ -61,7 +61,8 @@ public class cityController {
     }
 
     @FXML
-    void cityTours(ActionEvent event) {
+    void cityTours(ActionEvent event) throws IOException {
+    	Main.getInstance().getCityTours(cityName.getText());
     }
 
     @FXML
@@ -86,6 +87,12 @@ public class cityController {
         numOfMaps.setText(Integer.toString(city.getNumOfMaps()));
         cityDescription.setText(city.getDescription());
         cityName.setText(city.getCityName());
+        
+        numOfAttractions.setEditable(false);
+        numOfTours.setEditable(false);
+        numOfMaps.setEditable(false);
+        cityDescription.setEditable(false);
+        cityName.setEditable(false);
     }
 
 }

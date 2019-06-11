@@ -46,6 +46,7 @@ public class Tour implements Serializable {
     public ArrayList<StringIntPair> getAttractionsName() {
         return attractionsName;
     }
+    
 
     //------------------------------------------//
     
@@ -61,4 +62,5 @@ public class Tour implements Serializable {
     public void setAttractionsName(ArrayList<StringIntPair> attractionsName) {
         this.attractionsName = attractionsName;
     }
+    
 }

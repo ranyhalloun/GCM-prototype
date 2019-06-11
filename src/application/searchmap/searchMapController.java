@@ -45,7 +45,7 @@ public class searchMapController {
     	switch(Main.getInstance().getUserType()) {
     		case Anonymous:
     		case Worker:
-    			Main.getInstance().goToLogin();
+    			Main.getInstance().goToLogin("");
     			break;
     		case Customer:
     			Main.getInstance().goToCostumerServices();

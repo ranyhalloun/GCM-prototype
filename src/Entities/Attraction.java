@@ -27,6 +27,14 @@ public class Attraction implements Serializable {
         this.location = location;
     }
     
+    public Attraction(String name, String category, String description, boolean isAccessible)
+    {
+    	this.name = name;
+    	this.category = category;
+    	this.isAccessible = isAccessible;
+    	this.description = description;
+    }
+    
     //----------------------------------//
     
     //Getters

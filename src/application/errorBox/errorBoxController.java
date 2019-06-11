@@ -1,6 +1,5 @@
 package application.errorBox;
 
-import application.Main;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -16,7 +15,7 @@ public class errorBoxController {
 
     @FXML
     void close(ActionEvent event) {
-    	
+
     }
 
 }

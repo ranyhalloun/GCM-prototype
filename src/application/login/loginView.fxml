@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="400.0" prefWidth="300.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2">
+<AnchorPane prefHeight="400.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
   <!-- TODO Add Nodes -->
   <children>
     <TextField id="us" fx:id="username" layoutX="117.0" layoutY="137.0" onAction="#signIn" prefWidth="150.0" promptText="username" text="" />
@@ -21,5 +21,6 @@
       </font>
     </Text>
     <Button fx:id="registrationBtn" layoutX="25.0" layoutY="286.0" minHeight="29.9998779296875" mnemonicParsing="false" onAction="#goToRegistration" prefHeight="38.0" prefWidth="242.0" text="Registration" />
+      <Label fx:id="errorText" layoutX="40.0" layoutY="217.0" prefHeight="17.0" prefWidth="221.0" textFill="RED" />
   </children>
 </AnchorPane>
