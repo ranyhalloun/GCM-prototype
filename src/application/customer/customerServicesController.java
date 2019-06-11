@@ -27,7 +27,7 @@ public class customerServicesController {
     @FXML
     void searchMap(ActionEvent event) throws IOException {
         System.out.println("Going to search map");
-        Main.getInstance().goToSearchMap();
+        Main.getInstance().goToSearchMap("");
     }
 
     @FXML

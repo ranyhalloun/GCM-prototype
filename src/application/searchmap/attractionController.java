@@ -43,7 +43,7 @@ public class attractionController {
     
     @FXML
     void back(ActionEvent event) throws IOException {
-        Main.getInstance().goToSearchMap();
+        Main.getInstance().goToSearchMap("");
     }
 
     @FXML
@@ -57,7 +57,7 @@ public class attractionController {
         Attraction attraction = searchMapResult.getAttraction();
         attractionName.setText(attraction.getName());
         category.setText(attraction.getCategory());
-        isAccessible.setText(Boolean.toString(attraction.isAccessible()));
+        isAccessible.setText(Boolean.toString(attraction.getIsAccessible()));
         description.setText(attraction.getDescription());
         
         attractionName.setEditable(false);

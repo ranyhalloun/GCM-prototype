@@ -57,7 +57,7 @@ public class cityController {
 
     @FXML
     void back(ActionEvent event) throws IOException {
-        Main.getInstance().goToSearchMap();
+        Main.getInstance().goToSearchMap("");
     }
 
     @FXML

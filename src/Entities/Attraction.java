@@ -58,7 +58,7 @@ public class Attraction implements Serializable {
         return cityName;
     }
 
-    public boolean isAccessible() {
+    public boolean getIsAccessible() {
         return isAccessible;
     }
     

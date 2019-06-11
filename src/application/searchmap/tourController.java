@@ -16,15 +16,17 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 public class tourController {
-
+	
+	private int tourID;
 	private String cityName;
 	private ArrayList<Tour> tours;
 	private ArrayList<StringIntPair> attractionsTime;
 	
-	public tourController(ArrayList<StringIntPair> attractionsTime, String cityName, ArrayList<Tour> tours) {
+	public tourController(ArrayList<StringIntPair> attractionsTime, String cityName, ArrayList<Tour> tours, int tourID) {
 		this.attractionsTime = attractionsTime;
 		this.cityName = cityName;
 		this.tours = tours;
+		this.tourID = tourID;
 	}
     @FXML
     private TableColumn<StringIntPair, Integer> timeColumn;
@@ -56,13 +58,26 @@ public class tourController {
     }
 
     @FXML
-    void add(ActionEvent event) {
-
+    void add(ActionEvent event) throws IOException {
+    	Main.getInstance().getAttractionsOfCity(cityName);
     }
 
     @FXML
-    void remove(ActionEvent event) {
-    	Main.getInstance().removeAttractionFromTour(tourTable.getSelectionModel().getSelectedItem());
+    void remove(ActionEvent event) throws IOException {
+    	
+    	StringIntPair attractionInTour = tourTable.getSelectionModel().getSelectedItem();
+    	tourTable.getItems().remove((attractionInTour));
+    	for(Tour tour : tours)
+    	{
+    		if(tour.getId() == tourID)
+    		{
+    			tour.getAttractionsName().remove(attractionInTour);
+    			if(tour.getAttractionsName().size() == 0)
+    				tours.remove(tour);
+    			break;
+    		}
+    	}
+    	Main.getInstance().removeAttractionFromTour(attractionInTour.getString_field(), tourID);
     }
 
     @FXML

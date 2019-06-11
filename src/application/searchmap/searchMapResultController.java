@@ -63,7 +63,7 @@ public class searchMapResultController {
         else if(!searchMapByCity&&searchMapByAttraction&&!searchMapByDescription)
         	Main.getInstance().attractionInfo(searchMapResult);
         else
-        	Main.getInstance().goToSearchMap();
+        	Main.getInstance().goToSearchMap("");
         	
     }
     

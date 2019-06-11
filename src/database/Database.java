@@ -744,5 +744,30 @@ public class Database {
     	return true;
     }
     
+    public void removeAttractionFromTour(String attractionName, int tourID) throws SQLException {
+    	String sql = "DELETE FROM ToursCity WHERE attractionName = '" + attractionName + "' AND tourID = '" + tourID + "'";
+    	stmt.executeUpdate(sql);
+    }
+    
+    public ArrayList<Attraction> getAttractionsOfCity(String cityName){
+        ArrayList<Attraction> attractions = new ArrayList<Attraction>();
+    	String sql = "SELECT name, category, description, isAccessible FROM Attractions WHERE cityName = '" + cityName + "'";
+    	ResultSet rs;
+		try {
+			rs = stmt.executeQuery(sql);
+			while(rs.next()) {
+	            String attractionName = rs.getString(1);
+	            String category = rs.getString(2);
+	            String description = rs.getString(3);
+	            boolean isAccessible = rs.getBoolean(4);
+	            Attraction attraction = new Attraction(attractionName, category, description, isAccessible);
+	            attractions.add(attraction);
+	    	}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return attractions;
+    }
+    
     
 }
