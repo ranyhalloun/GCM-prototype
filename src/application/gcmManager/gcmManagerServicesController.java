@@ -42,7 +42,7 @@ public class gcmManagerServicesController {
     @FXML
     void logOut(ActionEvent event) throws IOException {
         System.out.println("Logging out");
-        Main.getInstance().goToLogin();
+        Main.getInstance().goToLogin("");
     }
 
 

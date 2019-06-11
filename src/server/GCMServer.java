@@ -5,12 +5,14 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import Entities.SearchMapResult;
+import Entities.Tour;
 import Users.UserType;
 import application.customer.Customer;
 import commands.Command;
 import commands.CommandType;
 import commands.EditCustomerInfoCommand;
 import commands.GetCitiesQueueCommand;
+import commands.GetCityToursCommand;
 import commands.GetCustomerInfoCommand;
 import commands.RegisterCommand;
 import commands.RequestApprovalCommand;
@@ -112,6 +114,15 @@ public class GCMServer extends AbstractServer
                     e.printStackTrace();
                 }
                 break;
+                
+            case GetCityToursCommand:
+                handleGetCityToursCommand(command, client);
+                try {
+                    client.sendToClient(command);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
         default:
             break;
         }
@@ -154,14 +165,15 @@ public class GCMServer extends AbstractServer
         // authenticate
         try {
             if (db.authenticate(username, password)) {
-                signinCommand.setSuccess(1);
+                signinCommand.setSuccess(true);
                 signinCommand.setRole(UserType.valueOf(db.getRole(username)));
                 //System.out.println("Logged in successfully!\nRole: " + db.getRole(username));
                 client.setInfo("username", username);
                 client.setInfo("role", db.getRole(username));
             } else {
                 //System.out.println("Logging in failed.");
-                signinCommand.setSuccess(0);
+            	signinCommand.setError("(Username,Password) doesn't exist!");
+                signinCommand.setSuccess(false);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -283,6 +295,16 @@ public class GCMServer extends AbstractServer
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+    
+    private void handleGetCityToursCommand(Command command, ConnectionToClient client)
+    {
+    	 System.out.println("GetCityToursCommand");
+    	 GetCityToursCommand getCityToursCommand = command.getCommand(GetCityToursCommand.class);
+         String cityName = getCityToursCommand.getCityName();
+          ArrayList<Tour> tours = db.getTours(cityName);
+          getCityToursCommand.setSuccess(true);
+          getCityToursCommand.setTours(tours);
     }
 
 

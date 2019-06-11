@@ -283,7 +283,7 @@ public class Database {
         }
     }
 
-    private ArrayList<Tour> getTours(String cityName) {
+    public ArrayList<Tour> getTours(String cityName) {
         ArrayList<Tour> tours = new ArrayList<Tour>();
         
         String sql = "SELECT DISTINCT Tours.description, ToursCity.tourID FROM "
@@ -312,7 +312,6 @@ public class Database {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
         return tours;
     }
 
@@ -348,7 +347,7 @@ public class Database {
     }
 
     // We Assume that there is only 1 city that has this attraction...
-    private void searchMapByAttraction(SearchMapResult searchMapResult, String attraction) {
+    private void searchMapByAttraction(SearchMapResult searchMapResult, String attraction) throws SQLException {
         System.out.println("11");
         String cityName = getCityNameOfAttraction(attraction);
         System.out.println("22");
@@ -361,9 +360,21 @@ public class Database {
         searchMapResult.setNumOfMapsIncludeAttraction(numOfMapsIncludeAttraction);
         System.out.println("66");
         searchMapResult.setAttractionDescription(attractionDescription);
-
+        
+        searchMapResult.setAttraction(getAttractionInfo(attraction));
+        
+        
+        
         System.out.printf("cityName: %s, numOfMapsIncludeAttraction: %d, attractionDescription: %s%n",
                 cityName, numOfMapsIncludeAttraction, attractionDescription);
+    }
+    
+    private Attraction getAttractionInfo(String attraction) throws SQLException {
+    	String sql = "SELECT category, description, isAccessible FROM Attractions WHERE name = '" + attraction + "'";
+    	
+    	ResultSet rs = stmt.executeQuery(sql);
+    	rs.next();
+    	return (new Attraction(attraction, rs.getString(1), rs.getString(2), Boolean.parseBoolean(rs.getString(3))));
     }
 
     private String getAttractionDescription(String attraction) {

@@ -21,7 +21,7 @@ public class customerServicesController {
     @FXML
     void logOut(ActionEvent event) throws IOException {
         System.out.println("Logging out");
-        Main.getInstance().goToLogin();
+        Main.getInstance().goToLogin("");
     }
 
     @FXML

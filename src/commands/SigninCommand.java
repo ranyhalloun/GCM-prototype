@@ -11,7 +11,8 @@ public class SigninCommand implements Serializable {
     private String password;
     
     // Output
-    private int success;
+    private boolean success;
+    private String error;
     private UserType role;
     
     
@@ -19,16 +20,20 @@ public class SigninCommand implements Serializable {
     public SigninCommand(String username, String password) {
         this.username = username;
         this.password = password;
-        this.success = -1;
+        this.success = false;
     }
     
     // Setters
-    public void setSuccess(int success) {
+    public void setSuccess(boolean success) {
         this.success = success;
     }
     
     public void setRole(UserType role) {
         this.role = role;
+    }
+    
+    public void setError(String error) {
+    	this.error = error;
     }
     
     // Getters
@@ -40,11 +45,16 @@ public class SigninCommand implements Serializable {
         return this.password;
     }
     
-    public int getSuccess() {
+    public boolean getSuccess() {
         return this.success;
     }
     
     public UserType getRole() {
         return this.role;
+    }
+    
+    
+    public String getError() {
+    	return this.error;
     }
 }

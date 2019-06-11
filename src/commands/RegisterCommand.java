@@ -14,6 +14,7 @@ public class RegisterCommand implements Serializable {
     
     // Output
     private int success;
+    private String errorMessage;
     
     // Constructor
     public RegisterCommand(String firstname, String lastname, String username, String password, String email, String phone) {
@@ -29,6 +30,10 @@ public class RegisterCommand implements Serializable {
     // Setters
     public void setSuccess(int success) {
         this.success = success;
+    }
+    
+    public void setErrorMessage(String errorMessage) {
+    	this.errorMessage = errorMessage;
     }
     
     // Getters
@@ -58,6 +63,10 @@ public class RegisterCommand implements Serializable {
     
     public int getSuccess() {
         return this.success;
+    }
+    
+    public String getErrorMessage() {
+    	return this.errorMessage;
     }
     
 }

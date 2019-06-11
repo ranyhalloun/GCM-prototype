@@ -16,6 +16,7 @@ import commands.CommandType;
 import commands.ConnectionCommand;
 import commands.EditCustomerInfoCommand;
 import commands.GetCitiesQueueCommand;
+import commands.GetCityToursCommand;
 import commands.GetCustomerInfoCommand;
 import commands.InsertMapCommand;
 import commands.RegisterCommand;
@@ -58,11 +59,11 @@ public class GCMClient extends AbstractClient {
             System.out.println("There is a problem in the database connection");
             break;
         case 0:
-            System.out.println("Username exists. Please choose another username.");
+            Main.getInstance().goToRegistration("Username exists. Please choose another username");
             break;
         case 1:
             System.out.println("Registration completed!");
-            Main.getInstance().goToLogin();
+            Main.getInstance().goToLogin("");
             break;
         }
     }
@@ -78,12 +79,8 @@ public class GCMClient extends AbstractClient {
 
     private void handleSigninCommandFromServer() throws IOException {
         System.out.println("handleSigninCommandFromServer");
-        int success = command.getCommand(SigninCommand.class).getSuccess();
-        switch (success) {
-        case -1:
-            System.out.println("There is a problem in the database connection");
-            break;
-        case 1:
+        boolean success = command.getCommand(SigninCommand.class).getSuccess();
+        if(success) {
         	userType = command.getCommand(SigninCommand.class).getRole();
             Main.getInstance().updateUserType(userType);
             System.out.println("You have successfully signed in!");
@@ -106,13 +103,37 @@ public class GCMClient extends AbstractClient {
                     // CompanyManager Windows
                     break;
             }
-            break;
-        case 0:
+        }
+        else {
+            String error = command.getCommand(SigninCommand.class).getError();
+        	Main.getInstance().goToLogin(error);
             System.out.println("Sign in failed.");
-            break;
         }
     }
 
+    public void handleGetCityTours(String cityName) throws IOException
+    {
+    	commandRequest = true;
+        System.out.println("handleSearchMap");
+        Command command = new Command(new GetCityToursCommand(cityName), CommandType.GetCityToursCommand);
+        sendToServer(command);
+        waitForServerResponse();
+        handleGetCityToursFromServer();
+    }
+
+    public void handleGetCityToursFromServer() throws IOException{
+    	System.out.println("handleGetCityToursFromServer");
+        boolean success = command.getCommand(GetCityToursCommand.class).getSuccess();
+        
+        if(success) {
+            System.out.println("City tours info got successfully!");
+            Main.getInstance().goToCityToursTable(command.getCommand(GetCityToursCommand.class).getTours(), command.getCommand(GetCityToursCommand.class).getCityName());
+        }
+        else {
+            System.out.println("There is a problem in the database connection");
+        }
+    }
+    
     public void handleSearchMap(String attraction, String cityName, String description) throws IOException
     {
     	commandRequest = true;
@@ -131,7 +152,16 @@ public class GCMClient extends AbstractClient {
             System.out.println("Error occured.");
             return;
         }
-        Main.getInstance().cityInfo(command.getCommand(SearchMapCommand.class).getSearchMapResult());
+        boolean searchByCity = command.getCommand(SearchMapCommand.class).getSearchMapResult().getSearchByCity();
+        boolean searchByAttraction = command.getCommand(SearchMapCommand.class).getSearchMapResult().getSearchByAttraction();
+        boolean searchByDescription = command.getCommand(SearchMapCommand.class).getSearchMapResult().getSearchByDescription();
+        if(searchByCity&&!searchByAttraction&&!searchByDescription)
+        	Main.getInstance().cityInfo(command.getCommand(SearchMapCommand.class).getSearchMapResult());
+        
+        else if(!searchByCity&&searchByAttraction&&!searchByDescription)
+        	Main.getInstance().attractionInfo(command.getCommand(SearchMapCommand.class).getSearchMapResult());
+        else
+        	Main.getInstance().goToMapsTable(command.getCommand(SearchMapCommand.class).getSearchMapResult());
     }
     
     public void handleInsertNewMap(int id, String cityName, String description, String imagePath) throws IOException
@@ -243,6 +273,14 @@ public class GCMClient extends AbstractClient {
             System.out.println("CityName doesn't exist! OR already sent");
     }
     
+    /*public void handleRemoveAttractionFromTour(StringIntPair attraction) {
+    	commandRequest = true;
+        System.out.println("handleRequestApproval");
+        Command command = new Command(new removeAttractionFromTourCommand(attraction), CommandType.RequestApprovalCommand);
+        sendToServer(command);
+        waitForServerResponse();
+        handleRemoveAttractionFromTourFromServer();
+    }*/
     public void handleAnonymousConnection()
     {
         

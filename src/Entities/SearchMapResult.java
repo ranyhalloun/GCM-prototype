@@ -13,12 +13,13 @@ public class SearchMapResult implements Serializable {
 
     // Search by city name
     private City city;
-
+    
     // Search by attraction
     private String cityName;
     private int numOfMapsIncludeAttraction;
     private String attractionDescription;
-
+    
+    private Attraction attraction;
     //----------------------------------------//
 
     public SearchMapResult() {
@@ -66,6 +67,9 @@ public class SearchMapResult implements Serializable {
         this.city = city;
     }
     
+    public void setAttraction(Attraction  attraction) {
+    	this.attraction = attraction;
+    }
     //----------------------------------------//
     
     //Getters
@@ -99,5 +103,9 @@ public class SearchMapResult implements Serializable {
 
     public City getCity() {
         return city;
+    }
+    
+    public Attraction getAttraction() {
+    	return attraction;
     }
 }

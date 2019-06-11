@@ -9,11 +9,18 @@ import application.Main;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
 public class registrationController {
 
+	private String errorMessage;
+	
+	public registrationController(String errorMessage) {
+		this.errorMessage = errorMessage;
+	}
+	
     @FXML
     private ResourceBundle resources;
 
@@ -43,6 +50,9 @@ public class registrationController {
     
     @FXML
     private Button backBtn;
+    
+    @FXML
+    private Label errorMessageText;
 
     @FXML
     void registration(ActionEvent event) throws IOException, InterruptedException {
@@ -55,7 +65,7 @@ public class registrationController {
         
         if (firstname_.isEmpty() || lastname_.isEmpty() || username_.isEmpty()
                 || password_.isEmpty() || email_.isEmpty() || phone_.isEmpty()) {
-            System.out.println("Fill all the fields to register.");
+            Main.getInstance().goToRegistration("Fill all the fields to register");
         } else {
             Main.getInstance().registerNewUser(firstname_, lastname_, username_, password_, email_, phone_);
         }
@@ -64,7 +74,7 @@ public class registrationController {
     @FXML
     void back(ActionEvent event) throws IOException {
     	System.out.println("Back to login view");
-        Main.getInstance().goToLogin();
+        Main.getInstance().goToLogin("");
     }
 
     @FXML
@@ -76,5 +86,7 @@ public class registrationController {
         assert username != null : "fx:id=\"username\" was not injected: check your FXML file 'registrationView.fxml'.";
         assert email != null : "fx:id=\"email\" was not injected: check your FXML file 'registrationView.fxml'.";
         assert phone != null : "fx:id=\"phone\" was not injected: check your FXML file 'registrationView.fxml'.";
+        
+        errorMessageText.setText(errorMessage);
     }
 }

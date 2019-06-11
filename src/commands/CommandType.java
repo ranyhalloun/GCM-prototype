@@ -10,7 +10,8 @@ public enum CommandType
     GetCustomerInfoCommand(6),
     EditCustomerInfoCommand(7),
     RequestApprovalCommand(8),
-    GetCitiesQueueCommand(9);
+    GetCitiesQueueCommand(9),
+    GetCityToursCommand(10);
     
     private int CommandTypeValue;
 
