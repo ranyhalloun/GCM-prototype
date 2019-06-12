@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="400.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <TableView fx:id="attractionsTable" layoutX="4.0" layoutY="59.0" onMouseClicked="#userClickOnTable" prefHeight="153.0" prefWidth="290.0">
+        <columns>
+          <TableColumn fx:id="nameColumn" prefWidth="90.0" text="Name" />
+          <TableColumn fx:id="categoryColumn" prefWidth="134.0" text="Category" />
+            <TableColumn fx:id="accessibleColumn" prefWidth="65.0" text="Accessible" />
+        </columns>
+      </TableView>
+      <Label layoutX="88.0" layoutY="22.0" prefHeight="21.0" prefWidth="125.0" text="City Attractions">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </Label>
+      <Button fx:id="addBtn" layoutX="229.0" layoutY="322.0" mnemonicParsing="false" onAction="#add" prefHeight="25.0" prefWidth="47.0" text="Add" />
+      <TextArea fx:id="descriptionFT" layoutX="61.0" layoutY="240.0" prefHeight="60.0" prefWidth="225.0" />
+      <Label layoutX="14.0" layoutY="220.0" text="Description:">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Button fx:id="backBtn" layoutX="14.0" layoutY="10.0" mnemonicParsing="false" onAction="#back" prefHeight="25.0" prefWidth="47.0" text="Back" />
+      <Label layoutX="24.0" layoutY="326.0" text="Time:" />
+      <Label fx:id="errorText" layoutX="71.0" layoutY="369.0" prefHeight="17.0" prefWidth="125.0" textFill="RED" />
+      <TextField fx:id="timeFT" layoutX="59.0" layoutY="322.0" prefHeight="25.0" prefWidth="138.0" />
+   </children>
+</AnchorPane>

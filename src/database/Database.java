@@ -744,5 +744,53 @@ public class Database {
     	return true;
     }
     
+    public void removeAttractionFromTour(String attractionName, int tourID) throws SQLException {
+    	String sql = "DELETE FROM ToursCity WHERE attractionName = '" + attractionName + "' AND tourID = '" + tourID + "'";
+    	stmt.executeUpdate(sql);
+    }
+    
+    public ArrayList<Attraction> getAttractionsOfCity(String cityName, int tourID){
+        ArrayList<Attraction> attractions = new ArrayList<Attraction>();
+    	String sql = "SELECT name, category, description, isAccessible FROM Attractions WHERE cityName = '" + cityName + "'";
+    	ResultSet rs;
+		try {
+			rs = stmt.executeQuery(sql);
+			while(rs.next()) {
+	            String attractionName = rs.getString(1);
+	            String category = rs.getString(2);
+	            String description = rs.getString(3);
+	            boolean isAccessible = rs.getBoolean(4);
+	            Attraction attraction = new Attraction(attractionName, category, description, isAccessible, cityName);
+	            attractions.add(attraction);
+	    	}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		sql = "SELECT attractionName FROM ToursCity WHERE tourID = '" + tourID + "'";
+		try {
+			rs = stmt.executeQuery(sql);
+			while(rs.next()) {
+	            String attractionName = rs.getString(1);
+	            for (Attraction attr : attractions) {
+	            	if (attractionName.equals(attr.getName())) {
+	    	            attractions.remove(attr);
+	            		break;
+	            	}
+	            }
+	    	}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return attractions;
+    }
+    
+   public void addAttractionToTour(Attraction attraction, int tourID, int time) throws SQLException {
+    	String sql = "INSERT INTO  ToursCity (cityName, tourID, attractionName, time) VALUES ('"
+    			+ attraction.getCityName() + "', " + "'" + tourID + "', " + "'" + attraction.getName() + "', " + "'" + time + "')";
+    	
+    	stmt.executeUpdate(sql);
+    }
+    
     
 }

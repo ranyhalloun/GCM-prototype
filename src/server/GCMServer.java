@@ -4,17 +4,21 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import Entities.Attraction;
 import Entities.SearchMapResult;
 import Entities.Tour;
 import Users.UserType;
 import application.customer.Customer;
+import commands.AddAttractionToTourCommand;
 import commands.Command;
 import commands.CommandType;
 import commands.EditCustomerInfoCommand;
+import commands.GetAttractionsOfCityCommand;
 import commands.GetCitiesQueueCommand;
 import commands.GetCityToursCommand;
 import commands.GetCustomerInfoCommand;
 import commands.RegisterCommand;
+import commands.RemoveAttractionFromTourCommand;
 import commands.RequestApprovalCommand;
 import commands.SigninCommand;
 import commands.SearchMapCommand;
@@ -123,11 +127,42 @@ public class GCMServer extends AbstractServer
                     e.printStackTrace();
                 }
                 break;
-        default:
+                
+            case RemoveAttractionFromTourCommand:
+				try {
+					handleRemoveAttractionFromTourCommand(command, client);
+					client.sendToClient(command);
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+                break;
+            
+            case GetAttractionsOfCityCommand:
+				try {
+					handleGetAttractionsOfCityCommand(command, client);
+					client.sendToClient(command);
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+                break;
+            case AddAttractionToTourCommand:
+				try {
+					handleAddAttractionToTourCommand(command, client);
+					client.sendToClient(command);
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+                break;
+          default:
             break;
         }
     }
-
     private void handleRegisterCommand(Command command, ConnectionToClient client) {
     	System.out.println("RegisterCommand");
         RegisterCommand registerCommand = command.getCommand(RegisterCommand.class);
@@ -302,11 +337,38 @@ public class GCMServer extends AbstractServer
     	 System.out.println("GetCityToursCommand");
     	 GetCityToursCommand getCityToursCommand = command.getCommand(GetCityToursCommand.class);
          String cityName = getCityToursCommand.getCityName();
-          ArrayList<Tour> tours = db.getTours(cityName);
-          getCityToursCommand.setSuccess(true);
-          getCityToursCommand.setTours(tours);
+         ArrayList<Tour> tours = db.getTours(cityName);
+         getCityToursCommand.setSuccess(true);
+         getCityToursCommand.setTours(tours);
     }
-
+    
+    private void handleRemoveAttractionFromTourCommand(Command command, ConnectionToClient client) throws SQLException {
+    	System.out.println("RemoveAttractionFromTourCommand");
+    	RemoveAttractionFromTourCommand removeAttractionFromTourCommand = command.getCommand(RemoveAttractionFromTourCommand.class);
+        String attractionName = removeAttractionFromTourCommand.getAttractionName();
+        int tourID = removeAttractionFromTourCommand.getTourID();
+        db.removeAttractionFromTour(attractionName, tourID);
+        removeAttractionFromTourCommand.setSuccess(true);
+    }
+    
+    private void handleGetAttractionsOfCityCommand(Command command, ConnectionToClient client) throws SQLException {
+    	System.out.println("handleGetAttractionsOfCityCommand");
+    	GetAttractionsOfCityCommand getAttractionsOfCityCommand  = command.getCommand(GetAttractionsOfCityCommand.class);
+        int tourID = getAttractionsOfCityCommand.getTourID();
+    	String cityName = getAttractionsOfCityCommand.getCityName();
+        getAttractionsOfCityCommand.setAttractions(db.getAttractionsOfCity(cityName, tourID));
+        getAttractionsOfCityCommand.setSuccess(true);
+    }
+    
+    private void handleAddAttractionToTourCommand(Command command, ConnectionToClient client) throws SQLException{
+    	System.out.println("handleAddAttractionToTourCommand");
+    	AddAttractionToTourCommand addAttractionToTourCommand  = command.getCommand(AddAttractionToTourCommand.class);
+        Attraction attraction = addAttractionToTourCommand.getAttraction();
+        int tourID = addAttractionToTourCommand.getTourID();
+        int time = addAttractionToTourCommand.getTime();
+        db.addAttractionToTour(attraction, tourID, time);
+        addAttractionToTourCommand.setSuccess(true);
+    }
 
     protected void serverStarted()
     {

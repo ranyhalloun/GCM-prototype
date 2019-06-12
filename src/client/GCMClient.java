@@ -4,6 +4,10 @@ import ocsf.client.*;
 
 import java.io.*;
 import java.util.concurrent.TimeUnit;
+
+import Entities.Attraction;
+import Entities.StringIntPair;
+
 import java.util.ArrayList;
 
 import Users.UserType;
@@ -11,15 +15,18 @@ import application.Main;
 import application.arrayOfStrings;
 import application.boolObject;
 import application.customer.Customer;
+import commands.AddAttractionToTourCommand;
 import commands.Command;
 import commands.CommandType;
 import commands.ConnectionCommand;
 import commands.EditCustomerInfoCommand;
+import commands.GetAttractionsOfCityCommand;
 import commands.GetCitiesQueueCommand;
 import commands.GetCityToursCommand;
 import commands.GetCustomerInfoCommand;
 import commands.InsertMapCommand;
 import commands.RegisterCommand;
+import commands.RemoveAttractionFromTourCommand;
 import commands.RequestApprovalCommand;
 import commands.SearchMapCommand;
 import commands.SigninCommand;
@@ -34,7 +41,7 @@ public class GCMClient extends AbstractClient {
     private CommandType type;
     private boolean commandRequest;
     private UserType userType;
-
+    
     public GCMClient(String host, int port) {
         super(host, port);
         commandRequest = false;
@@ -88,7 +95,7 @@ public class GCMClient extends AbstractClient {
             switch(userType) {
                 case Anonymous:
                 case Worker:
-                    Main.getInstance().goToSearchMap();
+                    Main.getInstance().goToSearchMap("");
                     break;
                 case Customer:
                 	Main.getInstance().goToCostumerServices();
@@ -273,19 +280,62 @@ public class GCMClient extends AbstractClient {
             System.out.println("CityName doesn't exist! OR already sent");
     }
     
-    /*public void handleRemoveAttractionFromTour(StringIntPair attraction) {
+    public void handleRemoveAttractionFromTour(String attractionName, int tourID) throws IOException {
     	commandRequest = true;
-        System.out.println("handleRequestApproval");
-        Command command = new Command(new removeAttractionFromTourCommand(attraction), CommandType.RequestApprovalCommand);
+        System.out.println("handleRemoveAttractionFromTour");
+        Command command = new Command(new RemoveAttractionFromTourCommand(attractionName, tourID), CommandType.RemoveAttractionFromTourCommand);
         sendToServer(command);
         waitForServerResponse();
-        handleRemoveAttractionFromTourFromServer();
-    }*/
-    public void handleAnonymousConnection()
-    {
-        
+        handleRemoveAttractionFromTourCommandFromServer();
     }
-
+    
+    public void handleRemoveAttractionFromTourCommandFromServer() {
+        System.out.println("handleRemoveAttractionFromTourCommandFromServer");
+        boolean success = command.getCommand(RemoveAttractionFromTourCommand.class).getSuccess();
+        if (success)
+            System.out.println("Attraction have been removed successfully!");
+        else
+            System.out.println("Failed removing the attraction from tour!!");
+    }
+    public void handleGetAttractionsOfCity(String cityName, int tourID) throws IOException {
+    	commandRequest = true;
+        System.out.println("handleGetAttractionsOfCity");
+        Command command = new Command(new GetAttractionsOfCityCommand(cityName, tourID), CommandType.GetAttractionsOfCityCommand);
+        sendToServer(command);
+        waitForServerResponse();
+        handleGetAttractionsOfCityCommandFromServer();
+    }
+    
+    public void handleGetAttractionsOfCityCommandFromServer() throws IOException {
+        System.out.println("handleGetAttractionsOfCityCommandFromServer");
+        boolean success = command.getCommand(GetAttractionsOfCityCommand.class).getSuccess();
+        ArrayList<Attraction> attractions = command.getCommand(GetAttractionsOfCityCommand.class).getAttractions();
+        int tourID = command.getCommand(GetAttractionsOfCityCommand.class).getTourID();
+        Main.getInstance().goToAddAttractionToTour(attractions, "", tourID);
+        if (success)
+            System.out.println("Attractions have been brought successfully!");
+        else
+            System.out.println("Failed to get the attractionOfCity!!");
+    }
+    
+    public void handleAddAttractionsToTour(Attraction attraction, int tourID, int time) throws IOException {
+    	commandRequest = true;
+        System.out.println("handleAddAttractionsToTour");
+        Command command = new Command(new AddAttractionToTourCommand(attraction, tourID, time), CommandType.AddAttractionToTourCommand);
+        sendToServer(command);
+        waitForServerResponse();
+        handleAddAttractionToTourCommandFromServer();
+    }
+    
+    public void handleAddAttractionToTourCommandFromServer() {
+    	System.out.println("handleAddAttractionToTourCommandFromServer");
+        boolean success = command.getCommand(AddAttractionToTourCommand.class).getSuccess();
+        if (success)
+            System.out.println("Attractions added successfully to tour!");
+        else
+            System.out.println("Failed to add attraction to tour!");
+    }
+    
     @Override
     protected void handleMessageFromServer(Object msg)
     {
@@ -321,7 +371,7 @@ public class GCMClient extends AbstractClient {
                     + " IP and the port.");
         }
     }
-
+    
     private void waitForServerResponse()
     {
         while (commandRequest) {

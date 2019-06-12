@@ -8,11 +8,16 @@ import application.Main;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import Users.UserType;
 
 public class searchMapController {
 
+	private String errorMessage;
+	public searchMapController(String errorMessage) {
+		this.errorMessage = errorMessage;
+	}
     @FXML
     private ResourceBundle resources;
 
@@ -33,9 +38,14 @@ public class searchMapController {
     
     @FXML
     private Button backBtn;
-
+    
+    @FXML
+    private Label errorMessageText;
+    
     @FXML
     void searchMap(ActionEvent event) throws IOException {
+    	if(attraction.getText().isEmpty() || cityName.getText().isEmpty() || description.getText().isEmpty())
+    		Main.getInstance().goToSearchMap("You have to fill at least one field!");
         Main.getInstance().searchMap(attraction.getText(), cityName.getText(), description.getText());
     }
 
@@ -69,8 +79,8 @@ public class searchMapController {
         assert cityName != null : "fx:id=\"cityName\" was not injected: check your FXML file 'searchMapView.fxml'.";
         assert description != null : "fx:id=\"description\" was not injected: check your FXML file 'searchMapView.fxml'.";
         assert searchBtn != null : "fx:id=\"searchBtn\" was not injected: check your FXML file 'searchMapView.fxml'.";
-
-
+        
+        errorMessageText.setText(errorMessage);
     }
 
 }
