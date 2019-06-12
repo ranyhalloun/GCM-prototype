@@ -13,7 +13,8 @@ public enum CommandType
     GetCitiesQueueCommand(9),
     GetCityToursCommand(10),
     RemoveAttractionFromTourCommand(11),
-    GetAttractionsOfCityCommand(12);
+    GetAttractionsOfCityCommand(12),
+    AddAttractionToTourCommand(13);
     
     private int CommandTypeValue;
 

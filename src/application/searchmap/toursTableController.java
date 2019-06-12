@@ -66,7 +66,6 @@ public class toursTableController {
     @FXML
     void tourInfo(ActionEvent event) throws IOException {
     	Main.getInstance().goToTourInfo(toursTable.getSelectionModel().getSelectedItem().getAttractionsName(), cityName, tours, toursTable.getSelectionModel().getSelectedItem().getId());
-
     }
 
     @FXML

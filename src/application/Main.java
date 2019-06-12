@@ -262,14 +262,18 @@ public class Main extends Application {
     	gcmClient.handleRemoveAttractionFromTour(attractionName, tourID);
     }    	
     
-    public void getAttractionsOfCity(String cityName) throws IOException {
-    	gcmClient.handleGetAttractionsOfCity(cityName);
+    public void getAttractionsOfCity(String cityName,int tourID) throws IOException {
+    	gcmClient.handleGetAttractionsOfCity(cityName, tourID);
     }
-    public void goToAddAttractionToTour(ArrayList<Attraction> attractions) throws IOException {
+    public void goToAddAttractionToTour(ArrayList<Attraction> attractions, String errorMessage, int tourID) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("searchMap/addAttractionToTourView.fxml"));
-        loader.setController(new addAttractionToTourController(attractions));
+        loader.setController(new addAttractionToTourController(attractions, errorMessage, tourID));
         AnchorPane addAttractionToTourView = loader.load();
         mainLayout.getChildren().setAll(addAttractionToTourView);
+    }
+    
+    public void goToAddAttractionToTour(Attraction attraction, int tourID, int time) throws IOException {
+    	gcmClient.handleAddAttractionsToTour(attraction, tourID, time);
     }
     
     public void updateUserType(UserType userType) {

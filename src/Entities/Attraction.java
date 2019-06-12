@@ -35,6 +35,15 @@ public class Attraction implements Serializable {
     	this.description = description;
     }
     
+    public Attraction(String name, String category, String description, boolean isAccessible, String  cityName)
+    {
+    	this.name = name;
+    	this.category = category;
+    	this.isAccessible = isAccessible;
+    	this.description = description;
+    	this.cityName = cityName;
+    }
+    
     //----------------------------------//
     
     //Getters

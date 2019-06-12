@@ -1,24 +1,32 @@
 package application.searchmap;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import Entities.Attraction;
+import Entities.StringIntPair;
+import application.Main;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 public class addAttractionToTourController {
 	
 	private ArrayList<Attraction> attractions;
-	
-	public addAttractionToTourController(ArrayList<Attraction> attractions)
+	private int tourID;
+	private String errorMessage;
+	public addAttractionToTourController(ArrayList<Attraction> attractions, String errorMessage, int tourID)
 	{
 		this.attractions = attractions;
+		this.errorMessage = errorMessage;
+		this.tourID = tourID;
 	}
 	
     @FXML
@@ -41,23 +49,42 @@ public class addAttractionToTourController {
     
     @FXML
     private TextArea descriptionFT;
-
+    
+    @FXML
+    private TextField timeFT;
+    
+    @FXML
+    private Label errorText;
+    
     @FXML
     void userClickOnTable() {
     	Attraction attraction = attractionsTable.getSelectionModel().getSelectedItem();
     	if(attraction != null) {
             addBtn.setDisable(false);
             descriptionFT.setText(attraction.getDescription());
+            timeFT.setEditable(true);
     	}
     }
 
     @FXML
-    void add(ActionEvent event) {
-    	
+    void add(ActionEvent event) throws IOException {
+    	if(timeFT.getText().isEmpty()) {
+    		Main.getInstance().goToAddAttractionToTour(attractions, "Fill time field please!", tourID);
+    	}
+    	else
+    	{
+        	Attraction attraction = attractionsTable.getSelectionModel().getSelectedItem();
+        	attractionsTable.getItems().remove((attraction));
+        	timeFT.setText("");
+        	descriptionFT.setText("");
+        	timeFT.setEditable(false);
+        	Main.getInstance().goToAddAttractionToTour(attraction, tourID, Integer.parseInt(timeFT.getText()));
+    	}
     }
     
     @FXML
     void back(ActionEvent event) {
+    	
     }
     
     @FXML
@@ -68,6 +95,9 @@ public class addAttractionToTourController {
         
         attractionsTable.setItems(getAttractions());
         addBtn.setDisable(true);
+        timeFT.setEditable(false);
+        errorText.setText(errorMessage);
+        
     }
     
     

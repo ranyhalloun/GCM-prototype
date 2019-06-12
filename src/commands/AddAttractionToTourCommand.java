@@ -1,34 +1,30 @@
 package commands;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 
 import Entities.Attraction;
 
-public class GetAttractionsOfCityCommand implements Serializable{
-	
+public class AddAttractionToTourCommand implements Serializable{
+
 	//input
-	private String cityName;
+	private Attraction attraction;
 	private int tourID;
+	private int time;
 	
 	//output
 	private boolean success;
 	private String error;
-	private ArrayList<Attraction> attractions;
 	
-	public GetAttractionsOfCityCommand(String cityName, int tourID)
+	public AddAttractionToTourCommand(Attraction attraction, int tourID, int time)
 	{
-		this.cityName = cityName;
+		this.attraction = attraction;
 		this.success = false;
 		this.tourID = tourID;
+		this.time = time;
 	}
 
-	public String getCityName() {
-		return cityName;
-	}
-
-	public void setCityName(String cityName) {
-		this.cityName = cityName;
+	public Attraction getAttraction() {
+		return attraction;
 	}
 
 	public boolean getSuccess() {
@@ -47,19 +43,19 @@ public class GetAttractionsOfCityCommand implements Serializable{
 		this.error = error;
 	}
 
-	public ArrayList<Attraction> getAttractions() {
-		return attractions;
-	}
-
-	public void setAttractions(ArrayList<Attraction> attractions) {
-		this.attractions = attractions;
-	}
-
 	public int getTourID() {
 		return tourID;
 	}
 
 	public void setTourID(int tourID) {
 		this.tourID = tourID;
+	}
+
+	public int getTime() {
+		return time;
+	}
+
+	public void setTime(int time) {
+		this.time = time;
 	}
 }
