@@ -59,7 +59,7 @@ public class tourController {
 
     @FXML
     void add(ActionEvent event) throws IOException {
-    	Main.getInstance().getAttractionsOfCity(cityName);
+    	Main.getInstance().getAttractionsOfCity(cityName, tourID);
     }
 
     @FXML

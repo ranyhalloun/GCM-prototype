@@ -4,10 +4,12 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import Entities.Attraction;
 import Entities.SearchMapResult;
 import Entities.Tour;
 import Users.UserType;
 import application.customer.Customer;
+import commands.AddAttractionToTourCommand;
 import commands.Command;
 import commands.CommandType;
 import commands.EditCustomerInfoCommand;
@@ -147,11 +149,20 @@ public class GCMServer extends AbstractServer
 					e.printStackTrace();
 				}
                 break;
-        default:
+            case AddAttractionToTourCommand:
+				try {
+					handleAddAttractionToTourCommand(command, client);
+					client.sendToClient(command);
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+                break;
+          default:
             break;
         }
     }
-
     private void handleRegisterCommand(Command command, ConnectionToClient client) {
     	System.out.println("RegisterCommand");
         RegisterCommand registerCommand = command.getCommand(RegisterCommand.class);
@@ -343,11 +354,21 @@ public class GCMServer extends AbstractServer
     private void handleGetAttractionsOfCityCommand(Command command, ConnectionToClient client) throws SQLException {
     	System.out.println("handleGetAttractionsOfCityCommand");
     	GetAttractionsOfCityCommand getAttractionsOfCityCommand  = command.getCommand(GetAttractionsOfCityCommand.class);
-        String cityName = getAttractionsOfCityCommand.getCityName();
-        getAttractionsOfCityCommand.setAttractions(db.getAttractionsOfCity(cityName));
+        int tourID = getAttractionsOfCityCommand.getTourID();
+    	String cityName = getAttractionsOfCityCommand.getCityName();
+        getAttractionsOfCityCommand.setAttractions(db.getAttractionsOfCity(cityName, tourID));
         getAttractionsOfCityCommand.setSuccess(true);
     }
-
+    
+    private void handleAddAttractionToTourCommand(Command command, ConnectionToClient client) throws SQLException{
+    	System.out.println("handleAddAttractionToTourCommand");
+    	AddAttractionToTourCommand addAttractionToTourCommand  = command.getCommand(AddAttractionToTourCommand.class);
+        Attraction attraction = addAttractionToTourCommand.getAttraction();
+        int tourID = addAttractionToTourCommand.getTourID();
+        int time = addAttractionToTourCommand.getTime();
+        db.addAttractionToTour(attraction, tourID, time);
+        addAttractionToTourCommand.setSuccess(true);
+    }
 
     protected void serverStarted()
     {
