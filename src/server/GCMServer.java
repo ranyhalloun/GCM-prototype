@@ -11,10 +11,12 @@ import application.customer.Customer;
 import commands.Command;
 import commands.CommandType;
 import commands.EditCustomerInfoCommand;
+import commands.GetAttractionsOfCityCommand;
 import commands.GetCitiesQueueCommand;
 import commands.GetCityToursCommand;
 import commands.GetCustomerInfoCommand;
 import commands.RegisterCommand;
+import commands.RemoveAttractionFromTourCommand;
 import commands.RequestApprovalCommand;
 import commands.SigninCommand;
 import commands.SearchMapCommand;
@@ -122,6 +124,28 @@ public class GCMServer extends AbstractServer
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                break;
+                
+            case RemoveAttractionFromTourCommand:
+				try {
+					handleRemoveAttractionFromTourCommand(command, client);
+					client.sendToClient(command);
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+                break;
+            
+            case GetAttractionsOfCityCommand:
+				try {
+					handleGetAttractionsOfCityCommand(command, client);
+					client.sendToClient(command);
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
                 break;
         default:
             break;
@@ -302,9 +326,26 @@ public class GCMServer extends AbstractServer
     	 System.out.println("GetCityToursCommand");
     	 GetCityToursCommand getCityToursCommand = command.getCommand(GetCityToursCommand.class);
          String cityName = getCityToursCommand.getCityName();
-          ArrayList<Tour> tours = db.getTours(cityName);
-          getCityToursCommand.setSuccess(true);
-          getCityToursCommand.setTours(tours);
+         ArrayList<Tour> tours = db.getTours(cityName);
+         getCityToursCommand.setSuccess(true);
+         getCityToursCommand.setTours(tours);
+    }
+    
+    private void handleRemoveAttractionFromTourCommand(Command command, ConnectionToClient client) throws SQLException {
+    	System.out.println("RemoveAttractionFromTourCommand");
+    	RemoveAttractionFromTourCommand removeAttractionFromTourCommand = command.getCommand(RemoveAttractionFromTourCommand.class);
+        String attractionName = removeAttractionFromTourCommand.getAttractionName();
+        int tourID = removeAttractionFromTourCommand.getTourID();
+        db.removeAttractionFromTour(attractionName, tourID);
+        removeAttractionFromTourCommand.setSuccess(true);
+    }
+    
+    private void handleGetAttractionsOfCityCommand(Command command, ConnectionToClient client) throws SQLException {
+    	System.out.println("handleGetAttractionsOfCityCommand");
+    	GetAttractionsOfCityCommand getAttractionsOfCityCommand  = command.getCommand(GetAttractionsOfCityCommand.class);
+        String cityName = getAttractionsOfCityCommand.getCityName();
+        getAttractionsOfCityCommand.setAttractions(db.getAttractionsOfCity(cityName));
+        getAttractionsOfCityCommand.setSuccess(true);
     }
 
 
