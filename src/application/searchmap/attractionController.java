@@ -1,70 +1,85 @@
 package application.searchmap;
-import java.io.IOException;
 
-import Entities.Attraction;
-import Entities.City;
+import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
+
 import Entities.SearchMapResult;
 import application.Main;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-
-
+import javafx.scene.input.MouseEvent;
 
 
 public class attractionController {
+    
+    private SearchMapResult searchMapResult;
 
-	private SearchMapResult searchMapResult;
-
-	public attractionController(SearchMapResult searchMapResult)
+    public attractionController(SearchMapResult searchMapResult)
     {
         this.searchMapResult = searchMapResult;
     }
-	
-	@FXML
-    private TextField isAccessible;
 
     @FXML
-    private Button backBtn;
+    private ResourceBundle resources;
 
     @FXML
-    private Button mapsBtn;
+    private URL location;
 
     @FXML
-    private TextField category;
+    private TableView<String> attractionsTableView;
 
     @FXML
-    private TextField attractionName;
+    private Button back;
 
     @FXML
     private TextArea description;
-    
+
+    @FXML
+    private Button goToMapsBtn;
+
+    @FXML
+    private TableColumn<String, String> nameColumn;
+
+    @FXML
+    private TextArea numOfMapIncludeAttraction;
+
+
     @FXML
     void back(ActionEvent event) throws IOException {
         Main.getInstance().goToSearchMap("");
     }
 
     @FXML
-    void maps(ActionEvent event) throws IOException {
-    	Main.getInstance().goToMapsTable(searchMapResult);
+    void goToMaps(ActionEvent event) {
     }
-    
+
+    @FXML
+    void userClickOnTable(MouseEvent event) {
+    }
+
     @FXML
     void initialize() {
-
-        Attraction attraction = searchMapResult.getAttraction();
-        attractionName.setText(attraction.getName());
-        category.setText(attraction.getCategory());
-        isAccessible.setText(Boolean.toString(attraction.getIsAccessible()));
-        description.setText(attraction.getDescription());
+        assert attractionsTableView != null : "fx:id=\"attractionsTableView\" was not injected: check your FXML file 'attractionView.fxml'.";
+        assert back != null : "fx:id=\"back\" was not injected: check your FXML file 'attractionView.fxml'.";
+        assert description != null : "fx:id=\"description\" was not injected: check your FXML file 'attractionView.fxml'.";
+        assert goToMapsBtn != null : "fx:id=\"goToMapsBtn\" was not injected: check your FXML file 'attractionView.fxml'.";
+        assert nameColumn != null : "fx:id=\"nameColumn\" was not injected: check your FXML file 'attractionView.fxml'.";
+        assert numOfMapIncludeAttraction != null : "fx:id=\"numOfMapIncludeAttraction\" was not injected: check your FXML file 'attractionView.fxml'.";
         
-        attractionName.setEditable(false);
-        category.setEditable(false);
-        isAccessible.setEditable(false);
         description.setEditable(false);
-
+        
+        ObservableList<String> tempCities = FXCollections.observableArrayList(searchMapResult.getCitiesNameOfAttraction());
+        nameColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue()));
+        attractionsTableView.setItems(tempCities);
     }
-
 }
+
+

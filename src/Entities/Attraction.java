@@ -45,7 +45,7 @@ public class Attraction implements Serializable {
     	this.cityName = cityName;
     }
     
-    public Attraction(String id, String name, String category, String description, boolean isAccessible, String  cityName)
+    public Attraction(String id, String name, String category, String description, boolean isAccessible, String cityName)
     {
         this.id = id;
         this.name = name;

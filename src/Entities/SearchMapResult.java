@@ -15,11 +15,10 @@ public class SearchMapResult implements Serializable {
     private City city;
     
     // Search by attraction
-    private String cityName;
+    private ArrayList<String> citiesName;
     private int numOfMapsIncludeAttraction;
     private String attractionDescription;
     
-    private Attraction attraction;
     //----------------------------------------//
 
     public SearchMapResult() {
@@ -51,8 +50,8 @@ public class SearchMapResult implements Serializable {
         this.searchByDescription = bool;
     }
     
-    public void setCityNameOfAttraction(String name) {
-        this.cityName = name;
+    public void setCitiesNameOfAttraction(ArrayList<String> citiesName) {
+        this.citiesName = citiesName;
     }
     
     public void setNumOfMapsIncludeAttraction(int num) {
@@ -67,9 +66,6 @@ public class SearchMapResult implements Serializable {
         this.city = city;
     }
     
-    public void setAttraction(Attraction  attraction) {
-    	this.attraction = attraction;
-    }
     //----------------------------------------//
     
     //Getters
@@ -89,8 +85,8 @@ public class SearchMapResult implements Serializable {
         return this.maps;
     }
     
-    public String getCityNameOfAttraction() {
-        return this.cityName;
+    public ArrayList<String> getCitiesNameOfAttraction() {
+        return this.citiesName;
     }
     
     public int getNumOfMapsIncludeAttraction() {
@@ -105,7 +101,4 @@ public class SearchMapResult implements Serializable {
         return city;
     }
     
-    public Attraction getAttraction() {
-    	return attraction;
-    }
 }
