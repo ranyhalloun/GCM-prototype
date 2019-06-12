@@ -244,13 +244,13 @@ public class Main extends Application {
         mainLayout.getChildren().setAll(insertMapView);
     }
     
-    public void goToCustomerProfile() throws IOException{
+    public void goToCustomerProfile() throws IOException {
     	Customer customer = new Customer();
     	gcmClient.handleGetCustomerInfo(customer);
     	FXMLLoader loader = new FXMLLoader(getClass().getResource("customer/customerProfileView.fxml"));
         loader.setController(new customerProfileController());
         Parent root = (Parent)loader.load();
-        
+
         customerProfileController controller = loader.getController();
         controller.getCustomer(customer);
         mainLayout.getChildren().setAll(root);
