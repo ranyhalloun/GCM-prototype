@@ -7,7 +7,7 @@ import Entities.Attraction;
 public class AddAttractionToTourCommand implements Serializable{
 
 	//input
-	private Attraction attraction;
+	private String attractionID;
 	private int tourID;
 	private int time;
 	
@@ -15,16 +15,16 @@ public class AddAttractionToTourCommand implements Serializable{
 	private boolean success;
 	private String error;
 	
-	public AddAttractionToTourCommand(Attraction attraction, int tourID, int time)
+	public AddAttractionToTourCommand(String attractionID, int tourID, int time)
 	{
-		this.attraction = attraction;
+		this.attractionID = attractionID;
 		this.success = false;
 		this.tourID = tourID;
 		this.time = time;
 	}
 
-	public Attraction getAttraction() {
-		return attraction;
+	public String getAttractionId() {
+		return attractionID;
 	}
 
 	public boolean getSuccess() {

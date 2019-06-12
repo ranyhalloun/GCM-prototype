@@ -164,85 +164,6 @@ public class Database {
             map.print();
         }
     }
-
-//        if (!cityName.isEmpty() && attraction.isEmpty() && description.isEmpty()) {
-//            sql = "SELECT cityName, description FROM Maps WHERE cityName = '" + cityName + "'";
-//            rs = stmt.executeQuery(sql);
-//            System.out.println("Maps and their description:");
-//            while (rs.next()) {
-//                System.out.println(rs.getString(1) + " " + rs.getString(2));
-////                Map map;
-////                maps.add(map);
-//            }
-//
-//            sql = "SELECT COUNT(cityName) FROM Attractions WHERE cityName = '" + cityName + "'";
-//            rs = stmt.executeQuery(sql);
-//            rs.next();
-//            System.out.println("#Attractions: " + rs.getString(1));
-//
-//            sql = "SELECT COUNT(cityName) FROM ToursCity WHERE cityName = '" + cityName + "'";
-//            rs = stmt.executeQuery(sql);
-//            rs.next();
-//            System.out.println("#Tours: " + rs.getString(1));
-//        }
-//
-//        else if (cityName.isEmpty() && !attraction.isEmpty() && description.isEmpty()) {
-//            sql = "SELECT cityName, description FROM Attractions WHERE name = '" + attraction + "'";
-//            rs = stmt.executeQuery(sql);
-//            System.out.println("cityName and attraction's description: ");
-//            while (rs.next())
-//                System.out.println(rs.getString(1) + " " + rs.getString(2));
-//
-//            sql = "SELECT COUNT(attractionName) FROM AttractionsMaps WHERE attractionName = '" + attraction + "'";
-//            rs = stmt.executeQuery(sql);
-//            rs.next();
-//            System.out.println("#Maps have this attraction: " + rs.getString(1));
-//        }
-//
-//        else if (cityName.isEmpty() && attraction.isEmpty() && !description.isEmpty()) {
-//            sql = "SELECT cityName, description FROM Maps WHERE description LIKE '%" + description + "%'";
-//            rs = stmt.executeQuery(sql);
-//            System.out.println("cityName and map's description: ");
-//            while (rs.next())
-//                System.out.println(rs.getString(1) + " " + rs.getString(2));
-//        }
-//
-//        else if (!cityName.isEmpty() && !attraction.isEmpty() && description.isEmpty()) {
-//            sql = "SELECT Maps.description FROM Maps INNER JOIN AttractionsMaps ON Maps.id = AttractionsMaps.mapID INNER JOIN Attractions ON Attractions.name = AttractionsMaps.attractionName  WHERE Attractions.name = '"
-//                    + attraction + "' AND Maps.cityName = '" + cityName + "'";
-//            rs = stmt.executeQuery(sql);
-//            System.out.println("Maps description:");
-//            while (rs.next())
-//                System.out.println(rs.getString(1));
-//        }
-//
-//        else if (!cityName.isEmpty() && attraction.isEmpty() && !description.isEmpty()) {
-//            sql = "SELECT description FROM Maps WHERE description LIKE '%" + description + "%' AND cityName = '"
-//                    + cityName + "'";
-//            rs = stmt.executeQuery(sql);
-//            System.out.println("Maps description:");
-//            while (rs.next())
-//                System.out.println(rs.getString(1));
-//        }
-//
-//        else if (cityName.isEmpty() && !attraction.isEmpty() && !description.isEmpty()) {
-//            sql = "SELECT Maps.description FROM Maps INNER JOIN AttractionsMaps ON Maps.id = AttractionsMaps.mapID INNER JOIN Attractions ON Attractions.name = AttractionsMaps.attractionName  WHERE Attractions.name = '"
-//                    + attraction + "' AND Maps.description LIKE '%" + description + "%'";
-//            rs = stmt.executeQuery(sql);
-//            System.out.println("Maps description:");
-//            while (rs.next())
-//                System.out.println(rs.getString(1));
-//        }
-//
-//        else if (!cityName.isEmpty() && !attraction.isEmpty() && !description.isEmpty()) {
-//            sql = "SELECT Maps.description FROM Maps INNER JOIN AttractionsMaps ON Maps.id = AttractionsMaps.mapID INNER JOIN Attractions ON Attractions.name = AttractionsMaps.attractionName  WHERE Attractions.name = '"
-//                    + attraction + "' AND Maps.description LIKE '%" + description + "%' AND Maps.cityName = '"
-//                    + cityName + "'";
-//            rs = stmt.executeQuery(sql);
-//            System.out.println("Maps description:");
-//            while (rs.next())
-//                System.out.println(rs.getString(1));
-//        }
     
     public ArrayList<String> getCitiesQueue() throws SQLException {
         ArrayList<String> cities = new ArrayList<String>();
@@ -287,7 +208,7 @@ public class Database {
         ArrayList<Tour> tours = new ArrayList<Tour>();
         
         String sql = "SELECT DISTINCT Tours.description, ToursCity.tourID FROM "
-                + "Tours INNER JOIN ToursCity ON Tours.id = ToursCity.tourID WHERE ToursCity.cityName = '" + cityName + "'";
+                + "Tours INNER JOIN ToursCity ON Tours.id = ToursCity.tourID WHERE Tours.cityName = '" + cityName + "'";
         
         try {
             ResultSet rs = stmt.executeQuery(sql);
@@ -299,7 +220,7 @@ public class Database {
             }
             
             for (Tour tour : tours) {
-                sql = "SELECT attractionName, time FROM ToursCity WHERE tourID = '" + Integer.toString(tour.getId()) + "'";
+                sql = "SELECT Attractions.name, ToursCity.time FROM ToursCity INNER JOIN Attractions ON ToursCity.attractionID = Attractions.id WHERE ToursCity.tourID = '" + Integer.toString(tour.getId()) + "'";
                 rs = stmt.executeQuery(sql);
                 ArrayList<StringIntPair> attractions = new ArrayList<StringIntPair>();
                 while (rs.next()) {
@@ -745,35 +666,45 @@ public class Database {
     }
     
     public void removeAttractionFromTour(String attractionName, int tourID) throws SQLException {
-    	String sql = "DELETE FROM ToursCity WHERE attractionName = '" + attractionName + "' AND tourID = '" + tourID + "'";
+        String sql = "SELECT Attractions.id FROM ToursCity INNER JOIN Attractions ON ToursCity.attractionID = Attractions.id WHERE Attractions.name = '" + attractionName + "'";
+        String attractionID = "";
+        try {
+            ResultSet rs = stmt.executeQuery(sql);
+            if (rs.next())
+                attractionID = rs.getString(1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    	sql = "DELETE FROM ToursCity WHERE attractionID = '" + attractionID + "' AND tourID = '" + tourID + "'";
     	stmt.executeUpdate(sql);
     }
     
     public ArrayList<Attraction> getAttractionsOfCity(String cityName, int tourID){
         ArrayList<Attraction> attractions = new ArrayList<Attraction>();
-    	String sql = "SELECT name, category, description, isAccessible FROM Attractions WHERE cityName = '" + cityName + "'";
+    	String sql = "SELECT id, name, category, description, isAccessible FROM Attractions WHERE cityName = '" + cityName + "'";
     	ResultSet rs;
 		try {
 			rs = stmt.executeQuery(sql);
 			while(rs.next()) {
-	            String attractionName = rs.getString(1);
-	            String category = rs.getString(2);
-	            String description = rs.getString(3);
-	            boolean isAccessible = rs.getBoolean(4);
-	            Attraction attraction = new Attraction(attractionName, category, description, isAccessible, cityName);
+			    String attractionID = rs.getString(1);
+	            String attractionName = rs.getString(2);
+	            String category = rs.getString(3);
+	            String description = rs.getString(4);
+	            boolean isAccessible = rs.getBoolean(5);
+	            Attraction attraction = new Attraction(attractionID, attractionName, category, description, isAccessible, cityName);
 	            attractions.add(attraction);
 	    	}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		
-		sql = "SELECT attractionName FROM ToursCity WHERE tourID = '" + tourID + "'";
+		sql = "SELECT attractionID FROM ToursCity WHERE tourID = '" + tourID + "'";
 		try {
 			rs = stmt.executeQuery(sql);
 			while(rs.next()) {
-	            String attractionName = rs.getString(1);
+	            String attractionID = rs.getString(1);
 	            for (Attraction attr : attractions) {
-	            	if (attractionName.equals(attr.getName())) {
+	            	if (attractionID.equals(attr.getId())) {
 	    	            attractions.remove(attr);
 	            		break;
 	            	}
@@ -785,10 +716,10 @@ public class Database {
 		return attractions;
     }
     
-   public void addAttractionToTour(Attraction attraction, int tourID, int time) throws SQLException {
-    	String sql = "INSERT INTO  ToursCity (cityName, tourID, attractionName, time) VALUES ('"
-    			+ attraction.getCityName() + "', " + "'" + tourID + "', " + "'" + attraction.getName() + "', " + "'" + time + "')";
-    	
+   public void addAttractionToTour(String attractionID, int tourID, int time) throws SQLException {
+    	String sql = "INSERT INTO  ToursCity (tourID, attractionID, time) VALUES ('"
+    			 + tourID + "', " + "'" + attractionID + "', " + "'" + time + "')";
+
     	stmt.executeUpdate(sql);
     }
     

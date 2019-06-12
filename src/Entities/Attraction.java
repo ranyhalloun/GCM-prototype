@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 public class Attraction implements Serializable {
     
+    private String id;
     private String name;
     private String location;
     private String category;
@@ -44,9 +45,23 @@ public class Attraction implements Serializable {
     	this.cityName = cityName;
     }
     
+    public Attraction(String id, String name, String category, String description, boolean isAccessible, String  cityName)
+    {
+        this.id = id;
+        this.name = name;
+        this.category = category;
+        this.isAccessible = isAccessible;
+        this.description = description;
+        this.cityName = cityName;
+    }
+    
     //----------------------------------//
     
     //Getters
+    public String getId() {
+        return id;
+    }
+
     public String getName() {
         return name;
     }
@@ -74,6 +89,10 @@ public class Attraction implements Serializable {
     //----------------------------------//
     
     // Setters
+    public void setId(String id) {
+        this.id = id;
+    }
+    
     public void setName(String name) {
         this.name = name;
     }

@@ -75,10 +75,10 @@ public class addAttractionToTourController {
     	{
         	Attraction attraction = attractionsTable.getSelectionModel().getSelectedItem();
         	attractionsTable.getItems().remove((attraction));
+        	Main.getInstance().goToAddAttractionToTour(attraction.getId(), tourID, Integer.parseInt(timeFT.getText()));
         	timeFT.setText("");
-        	descriptionFT.setText("");
-        	timeFT.setEditable(false);
-        	Main.getInstance().goToAddAttractionToTour(attraction, tourID, Integer.parseInt(timeFT.getText()));
+            descriptionFT.setText("");
+            timeFT.setEditable(false);
     	}
     }
     

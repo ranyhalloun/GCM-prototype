@@ -363,10 +363,10 @@ public class GCMServer extends AbstractServer
     private void handleAddAttractionToTourCommand(Command command, ConnectionToClient client) throws SQLException{
     	System.out.println("handleAddAttractionToTourCommand");
     	AddAttractionToTourCommand addAttractionToTourCommand  = command.getCommand(AddAttractionToTourCommand.class);
-        Attraction attraction = addAttractionToTourCommand.getAttraction();
+        String attractionID = addAttractionToTourCommand.getAttractionId();
         int tourID = addAttractionToTourCommand.getTourID();
         int time = addAttractionToTourCommand.getTime();
-        db.addAttractionToTour(attraction, tourID, time);
+        db.addAttractionToTour(attractionID, tourID, time);
         addAttractionToTourCommand.setSuccess(true);
     }
 

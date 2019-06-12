@@ -318,10 +318,10 @@ public class GCMClient extends AbstractClient {
             System.out.println("Failed to get the attractionOfCity!!");
     }
     
-    public void handleAddAttractionsToTour(Attraction attraction, int tourID, int time) throws IOException {
+    public void handleAddAttractionsToTour(String attractionID, int tourID, int time) throws IOException {
     	commandRequest = true;
         System.out.println("handleAddAttractionsToTour");
-        Command command = new Command(new AddAttractionToTourCommand(attraction, tourID, time), CommandType.AddAttractionToTourCommand);
+        Command command = new Command(new AddAttractionToTourCommand(attractionID, tourID, time), CommandType.AddAttractionToTourCommand);
         sendToServer(command);
         waitForServerResponse();
         handleAddAttractionToTourCommandFromServer();

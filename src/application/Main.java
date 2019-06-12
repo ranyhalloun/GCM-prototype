@@ -272,8 +272,8 @@ public class Main extends Application {
         mainLayout.getChildren().setAll(addAttractionToTourView);
     }
     
-    public void goToAddAttractionToTour(Attraction attraction, int tourID, int time) throws IOException {
-    	gcmClient.handleAddAttractionsToTour(attraction, tourID, time);
+    public void goToAddAttractionToTour(String attractionID, int tourID, int time) throws IOException {
+    	gcmClient.handleAddAttractionsToTour(attractionID, tourID, time);
     }
     
     public void updateUserType(UserType userType) {
