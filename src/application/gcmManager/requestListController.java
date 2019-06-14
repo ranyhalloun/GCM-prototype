@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import Entities.Map;
+import Entities.StringIntPair;
 import application.Main;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -34,8 +35,8 @@ public class requestListController {
     @FXML
     void userClickOnTable() {
         if(tableView.getSelectionModel().getSelectedItem()!=null) {
-        this.acceptBtn.setDisable(false);
-        this.declineBtn.setDisable(false);
+        	this.acceptBtn.setDisable(false);
+        	this.declineBtn.setDisable(false);
         }
     }
 
@@ -46,13 +47,23 @@ public class requestListController {
     }
 
     @FXML
-    void accept(ActionEvent event) {
+    void accept(ActionEvent event) throws IOException {
+    	String city = tableView.getSelectionModel().getSelectedItem();
+    	tableView.getItems().remove(city);
+        this.acceptBtn.setDisable(true);
+        this.declineBtn.setDisable(true);
+    	Main.getInstance().updateDBAfterAccept(city);
 
     }
 
     @FXML
-    void decline(ActionEvent event) {
+    void decline(ActionEvent event) throws IOException {
 
+    	String city = tableView.getSelectionModel().getSelectedItem();
+    	tableView.getItems().remove(city);
+        this.acceptBtn.setDisable(true);
+        this.declineBtn.setDisable(true);
+    	Main.getInstance().updateDBAfterDecline(city);
     }
 
     public void getCities(ArrayList<String> cities) {

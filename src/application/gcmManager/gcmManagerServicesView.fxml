@@ -6,8 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-
-<AnchorPane prefHeight="400.0" prefWidth="300.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8">
+<AnchorPane prefHeight="400.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Label layoutX="61.0" layoutY="53.0" prefHeight="36.0" prefWidth="179.0" text="GCM Manager Services">
          <font>
@@ -18,5 +17,6 @@
       <Button fx:id="insertMapBtn" layoutX="105.0" layoutY="182.0" mnemonicParsing="false" onAction="#insertMap" prefHeight="36.0" prefWidth="101.0" text="Insert Map" />
       <Button fx:id="checkRequestsBtn" layoutX="105.0" layoutY="233.0" mnemonicParsing="false" onAction="#checkRequests" prefHeight="36.0" prefWidth="101.0" text="Check Requests" />
       <Button fx:id="logOutBtn" layoutX="14.0" layoutY="339.0" mnemonicParsing="false" onAction="#logOut" prefHeight="36.0" prefWidth="71.0" text="Log out" />
+      <Button fx:id="changePricesBtn" layoutX="105.0" layoutY="283.0" mnemonicParsing="false" onAction="#changePrices" prefHeight="36.0" prefWidth="101.0" text="Change Prices" />
    </children>
 </AnchorPane>

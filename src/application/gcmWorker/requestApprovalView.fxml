@@ -6,8 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-
-<AnchorPane prefHeight="400.0" prefWidth="300.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8">
+<AnchorPane prefHeight="400.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Button fx:id="sendBtn" layoutX="103.0" layoutY="249.0" mnemonicParsing="false" onAction="#send" prefHeight="43.0" prefWidth="94.0" text="Send">
          <font>
@@ -21,5 +20,6 @@
       </Label>
       <Button fx:id="backBtn" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#back" text="Back" />
       <TextField fx:id="cityName" layoutX="76.0" layoutY="151.0" prefHeight="43.0" prefWidth="149.0" promptText="City Name" />
+      <Label fx:id="errorText" layoutX="84.0" layoutY="212.0" prefHeight="17.0" prefWidth="168.0" textFill="RED" />
    </children>
 </AnchorPane>

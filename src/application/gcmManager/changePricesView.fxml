@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="400.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label layoutX="14.0" layoutY="79.0" text="Old OneTime:" />
+      <Label layoutX="14.0" layoutY="124.0" text="New OneTime:" />
+      <Label layoutX="14.0" layoutY="192.0" text="Old Subscription:" />
+      <Label layoutX="14.0" layoutY="236.0" text="New Subscription:" />
+      <Button fx:id="sendBtn" layoutX="68.0" layoutY="309.0" mnemonicParsing="false" onAction="#sentToCM" text="Send To Company Manager" />
+      <Label layoutX="93.0" layoutY="28.0" prefHeight="31.0" prefWidth="127.0" text="Change Prices">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Label>
+      <TextField fx:id="oldOneTime" layoutX="116.0" layoutY="75.0" />
+      <TextField fx:id="newOneTime" layoutX="116.0" layoutY="120.0" />
+      <TextField fx:id="oldSubs" layoutX="116.0" layoutY="188.0" />
+      <TextField fx:id="newSubs" layoutX="116.0" layoutY="232.0" />
+      <Label fx:id="errorText" layoutX="74.0" layoutY="347.0" prefHeight="17.0" prefWidth="141.0" textFill="RED" />
+      <Button fx:id="backBtn" layoutX="14.0" layoutY="16.0" mnemonicParsing="false" onAction="#back" prefHeight="25.0" prefWidth="49.0" text="Back" />
+   </children>
+</AnchorPane>

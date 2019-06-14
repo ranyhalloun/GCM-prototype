@@ -5,11 +5,14 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import Entities.Attraction;
+import Entities.Map;
 import Entities.SearchMapResult;
 import Entities.Tour;
 import Users.UserType;
+import application.Main;
 import application.customer.Customer;
 import commands.AddAttractionToTourCommand;
+import commands.CheckCityExistanceCommand;
 import commands.Command;
 import commands.CommandType;
 import commands.EditCustomerInfoCommand;
@@ -17,12 +20,20 @@ import commands.GetAttractionsOfCityCommand;
 import commands.GetCitiesQueueCommand;
 import commands.GetCityToursCommand;
 import commands.GetCustomerInfoCommand;
+import commands.GetNewExternalMapsCommand;
+import commands.GetOldPricesCommand;
+import commands.GetPricesCommand;
 import commands.RegisterCommand;
 import commands.RemoveAttractionFromTourCommand;
 import commands.RequestApprovalCommand;
 import commands.SigninCommand;
+import commands.UpdateDBAfterAcceptCommand;
+import commands.UpdateDBAfterDeclineCommand;
+import commands.UpdatePricesAfterAcceptCommand;
 import commands.SearchMapCommand;
+import commands.SendNewPricesCommand;
 import commands.InsertMapCommand;
+import commands.InsertNewCityCommand;
 import database.Database;
 import javafx.collections.ObservableList;
 import ocsf.server.AbstractServer;
@@ -159,6 +170,113 @@ public class GCMServer extends AbstractServer
 					e.printStackTrace();
 				}
                 break;
+            
+            case UpdateDBAfterDeclineCommand:
+				try {
+					handleUpdateDBAfterDeclineCommand(command, client);
+					client.sendToClient(command);
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+                break;
+                
+            case UpdateDBAfterAcceptCommand:
+				try {
+					handleUpdateDBAfterAcceptCommand(command, client);
+					client.sendToClient(command);
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+                break;
+            
+            case GetNewExternalMapsCommand:
+				try {
+					handleGetNewExternalMapsCommand(command, client);
+					client.sendToClient(command);
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+                break;
+                
+            case CheckCityExistanceCommand:
+				try {
+					handleCheckCityExistanceCommand(command, client);
+					client.sendToClient(command);
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+                break;
+                
+            case InsertNewCityCommand:
+				try {
+					handleInsertNewCityCommand(command, client);
+					client.sendToClient(command);
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+                break;
+            case GetOldPricesCommand:
+				try {
+					handleGetOldPricesCommand(command, client);
+					client.sendToClient(command);
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+                break;
+            case SendNewPricesCommand:
+				try {
+					handleSendNewPricesCommand(command, client);
+					client.sendToClient(command);
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+                break;
+                
+            case GetPricesCommand:
+				try {
+					handleGetPricesCommand(command, client);
+					client.sendToClient(command);
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+                break;
+            case UpdatePricesAfterAcceptCommand:
+				try {
+					handleUpdatePricesAfterAcceptCommand(command, client);
+					client.sendToClient(command);
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+                break;
+            case UpdatePricesAfterDeclineCommand:
+				try {
+					handleUpdatePricesAfterDeclineCommand(command, client);
+					client.sendToClient(command);
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+                break;
+                
           default:
             break;
         }
@@ -249,19 +367,15 @@ public class GCMServer extends AbstractServer
     {
     	System.out.println("InsertNewMapCommand");
         InsertMapCommand insertMapCommand = command.getCommand(InsertMapCommand.class);
-        int mapID = insertMapCommand.getID();
-        String cityName = insertMapCommand.getCityName();
-        String description = insertMapCommand.getDescription();
-        String imagePath = insertMapCommand.getImagePath();
-        
+        Map map = insertMapCommand.getMap();
         try {
-    		if(db.insertNewMap(mapID, cityName, description, imagePath))
-    		//System.out.println("Map inserted");
-    			insertMapCommand.setSuccess(1);  
-    		else
-    			insertMapCommand.setSuccess(0);
+    		if(db.insertNewMap(map)) {
+    			insertMapCommand.setSuccess(true);
+    		}	
+    		else {
+    			insertMapCommand.setSuccess(false);
+    		}
            } catch (SQLException e) {
-    			// TODO Auto-generated catch block
     			e.printStackTrace();
            }
     }
@@ -322,14 +436,10 @@ public class GCMServer extends AbstractServer
         RequestApprovalCommand requestApprovalCommand = command.getCommand(RequestApprovalCommand.class);
         String cityName = requestApprovalCommand.getCityName();
         try {
-            if(db.requestApproval(cityName)) {
-                requestApprovalCommand.setSuccess(true);
-            }
-            else
-                requestApprovalCommand.setSuccess(false);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+			requestApprovalCommand.setSuccess(db.requestApproval(cityName));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
     }
     
     private void handleGetCityToursCommand(Command command, ConnectionToClient client)
@@ -369,7 +479,92 @@ public class GCMServer extends AbstractServer
         db.addAttractionToTour(attractionID, tourID, time);
         addAttractionToTourCommand.setSuccess(true);
     }
+    
+    private void handleUpdateDBAfterDeclineCommand(Command command, ConnectionToClient client) throws SQLException{
+    	System.out.println("handleUpdateDBAfterDeclineCommnad");
+    	UpdateDBAfterDeclineCommand updateDBAfterDeclineCommand  = command.getCommand(UpdateDBAfterDeclineCommand.class);
+        String cityName = updateDBAfterDeclineCommand.getCityName();
+        db.updateDBAfterDecline(cityName);
+        updateDBAfterDeclineCommand.setSuccess(true);
+    }
+    
+    private void handleUpdateDBAfterAcceptCommand(Command command, ConnectionToClient client) throws SQLException{
+    	System.out.println("handleUpdateDBAfterAcceptCommand");
+    	UpdateDBAfterAcceptCommand updateDBAfterAcceptCommand  = command.getCommand(UpdateDBAfterAcceptCommand.class);
+        String cityName = updateDBAfterAcceptCommand.getCityName();
+        db.updateDBAfterAccept(cityName);
+        updateDBAfterAcceptCommand.setSuccess(true);
+    }
+    
+    private void handleGetNewExternalMapsCommand(Command command, ConnectionToClient client) throws SQLException{
+    	System.out.println("handleGetNewExternalMapsCommand");
+    	GetNewExternalMapsCommand getNewExternalMapsCommand  = command.getCommand(GetNewExternalMapsCommand.class);
+    	getNewExternalMapsCommand.setMaps(db.getNewExternalMaps());
+        getNewExternalMapsCommand.setSuccess(true);
+    }
+    
+    private void handleCheckCityExistanceCommand(Command command, ConnectionToClient client) throws SQLException{
+    	System.out.println("handleCheckCityExistanceCommand");
+    	CheckCityExistanceCommand checkCityExistanceCommand  = command.getCommand(CheckCityExistanceCommand.class);
+    	String cityName = command.getCommand(CheckCityExistanceCommand.class).getCityName();
+    	checkCityExistanceCommand.setSuccess(db.cityExist(cityName));
+    }
+    
+    private void handleInsertNewCityCommand(Command command, ConnectionToClient client) throws SQLException{
+    	System.out.println("handleInsertNewCityCommand");
+    	InsertNewCityCommand insertNewCityCommand  = command.getCommand(InsertNewCityCommand.class);
+    	String cityName = command.getCommand(InsertNewCityCommand.class).getCityName();
+    	String description = command.getCommand(InsertNewCityCommand.class).getDescription();
+    	insertNewCityCommand.setSuccess(db.insertNewCity(cityName, description));
+    }
+    
+    private void handleGetOldPricesCommand(Command command, ConnectionToClient client) throws SQLException{
+    	System.out.println("handleGetOldPricesCommand");
+    	GetOldPricesCommand getOldPricesCommand  = command.getCommand(GetOldPricesCommand.class);
+    	ArrayList<String> prices = db.getCurrentPrices();
+    	getOldPricesCommand.setSubscriptionPrice(prices.get(0));
+    	getOldPricesCommand.setOneTimePurchasePrice(prices.get(1));
 
+    }
+    
+    private void handleSendNewPricesCommand(Command command, ConnectionToClient client) throws SQLException{
+    	System.out.println("handleSendNewPricesCommand");
+    	SendNewPricesCommand sendNewPricesCommand  = command.getCommand(SendNewPricesCommand.class);
+    	String newOnePrice = command.getCommand(SendNewPricesCommand.class).getNewOnePrice();
+    	String newSubsPrice = command.getCommand(SendNewPricesCommand.class).getNewSubsPrice();
+
+    	db.sendNewPrices(newOnePrice, newSubsPrice);
+    }
+    
+    private void handleGetPricesCommand(Command command, ConnectionToClient client) throws SQLException{
+    	System.out.println("handleGetPricesCommand");
+    	GetPricesCommand getPricesCommand  = command.getCommand(GetPricesCommand.class);
+    	String oldOnePrice = command.getCommand(GetPricesCommand.class).getOldOne();
+    	String oldSubsPrice = command.getCommand(GetPricesCommand.class).getOldSubs();
+    	String newOnePrice = command.getCommand(GetPricesCommand.class).getNewOne();
+    	String newSubsPrice = command.getCommand(GetPricesCommand.class).getNewSubs();
+
+    	ArrayList<String> prices = db.getPrices(oldSubsPrice, oldOnePrice, newSubsPrice, newOnePrice);
+    	getPricesCommand.setOldSubs(prices.get(0));
+    	getPricesCommand.setOldOne(prices.get(1));
+    	getPricesCommand.setNewSubs(prices.get(2));
+    	getPricesCommand.setNewOne(prices.get(3));
+    	
+    	
+    }
+    
+    private void handleUpdatePricesAfterAcceptCommand(Command command, ConnectionToClient client) throws SQLException{
+    	System.out.println("handleUpdatePricesAfterAcceptCommand");
+    	String newSubsPrice = command.getCommand(UpdatePricesAfterAcceptCommand.class).getNewSubsPrice();
+    	String newOnePrice = command.getCommand(UpdatePricesAfterAcceptCommand.class).getNewOnePrice();
+    	db.updatePricesAfterAccept(newSubsPrice, newOnePrice);
+    }
+    
+    private void handleUpdatePricesAfterDeclineCommand(Command command, ConnectionToClient client) throws SQLException{
+    	System.out.println("handleUpdatePricesAfterDeclineCommand");
+    	db.updatePricesAfterDecline();
+    }
+    
     protected void serverStarted()
     {
       System.out.println("Server listening for connections on port " + getPort());

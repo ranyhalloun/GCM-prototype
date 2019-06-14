@@ -14,7 +14,17 @@ public enum CommandType
     GetCityToursCommand(10),
     RemoveAttractionFromTourCommand(11),
     GetAttractionsOfCityCommand(12),
-    AddAttractionToTourCommand(13);
+    AddAttractionToTourCommand(13),
+    UpdateDBAfterDeclineCommand(14),
+    UpdateDBAfterAcceptCommand(15),
+    GetNewExternalMapsCommand(16),
+    CheckCityExistanceCommand(17),
+    InsertNewCityCommand(18),
+    GetOldPricesCommand(19),
+    SendNewPricesCommand(20),
+    GetPricesCommand(21),
+    UpdatePricesAfterAcceptCommand(22),
+    UpdatePricesAfterDeclineCommand(23);
     
     private int CommandTypeValue;
 

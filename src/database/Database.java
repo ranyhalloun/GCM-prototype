@@ -59,33 +59,53 @@ public class Database {
     }
     
     //check if input error!!
-    public boolean insertNewMap(int id, String cityName, String description, String imagePath) throws SQLException {
-    	if(!cityExist(cityName))
-            insertNewCity(cityName, 1);
+    public boolean insertNewMap(Map map) throws SQLException {
+    	String cityName = map.getCityName();
+    	String description = map.getDescription();
+    	String imagePath = map.getImagePath();
+    	int mapID = map.getMapID();
+    	if(mapIDExist(mapID)) {
+    		return false;
+    	}
+    	
+    	//if(!cityExist(cityName))
+        //    insertNewCity(cityName, 1);
         String sql = "INSERT INTO GCMMaps (cityName, id, description, imagePath) VALUES ('"
-                + cityName + "', " + "'" + id + "', " + "'" + description + "', " + "'" + imagePath + "')";
+                + cityName + "', " + "'" + mapID + "', " + "'" + description + "', " + "'" + imagePath + "')";
         stmt.executeUpdate(sql);
         
         return true;
     }
 
-    public void insertNewCity(String name, int version) throws SQLException {
-        String sql = "INSERT INTO GCMCities (name, version) VALUES ('"
-                + name + "', " + "'" + version + "')";
-        stmt.executeUpdate(sql);
-    }
-    
-    public boolean requestApproval(String cityName) throws SQLException {
-        if(!cityExist(cityName) || cityWaiting(cityName)) {
-            return false;
-        }
-        String sql = "INSERT INTO CitiesQueue (name) VALUES ('" + cityName + "')";
+    public boolean insertNewCity(String name, String description) throws SQLException {
+        if(cityExist(name))
+        	return false;
+    	String sql = "INSERT INTO GCMCities (name, description ,version) VALUES ('"
+                + name + "', " + "'" + description + "', " + "'" + 1 + "')";
         stmt.executeUpdate(sql);
         return true;
     }
     
+    public int requestApproval(String cityName) throws SQLException {
+        if(!cityExist(cityName)) {
+            return -1;
+        }
+        if(cityWaiting(cityName))
+        	return 0;
+        String sql = "INSERT INTO CitiesQueue (name) VALUES ('" + cityName + "')";
+        stmt.executeUpdate(sql);
+        return 1;
+    }
+    
     public boolean cityExist(String cityName) throws SQLException {
         String sql = "SELECT name FROM GCMCities WHERE name = '" + cityName + "'";
+        ResultSet rs = stmt.executeQuery(sql);
+
+        return rs.next();
+    }
+    
+    public boolean mapIDExist(int mapID) throws SQLException {
+    	String sql = "SELECT id FROM GCMMaps WHERE id = '" + mapID + "'";
         ResultSet rs = stmt.executeQuery(sql);
 
         return rs.next();
@@ -722,6 +742,127 @@ public class Database {
 
     	stmt.executeUpdate(sql);
     }
+   
+   public void updateDBAfterDecline(String cityName) throws SQLException {
+	   ResultSet rs;
+	   String sql = "DELETE FROM GCMCities WHERE name = '" + cityName + "'";
+	   stmt.executeUpdate(sql);
+	   
+	   sql = "INSERT INTO GCMCities SELECT * FROM Cities WHERE name = '" + cityName + "'";
+	   stmt.executeUpdate(sql);
+	   
+	   sql = "INSERT INTO GCMMaps SELECT * FROM Maps WHERE cityName = '" + cityName + "'";
+	   stmt.executeUpdate(sql);
+	   
+	   sql = "INSERT INTO GCMAttractions SELECT * FROM Attractions WHERE cityName = '" + cityName + "'";
+	   stmt.executeUpdate(sql);
+	   
+	   sql = "INSERT INTO GCMAttractionsMaps SELECT * FROM AttractionsMaps WHERE cityName = '" + cityName + "'";
+	   stmt.executeUpdate(sql);
+	   
+	   sql = "INSERT INTO GCMTours SELECT * FROM Tours WHERE cityName = '" + cityName + "'";
+	   stmt.executeUpdate(sql);
+	   
+	   sql = "INSERT INTO GCMToursAttractions SELECT * FROM ToursAttractions WHERE cityName = '" + cityName + "'";
+	   stmt.executeUpdate(sql);
+	   deleteFromCitiesQueue(cityName);
+   }
+   
+   public void updateDBAfterAccept(String cityName) throws SQLException {
+	   int newVersion = getCityVersion(cityName) + 1;
+	   String sql = "DELETE FROM Cities WHERE name = '" + cityName + "'";
+	   stmt.executeUpdate(sql);
+	   
+	   sql = "INSERT INTO Cities SELECT * FROM GCMCities WHERE name = '" + cityName + "'";
+	   stmt.executeUpdate(sql);
+	   
+	   sql = "INSERT INTO Maps SELECT * FROM GCMMaps WHERE cityName = '" + cityName + "'";
+	   stmt.executeUpdate(sql);
+	   
+	   sql = "INSERT INTO Attractions SELECT * FROM GCMAttractions WHERE cityName = '" + cityName + "'";
+	   stmt.executeUpdate(sql);
+	   
+	   sql = "INSERT INTO AttractionsMaps SELECT * FROM GCMAttractionsMaps WHERE cityName = '" + cityName + "'";
+	   stmt.executeUpdate(sql);
+	   
+	   sql = "INSERT INTO Tours SELECT * FROM GCMTours WHERE cityName = '" + cityName + "'";
+	   stmt.executeUpdate(sql);
+	   
+	   sql = "INSERT INTO ToursAttractions SELECT * FROM GCMToursAttractions WHERE cityName = '" + cityName + "'";
+	   stmt.executeUpdate(sql);
+	   
+	   sql = "UPDATE Cities SET version = '" + newVersion + "' WHERE name = '" + cityName + "'";
+	   stmt.executeUpdate(sql);
+
+	   deleteFromCitiesQueue(cityName);
+	  
+   }
     
-    
+   public void deleteFromCitiesQueue(String cityName) throws SQLException {
+	   String sql = "DELETE FROM CitiesQueue WHERE name = '" + cityName + "'";
+	   stmt.executeUpdate(sql);
+   }
+
+   public ArrayList<Map> getNewExternalMaps() throws SQLException {
+       ArrayList<Map> maps = new ArrayList<Map>();
+       String sql = "SELECT * FROM ExternalMaps LEFT JOIN GCMMaps on  ExternalMaps.id = GCMMaps.id WHERE GCMMaps.id IS NULL";
+       ResultSet rs = stmt.executeQuery(sql);
+       int mapID;
+       String description = "", cityName = "", imagePath = "";
+       while(rs.next()){
+    	   cityName = rs.getString(1);
+    	   mapID = rs.getInt(2);
+    	   description = rs.getString(3);
+    	   imagePath = rs.getString(4);
+    	   
+    	   maps.add(new Map(mapID, description, cityName, imagePath));
+       }
+       return  maps;
+   }
+   
+   public ArrayList<String> getCurrentPrices() throws SQLException {
+	   ArrayList<String> prices = new ArrayList<String>();
+	   String sql = "SELECT subscriptionPrice, oneTimePurchasePrice FROM Prices";
+	   ResultSet rs = stmt.executeQuery(sql);
+	   rs.next();
+	   prices.add(rs.getString(1));
+	   prices.add(rs.getString(2));
+	   return prices;
+   }
+   
+   public void sendNewPrices(String newOnePrice, String newSubsPrice) throws SQLException {
+	   String sql = "";
+	   if(!newOnePrice.isEmpty() && !newSubsPrice.isEmpty())
+			   sql = "UPDATE Prices SET nextSubscriptionPrice = '" + newSubsPrice + "', nextOneTimePurchasePrice = '" + newOnePrice +  "'";
+   	   
+	   else if (!newOnePrice.isEmpty())
+		   sql = "UPDATE Prices SET nextOneTimePurchasePrice = '" + newOnePrice +  "'";
+	   
+	   else if (!newSubsPrice.isEmpty())
+		   sql = "UPDATE Prices SET nextSubscriptionPrice = '" + newSubsPrice +  "'";
+	   stmt.executeUpdate(sql);
+   }
+   
+   public ArrayList<String> getPrices(String oldSubsPrice, String oldOnePrice, String newSubsPrice, String newOnePrice) throws SQLException {
+	   ArrayList<String> prices = new ArrayList<String>();
+	   String sql = "SELECT * FROM Prices";
+	   ResultSet rs = stmt.executeQuery(sql);
+	   rs.next();
+	   prices.add(rs.getString(1));
+	   prices.add(rs.getString(2));
+	   prices.add(rs.getString(3));
+	   prices.add(rs.getString(4));
+	   return prices;
+   }
+
+   public void updatePricesAfterAccept(String newSubsPrice, String newOnePrice) throws SQLException {
+	  String sql = "UPDATE Prices SET subscriptionPrice = '" + newSubsPrice + "', oneTimePurchasePrice = '" + newOnePrice + "', nextSubscriptionPrice = '" + -1 + "', nextOneTimePurchasePrice = '" + -1 + "'";
+	  stmt.executeUpdate(sql);
+	   
+   }
+   
+   public void updatePricesAfterDecline() throws SQLException {
+	   String sql = "UPDATE Prices SET nextSubscriptionPrice = '" + -1 + "', nextOneTimePurchasePrice = '" + -1 + "'";
+	   stmt.executeUpdate(sql);
+   }
 }

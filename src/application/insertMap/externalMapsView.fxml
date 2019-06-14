@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="400.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Button fx:id="backBtn" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#back" text="Back" />
+      <Button fx:id="importBtn" layoutX="124.0" layoutY="321.0" mnemonicParsing="false" onAction="#importAction" text="Import" />
+      <TableView fx:id="tableView" layoutX="57.0" layoutY="53.0" onMouseClicked="#userClickOnTable" prefHeight="156.0" prefWidth="187.0">
+        <columns>
+          <TableColumn fx:id="mapIDColumn" prefWidth="77.0" text="MapID" />
+          <TableColumn fx:id="cityNameColumn" prefWidth="109.0" text="City Name" />
+        </columns>
+      </TableView>
+      <Label layoutX="88.0" layoutY="26.0" prefHeight="27.0" prefWidth="125.0" text="External Maps">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="21.0" layoutY="217.0" text="Map Description:" />
+      <TextArea fx:id="descriptionFT" layoutX="57.0" layoutY="234.0" prefHeight="70.0" prefWidth="187.0" />
+      <Label fx:id="errorText" layoutX="88.0" layoutY="353.0" prefHeight="17.0" prefWidth="112.0" textFill="RED" />
+      <Label fx:id="successText" layoutX="88.0" layoutY="370.0" prefHeight="17.0" prefWidth="102.0" textFill="#00ff2f" />
+      <Button fx:id="insertCityBtn" layoutX="14.0" layoutY="358.0" mnemonicParsing="false" onAction="#insertCity" text="Insert City" />
+   </children>
+</AnchorPane>
