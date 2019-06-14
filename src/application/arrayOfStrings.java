@@ -1,8 +1,9 @@
 package application;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class arrayOfStrings {
+public class arrayOfStrings implements Serializable{
     private ArrayList<String> arrayList;
 
     public arrayOfStrings() {

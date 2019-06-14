@@ -5,16 +5,22 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 
 import Entities.Attraction;
 import Entities.AttractionTimePair;
 import Entities.City;
+import Entities.DownloadDetails;
 import Entities.Map;
+import Entities.PurchaseDetails;
+import Entities.Report;
 import Entities.SearchMapResult;
 import Entities.StringIntPair;
 import Entities.Tour;
+import Entities.ViewDetails;
+import application.arrayOfStrings;
 import application.customer.Customer;
 import javafx.collections.ObservableList;
 
@@ -877,4 +883,133 @@ public class Database {
         String sql = "UPDATE Prices SET nextSubscriptionPrice = '" + -1 + "', nextOneTimePurchasePrice = '" + -1 + "'";
         stmt.executeUpdate(sql);
     }
+    
+    public arrayOfStrings getCustomersCities() throws SQLException {
+    	arrayOfStrings cities = new arrayOfStrings();
+    	String sql = "SELECT name From Cities";
+        ResultSet rs = stmt.executeQuery(sql);
+        
+        while(rs.next())
+        {
+        	cities.getArrayList().add(rs.getString(1));
+        }
+        
+        return cities;
+    }
+    
+    public Report getCityReport(String cityName, LocalDate fromDate, LocalDate toDate) throws SQLException {
+    	int mapsCounter = getNumOfMaps(cityName);
+    	int oneTimeCounter = getNumOfOneTimeBetweenDates(cityName, fromDate, toDate);
+    	int subscriptionsCounter = getNumOfSubscriptionsBetweenDates(cityName, fromDate, toDate);
+    	int viewsCounter = getNumOfViewsBetweenDates(cityName, fromDate, toDate);
+    	int downloadsCounter = getNumOfDownloadsBetweenDates(cityName, fromDate, toDate);
+    	
+    	return (new Report(mapsCounter, oneTimeCounter, subscriptionsCounter, viewsCounter, downloadsCounter));
+    }
+    
+    
+	public int getNumOfOneTimeBetweenDates(String cityName, LocalDate fromDate, LocalDate toDate) {
+        int numOfOneTime = -1;
+        String sql = "SELECT COUNT(id) FROM PurchaseStatistics WHERE cityName = '" + cityName + "' AND purchaseType = 0 AND date BETWEEN '" + fromDate + "' AND '" + toDate + "'";
+        try {
+            ResultSet rs = stmt.executeQuery(sql);
+            if (rs.next())
+            	numOfOneTime = rs.getInt(1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return numOfOneTime;
+	}
+	
+	private int getNumOfSubscriptionsBetweenDates(String cityName, LocalDate fromDate, LocalDate toDate) {
+        int numOfSubs = -1;
+        String sql = "SELECT COUNT(id) FROM PurchaseStatistics WHERE cityName = '" + cityName + "' AND purchaseType = 1 AND date BETWEEN '" + fromDate + "' AND '" + toDate + "'";
+        try {
+            ResultSet rs = stmt.executeQuery(sql);
+            if (rs.next())
+            	numOfSubs = rs.getInt(1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return numOfSubs;
+	}
+    
+    private int getNumOfDownloadsBetweenDates(String cityName, LocalDate fromDate, LocalDate toDate) {
+        int numOfDownloads = -1;
+        String sql = "SELECT COUNT(id) FROM DownloadStatistics WHERE cityName = '" + cityName + "' AND date BETWEEN '" + fromDate + "' AND '" + toDate + "'";
+        try {
+            ResultSet rs = stmt.executeQuery(sql);
+            if (rs.next())
+            	numOfDownloads = rs.getInt(1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return numOfDownloads;
+	}
+
+	private int getNumOfViewsBetweenDates(String cityName, LocalDate fromDate, LocalDate toDate) {
+        int numOfView = -1;
+        String sql = "SELECT COUNT(id) FROM ViewStatistics WHERE cityName = '" + cityName + "' AND date BETWEEN '" + fromDate + "' AND '" + toDate + "'";
+        try {
+            ResultSet rs = stmt.executeQuery(sql);
+            if (rs.next())
+            	numOfView = rs.getInt(1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return numOfView;
+	}
+	
+	public boolean customerExists(String username) throws SQLException {
+        String sql = "SELECT * FROM Customers WHERE customerUsername = '" + username + "'";
+        ResultSet rs = stmt.executeQuery(sql);
+
+        return rs.next();
+	}
+	
+	public ArrayList<PurchaseDetails> getPurchases(String customerUsername) throws SQLException {
+		ArrayList<PurchaseDetails> purchases = new ArrayList<PurchaseDetails>();
+		String sql = "SELECT cityName, date, purchaseType FROM PurchaseStatistics WHERE customerUsername = '" + customerUsername + "'";
+        ResultSet rs = stmt.executeQuery(sql);
+        String cityName = "";
+        LocalDate date;
+        int purchaseType;
+        while(rs.next()) {
+        	cityName = rs.getString(1);
+        	date = LocalDate.parse(rs.getString(2));
+        	purchaseType = rs.getInt(3);
+        	purchases.add(new PurchaseDetails(cityName, date, purchaseType));
+        }
+        return purchases;
+	}
+	
+	public ArrayList<ViewDetails> getViews(String customerUsername) throws SQLException {
+		ArrayList<ViewDetails> views = new ArrayList<ViewDetails>();
+		String sql = "SELECT cityName, date, mapID FROM ViewStatistics WHERE customerUsername = '" + customerUsername + "'";
+        ResultSet rs = stmt.executeQuery(sql);
+        String cityName = "";
+        LocalDate date;
+        int mapID;
+        while(rs.next()) {
+        	cityName = rs.getString(1);
+        	date = LocalDate.parse(rs.getString(2));
+        	mapID = rs.getInt(3);
+        	views.add(new ViewDetails(cityName, date, mapID));
+        }
+        return views;
+	}
+	
+	public ArrayList<DownloadDetails> getDownloads(String customerUsername) throws SQLException {
+		ArrayList<DownloadDetails> downloads = new ArrayList<DownloadDetails>();
+		String sql = "SELECT cityName, date FROM DownloadStatistics WHERE customerUsername = '" + customerUsername + "'";
+        ResultSet rs = stmt.executeQuery(sql);
+        String cityName = "";
+        LocalDate date;
+        while(rs.next()) {
+        	cityName = rs.getString(1);
+        	date = LocalDate.parse(rs.getString(2));
+        	downloads.add(new DownloadDetails(cityName, date));
+        }
+        return downloads;
+	}
 }

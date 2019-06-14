@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<AnchorPane prefHeight="400.0" prefWidth="300.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8">
+   <children>
+      <Button fx:id="backBtn" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#back" prefHeight="30.0" prefWidth="56.0" text="Back" />
+      <Button fx:id="viewsHistoryBtn" layoutX="90.0" layoutY="102.0" mnemonicParsing="false" onAction="#viewHistory" prefHeight="41.0" prefWidth="121.0" text="Views History" />
+      <Button fx:id="purchasesHistoryBtn" layoutX="90.0" layoutY="165.0" mnemonicParsing="false" onAction="#purchasesHistory" prefHeight="41.0" prefWidth="121.0" text="Purchases History" />
+      <Button fx:id="downloadsHistoryBtn" layoutX="90.0" layoutY="228.0" mnemonicParsing="false" onAction="#downloadsHistory" prefHeight="41.0" prefWidth="121.0" text="Downloads History" />
+   </children>
+</AnchorPane>

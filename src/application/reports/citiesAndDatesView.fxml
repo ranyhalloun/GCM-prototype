@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="400.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Button fx:id="cityReportBtn" layoutX="106.0" layoutY="361.0" mnemonicParsing="false" onAction="#cityReport" text="City Report" />
+      <Button fx:id="backBtn" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#back" prefHeight="25.0" prefWidth="51.0" text="Back" />
+      <TableView fx:id="tableView" layoutX="44.0" layoutY="65.0" onMouseClicked="#userClickOnTable" prefHeight="200.0" prefWidth="200.0">
+        <columns>
+          <TableColumn fx:id="cityNameColumn" prefWidth="199.0" text="City Name" />
+        </columns>
+      </TableView>
+      <DatePicker fx:id="fromDate" layoutX="14.0" layoutY="315.0" prefHeight="25.0" prefWidth="120.0" promptText="From" />
+      <DatePicker fx:id="toDate" layoutX="166.0" layoutY="315.0" prefHeight="25.0" prefWidth="120.0" promptText="To" />
+      <Label fx:id="errorText" layoutX="66.0" layoutY="298.0" prefHeight="17.0" prefWidth="174.0" textFill="RED" />
+   </children>
+</AnchorPane>

@@ -6,8 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-
-<AnchorPane prefHeight="400.0" prefWidth="300.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8">
+<AnchorPane prefHeight="400.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Label layoutX="33.0" layoutY="42.0" text="Company Manager Services">
          <font>
@@ -18,5 +17,6 @@
       <Button fx:id="searchMapBtn" layoutX="93.0" layoutY="103.0" mnemonicParsing="false" onAction="#searchMap" prefHeight="35.0" prefWidth="112.0" text="Search Map" />
       <Button fx:id="insertMapBtn" layoutX="95.0" layoutY="152.0" mnemonicParsing="false" onAction="#insertMap" prefHeight="35.0" prefWidth="112.0" text="Insert Map" />
       <Button fx:id="checkNewPricesBtn" layoutX="94.0" layoutY="200.0" mnemonicParsing="false" onAction="#checkNewPrices" prefHeight="35.0" prefWidth="112.0" text="Check New Prices" />
+      <Button fx:id="citiesReportsBtn" layoutX="95.0" layoutY="247.0" mnemonicParsing="false" onAction="#citiesReports" prefHeight="35.0" prefWidth="112.0" text="Cities Reports" />
    </children>
 </AnchorPane>
