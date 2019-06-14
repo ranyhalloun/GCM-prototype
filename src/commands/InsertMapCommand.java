@@ -1,28 +1,25 @@
 package commands;
 import java.io.Serializable;
+import java.util.ArrayList;
+import Entities.Map;
 
 public class InsertMapCommand implements Serializable {
+    
     // Input
-    private int id;
-    private String cityName;
-    private String description;
-    private String imagePath;
+    private Map map;
     
     // Output
-    private int success;
+    private boolean success;
     private String error = "";
     
     // Constructor
-    public InsertMapCommand(int id, String cityName, String description, String imagePath) {
-        this.id = id;
-        this.cityName = cityName;
-        this.description = description;
-        this.imagePath = imagePath;
-        this.success = -1;
+    public InsertMapCommand(Map map) {
+        this.map = map;
+        this.success = false;
     }
     
     // Setters
-    public void setSuccess(int success) {
+    public void setSuccess(boolean success) {
         this.success = success;
     }
     
@@ -31,28 +28,18 @@ public class InsertMapCommand implements Serializable {
     }
     
     // Getters
-    public int getID() {
-        return this.id;
-    }
+
     
-    public String getCityName() {
-        return this.cityName;
-    }
-    
-    public String getDescription() {
-        return this.description;
-    }
-    
-    public String getImagePath() {
-        return this.imagePath;
-    }
-    
-    public int getSuccess() {
+    public boolean getSuccess() {
         return this.success;
     }
     
     public String getError() {
         return this.error;
+    }
+    
+    public Map getMap() {
+        return map;
     }
     
 }

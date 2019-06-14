@@ -10,12 +10,15 @@ import Entities.SearchMapResult;
 import Entities.StringIntPair;
 import Entities.Tour;
 import Users.UserType;
+import application.companyManager.companyManagerServicesController;
+import application.companyManager.pricesController;
 import application.connection.connectionController;
 import application.customer.Customer;
 import application.customer.customerProfileController;
 import application.customer.customerServicesController;
 import application.gcmWorker.gcmWorkerController;
-import application.insertMap.insertMapController;
+import application.insertMap.externalMapsController;
+import application.insertMap.insertCityController;
 import application.login.loginController;
 import application.login.registrationController;
 import application.searchmap.addAttractionToTourController;
@@ -42,6 +45,7 @@ import javafx.collections.ObservableList;
 import java.util.ArrayList;
 import application.gcmManager.gcmManagerServicesController;
 import application.gcmManager.requestListController;
+import application.gcmManager.changePricesController;
 import application.gcmWorker.requestApprovalController;
 
 public class Main extends Application {
@@ -177,6 +181,14 @@ public class Main extends Application {
         mainLayout.getChildren().setAll(gcmManagerServicesView);
     }
 	
+	public void goToCompanyManagerServices() throws IOException
+    {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("companyManager/companyManagerServicesView.fxml"));
+        loader.setController(new companyManagerServicesController());
+        AnchorPane companyManagerServicesView = loader.load();
+        mainLayout.getChildren().setAll(companyManagerServicesView);
+    }
+	
 	public void goToCheckRequests() throws IOException{
         arrayOfStrings cities = new arrayOfStrings();
         gcmClient.handleGetCitiesQueue(cities);
@@ -190,11 +202,11 @@ public class Main extends Application {
 
     }
 
-    public void goToRequestApproval() throws IOException{
+    public void goToRequestApproval(String errorMessage) throws IOException{
         FXMLLoader loader = new FXMLLoader(getClass().getResource("gcmWorker/requestApprovalView.fxml"));
-        loader.setController(new requestApprovalController());
-        AnchorPane insertMapView = loader.load();
-        mainLayout.getChildren().setAll(insertMapView);
+        loader.setController(new requestApprovalController(errorMessage));
+        AnchorPane requestApprovalView = loader.load();
+        mainLayout.getChildren().setAll(requestApprovalView);
     }
 
     public void goToRegistration(String errorMessage) throws IOException
@@ -241,13 +253,21 @@ public class Main extends Application {
         mainLayout.getChildren().setAll(loginView);
     }
     
-    public void insertNewMap(int id, String cityName, String description, String imagePath) throws IOException {
-        gcmClient.handleInsertNewMap(id, cityName, description, imagePath);
+    public void insertNewMap(Map map, ArrayList<Map> maps) throws IOException {
+        gcmClient.handleInsertNewMap(map, maps);
     }
     
-    public void goToInsertNewMap() throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("insertMap/insertMap.fxml"));
-        loader.setController(new insertMapController());
+    public void checkCityExistance(String cityName, Map map, ArrayList<Map> maps) throws IOException{
+        gcmClient.handleCheckCityExistance(cityName, map, maps);
+    }
+
+    public void getNewExternalMaps() throws IOException {
+        gcmClient.handleGetNewExternalMaps();
+    }
+    
+    public void goToExternalMaps(ArrayList<Map> maps, String successMessage, String errorMessage) throws IOException{
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("insertMap/externalMapsView.fxml"));
+        loader.setController(new externalMapsController(maps, successMessage, errorMessage));
         AnchorPane insertMapView = loader.load();
         mainLayout.getChildren().setAll(insertMapView);
     }
@@ -282,8 +302,61 @@ public class Main extends Application {
         mainLayout.getChildren().setAll(addAttractionToTourView);
     }
     
+    public void goToInsertNewCity(ArrayList<Map> maps, String errorMessage, String successMessage) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("insertMap/insertCityView.fxml"));
+        loader.setController(new insertCityController(maps, errorMessage, successMessage));
+        AnchorPane insertCityView = loader.load();
+        mainLayout.getChildren().setAll(insertCityView);
+    }
+
+    public void insertNewCity(ArrayList<Map> maps, String cityName, String description) throws IOException {
+        gcmClient.handleInsertNewCity(maps, cityName, description);
+    }
+    
     public void addAttractionToTour(String attractionID, int tourID, int time, String cityName) throws IOException {
         gcmClient.handleAddAttractionsToTour(attractionID, tourID, time, cityName);
+    }
+    
+    public void updateDBAfterDecline(String cityName) throws IOException {
+        gcmClient.handleUpdateDBAfterDecline(cityName);
+    }
+
+    public void updateDBAfterAccept(String cityName) throws IOException{
+        gcmClient.handleUpdateDBAfterAccept(cityName);
+    }
+
+    public void goToPricesView(String oldSubsPrice, String oldOnePrice, String newSubsPrice, String newOnePrice) throws IOException{
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("companyManager/pricesView.fxml"));
+        loader.setController(new pricesController(oldSubsPrice, oldOnePrice, newSubsPrice, newOnePrice));
+        AnchorPane pricesView = loader.load();
+        mainLayout.getChildren().setAll(pricesView);
+    }
+    
+    public void getPrices() throws IOException{
+        gcmClient.handleGetPrices();
+    }
+
+    public void updatePricesAfterAccept(String newSubsPrice, String newOnePrice) throws IOException{
+        gcmClient.handleUpdatePricesAfterAccept(newSubsPrice, newOnePrice);
+    }
+
+    public void updatePricesAfterDecline() throws IOException{
+        gcmClient.handleUpdatePricesAfterDecline();
+    }
+
+    public void changePrices() throws IOException{
+        gcmClient.handleChangePrices();
+    }
+
+    public void goToChangePrices(String oldSubsPrice, String oldOnePrice, String errorMessage) throws IOException{
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("gcmManager/changePricesView.fxml"));
+        loader.setController(new changePricesController(oldSubsPrice, oldOnePrice, errorMessage));
+        AnchorPane addAttractionToTourView = loader.load();
+        mainLayout.getChildren().setAll(addAttractionToTourView);
+    }
+
+    public void sendNewPrices(String newSubsPrice, String newOnePrice)throws IOException{
+        gcmClient.handleSendNewPrices(newOnePrice, newSubsPrice);
     }
 
     public void goToAddTourToCity(String cityName) throws IOException {

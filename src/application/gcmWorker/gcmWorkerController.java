@@ -34,7 +34,7 @@ public class gcmWorkerController {
     @FXML
     void goToInsertMap(ActionEvent event) throws IOException {
         System.out.println("Go to insert map");
-        Main.getInstance().goToInsertNewMap();
+        Main.getInstance().getNewExternalMaps();
     }
 
     @FXML
@@ -52,7 +52,7 @@ public class gcmWorkerController {
     @FXML
     void requestApproval(ActionEvent event) throws IOException {
         System.out.println("Going to requestApproval");
-        Main.getInstance().goToRequestApproval();
+        Main.getInstance().goToRequestApproval("");
     }
 
     @FXML

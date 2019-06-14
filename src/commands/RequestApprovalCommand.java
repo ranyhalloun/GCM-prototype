@@ -8,16 +8,16 @@ public class RequestApprovalCommand implements Serializable {
     private String cityName;
 
     // Output
-    private boolean success;
+    private int success;
 
     // Constructor
     public RequestApprovalCommand(String cityName) {
         this.cityName = cityName;
-        this.success = false;
+        this.success = -1;
     }
 
     // Setters
-    public void setSuccess(boolean success) {
+    public void setSuccess(int success) {
         this.success = success;
     }
 
@@ -26,7 +26,7 @@ public class RequestApprovalCommand implements Serializable {
         return this.cityName;
     }
 
-    public boolean getSuccess() {
+    public int getSuccess() {
         return this.success;
     }
 

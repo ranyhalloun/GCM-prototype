@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="400.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label layoutX="21.0" layoutY="58.0" text="City Name:" />
+      <TextField fx:id="cityName" layoutX="93.0" layoutY="54.0" />
+      <Label layoutX="21.0" layoutY="123.0" text="City Description:" />
+      <TextArea fx:id="descriptionFT" layoutX="64.0" layoutY="147.0" prefHeight="78.0" prefWidth="185.0" />
+      <Button fx:id="createBtn" layoutX="124.0" layoutY="287.0" mnemonicParsing="false" onAction="#create" text="Create" />
+      <Button fx:id="backBtn" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#back" prefHeight="25.0" prefWidth="51.0" text="Back" />
+      <Label fx:id="errorText" layoutX="94.0" layoutY="91.0" prefHeight="17.0" prefWidth="123.0" textFill="RED" />
+      <Label fx:id="successText" layoutX="89.0" layoutY="327.0" prefHeight="17.0" prefWidth="123.0" textFill="#01ae18" />
+   </children>
+</AnchorPane>

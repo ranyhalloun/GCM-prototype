@@ -16,6 +16,9 @@ public class gcmManagerServicesController {
     private Button searchMapBtn;
 
     @FXML
+    private Button changePricesBtn;
+    
+    @FXML
     private Button logOutBtn;
 
     @FXML
@@ -30,7 +33,7 @@ public class gcmManagerServicesController {
     @FXML
     void insertMap(ActionEvent event) throws IOException {
         System.out.println("Going to insert map");
-        Main.getInstance().goToInsertNewMap();
+        Main.getInstance().getNewExternalMaps();
     }
 
     @FXML
@@ -43,6 +46,12 @@ public class gcmManagerServicesController {
     void logOut(ActionEvent event) throws IOException {
         System.out.println("Logging out");
         Main.getInstance().goToLogin("");
+    }
+    
+    @FXML
+    void changePrices(ActionEvent event) throws IOException {
+        System.out.println("Going to change prices");
+        Main.getInstance().changePrices();
     }
 
 

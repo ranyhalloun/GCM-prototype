@@ -19,6 +19,7 @@ import application.arrayOfStrings;
 import application.boolObject;
 import application.customer.Customer;
 import commands.AddAttractionToTourCommand;
+import commands.CheckCityExistanceCommand;
 import commands.AddTourToCityCommand;
 import commands.Command;
 import commands.CommandType;
@@ -28,16 +29,25 @@ import commands.GetAttractionsOfCityCommand;
 import commands.GetCitiesQueueCommand;
 import commands.GetCityToursCommand;
 import commands.GetCustomerInfoCommand;
+import commands.GetNewExternalMapsCommand;
+import commands.GetOldPricesCommand;
+import commands.GetPricesCommand;
 import commands.GetMapInfoFromIDCommand;
 import commands.GetTourInfoFromIDCommand;
 import commands.InsertMapCommand;
+import commands.InsertNewCityCommand;
 import commands.RegisterCommand;
 import commands.RemoveAttractionFromTourCommand;
 import commands.RemoveTourFromCityToursCommand;
 import commands.RequestApprovalCommand;
 import commands.SearchCityCommand;
 import commands.SearchMapCommand;
+import commands.SendNewPricesCommand;
 import commands.SigninCommand;
+import commands.UpdateDBAfterAcceptCommand;
+import commands.UpdateDBAfterDeclineCommand;
+import commands.UpdatePricesAfterAcceptCommand;
+import commands.UpdatePricesAfterDeclineCommand;
 import javafx.collections.ObservableList;
 import application.login.registrationController;
 
@@ -115,7 +125,7 @@ public class GCMClient extends AbstractClient {
                     Main.getInstance().goToGCMManagerServices();
                     break;
                 case CompanyManager:
-                    // CompanyManager Windows
+                    Main.getInstance().goToCompanyManagerServices();
                     break;
             }
         }
@@ -218,31 +228,45 @@ public class GCMClient extends AbstractClient {
         return maps;
     }
     
-    public void handleInsertNewMap(int id, String cityName, String description, String imagePath) throws IOException
+    public void handleInsertNewMap(Map map, ArrayList<Map> maps) throws IOException
     {
     	commandRequest = true;
         System.out.println("handleInsertNewMap");
-        Command command = new Command(new InsertMapCommand(id, cityName, description, imagePath), CommandType.InsertMapCommand);;
+        Command command = new Command(new InsertMapCommand(map), CommandType.InsertMapCommand);;
         sendToServer(command);
         waitForServerResponse();
-        handleInsertNewMapFromServer();
+        maps.remove(map);
+        handleInsertNewMapFromServer(maps);
     }
     
-    public void handleInsertNewMapFromServer() {
+    public void handleInsertNewMapFromServer(ArrayList<Map> maps) throws IOException {
     	System.out.println("handleInsertNewMapFromServer");
-        int success = command.getCommand(InsertMapCommand.class).getSuccess();
-        switch (success) {
-        case -1:
-            System.out.println("There is a problem in the database connection");
-            break;
-        case 0:
-            System.out.println("Map exists. Please choose another map(change mapID).");
-            break;
-        case 1:
-            System.out.println("Map insertion completed!");
-            break;
-        }
+    	boolean success = command.getCommand(InsertMapCommand.class).getSuccess();
+        Main.getInstance().goToExternalMaps(maps, "Map inserted", "");
     }
+    
+    public void handleCheckCityExistance(String cityName, Map map, ArrayList<Map> maps) throws IOException{
+        commandRequest = true;
+        System.out.println("handleCheckCityExistance");
+        Command command = new Command(new CheckCityExistanceCommand(cityName), CommandType.CheckCityExistanceCommand);;
+        sendToServer(command);
+        waitForServerResponse();
+        handleCheckCityExistanceFromServer(map, maps);
+    }
+
+    public void handleCheckCityExistanceFromServer(Map map, ArrayList<Map> maps) throws IOException{
+        System.out.println("handleCheckCityExistanceFromServer");
+        boolean success = command.getCommand(CheckCityExistanceCommand.class).getSuccess();
+        String cityName = command.getCommand(CheckCityExistanceCommand.class).getCityName();
+        System.out.println(success);
+        if(!success) {
+            System.out.println("Create City");
+            Main.getInstance().goToExternalMaps(maps, "", "City doesn't exist!");
+        }
+        else
+            Main.getInstance().insertNewMap(map, maps);
+    }
+    
     public void handleGetCustomerInfo(Customer customer) throws IOException
     {
     	
@@ -320,11 +344,25 @@ public class GCMClient extends AbstractClient {
 
     public void handleRequestApprovalFromServer(String cityName) {
         System.out.println("handleEditingCustomerInfoFromServer");
-        boolean success = command.getCommand(RequestApprovalCommand.class).getSuccess();
-        if (success)
-            System.out.println("Request have sent successfully!");
-        else
-            System.out.println("CityName doesn't exist! OR already sent");
+        int success = command.getCommand(RequestApprovalCommand.class).getSuccess();
+        switch(success){
+            case 1: 
+                System.out.println("Request have sent successfully!");
+                break;
+            case -1:
+                try {
+                    Main.getInstance().goToRequestApproval("CityName doesn't exist!");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
+            default: 
+                try {
+                    Main.getInstance().goToRequestApproval("CityName already sent!");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+        }
     }
     
     public void handleRemoveTourFromCityTours(int tourID) throws IOException {
@@ -441,6 +479,157 @@ public class GCMClient extends AbstractClient {
             System.out.println("Attractions added successfully to tour!");
         else
             System.out.println("Failed to add attraction to tour!");
+    }
+    
+    public void handleUpdateDBAfterDecline(String cityName) throws IOException {
+        commandRequest = true;
+        System.out.println("handleUpdateDBAfterDecline");
+        Command command = new Command(new UpdateDBAfterDeclineCommand(cityName), CommandType.UpdateDBAfterDeclineCommand);
+        sendToServer(command);
+        waitForServerResponse();
+        handleUpdateDBAfterDeclineCommandFromServer();
+    }
+
+    public void handleUpdateDBAfterDeclineCommandFromServer() {
+        System.out.println("handleUpdateDBAfterDeclineCommandFromServer");
+        boolean success = command.getCommand(UpdateDBAfterDeclineCommand.class).getSuccess();
+        if (success)
+            System.out.println("DB updated successfully after decline!");
+        else
+            System.out.println("Failed to update DB after decline!");
+    }
+
+    public void handleUpdateDBAfterAccept(String cityName) throws IOException {
+        commandRequest = true;
+        System.out.println("handleUpdateDBAfterAccept");
+        Command command = new Command(new UpdateDBAfterAcceptCommand(cityName), CommandType.UpdateDBAfterAcceptCommand);
+        sendToServer(command);
+        waitForServerResponse();
+        handleUpdateDBAfterAcceptCommandFromServer();
+    }
+
+    public void handleUpdateDBAfterAcceptCommandFromServer() {
+        System.out.println("handleUpdateDBAfterAcceptCommandFromServer");
+        boolean success = command.getCommand(UpdateDBAfterAcceptCommand.class).getSuccess();
+        if (success)
+            System.out.println("DB updated successfully after accept!");
+        else
+            System.out.println("Failed to update DB after accept!");
+    }
+
+    public void handleGetNewExternalMaps() throws IOException{
+        commandRequest = true;
+        System.out.println("handleGetNewExternalMaps");
+        Command command = new Command(new GetNewExternalMapsCommand(), CommandType.GetNewExternalMapsCommand);
+        sendToServer(command);
+        waitForServerResponse();
+        handleGetNewExternalMapsCommandFromServer();
+    }
+
+    public void handleGetNewExternalMapsCommandFromServer() throws IOException {
+        System.out.println("handleGetExternalMapsCommandFromServer");
+        boolean success = command.getCommand(GetNewExternalMapsCommand.class).getSuccess();
+        ArrayList<Map> maps = command.getCommand(GetNewExternalMapsCommand.class).getMaps();
+        if (success) {
+            System.out.println("External maps got successfully!");
+            Main.getInstance().goToExternalMaps(maps, "", "");        }
+        else
+            System.out.println("Failed to get external maps!");
+    }
+
+    public void handleInsertNewCity(ArrayList<Map> maps, String cityName, String description) throws IOException {
+        commandRequest = true;
+        System.out.println("handleInsertNewCity");
+        Command command = new Command(new InsertNewCityCommand(cityName, description), CommandType.InsertNewCityCommand);
+        sendToServer(command);
+        waitForServerResponse();
+        handleInsertNewCityFromServer(maps);
+    }
+
+    public void handleInsertNewCityFromServer(ArrayList<Map> maps) throws IOException {
+        System.out.println("handleInsertNewCityFromServer");
+        boolean success = command.getCommand(InsertNewCityCommand.class).getSuccess();
+        if (success) {
+            Main.getInstance().goToInsertNewCity(maps, "", "City inserted");        }
+        else
+            Main.getInstance().goToInsertNewCity(maps, "City Exists", "");
+    }
+
+    public void handleChangePrices() throws IOException {
+        commandRequest = true;
+        System.out.println("handleChangePrices");
+        Command command = new Command(new GetOldPricesCommand(), CommandType.GetOldPricesCommand);
+        sendToServer(command);
+        waitForServerResponse();
+        handleChangePricesFromServer();
+    }
+
+    public void handleChangePricesFromServer() throws IOException{
+        System.out.println("handleChangePricesFromServer");
+        String oldSubsPrice = command.getCommand(GetOldPricesCommand.class).getSubscriptionPrice();
+        String oldOnePrice = command.getCommand(GetOldPricesCommand.class).getOneTimePurchasePrice();
+        Main.getInstance().goToChangePrices(oldSubsPrice, oldOnePrice, "");
+    }
+
+    public void handleSendNewPrices(String newOnePrice, String newSubsPrice) throws IOException{
+        commandRequest = true;
+        System.out.println("handleSendNewPrices");
+        Command command = new Command(new SendNewPricesCommand(newOnePrice, newSubsPrice), CommandType.SendNewPricesCommand);
+        sendToServer(command);
+        waitForServerResponse();
+        handleSendNewPricesFromServer();
+    }
+
+    public void handleSendNewPricesFromServer() throws IOException{
+        System.out.println("handleSendNewPricesFromServer");
+        Main.getInstance().goToGCMManagerServices();
+    }
+
+    public void handleGetPrices() throws IOException{
+        commandRequest = true;
+        System.out.println("handleGetPrices");
+        Command command = new Command(new GetPricesCommand(), CommandType.GetPricesCommand);
+        sendToServer(command);
+        waitForServerResponse();
+        handleGetPricesFromServer();
+    }
+
+    public void handleGetPricesFromServer() throws IOException{
+        System.out.println("handleSendNewPricesFromServer");
+        String oldSubsPrice = command.getCommand(GetPricesCommand.class).getOldSubs();
+        String oldOnePrice = command.getCommand(GetPricesCommand.class).getOldOne();
+        String newSubsPrice = command.getCommand(GetPricesCommand.class).getNewSubs();
+        String newOnePrice = command.getCommand(GetPricesCommand.class).getNewOne();
+
+        Main.getInstance().goToPricesView(oldSubsPrice, oldOnePrice, newSubsPrice, newOnePrice);
+    }
+
+    public void handleUpdatePricesAfterAccept(String newSubsPrice, String newOnePrice) throws IOException{
+        commandRequest = true;
+        System.out.println("handleUpdatePricesAfterAccept");
+        Command command = new Command(new UpdatePricesAfterAcceptCommand(newSubsPrice, newOnePrice), CommandType.UpdatePricesAfterAcceptCommand);
+        sendToServer(command);
+        waitForServerResponse();
+        handleUpdatePricesAfterAcceptFromServer();
+    }
+
+    public void handleUpdatePricesAfterAcceptFromServer() throws IOException{
+        System.out.println("handleUpdatePricesAfterAcceptFromServer");
+        Main.getInstance().goToCompanyManagerServices();
+    }
+
+    public void handleUpdatePricesAfterDecline() throws IOException{
+        commandRequest = true;
+        System.out.println("handleUpdatePricesAfterAccept");
+        Command command = new Command(new UpdatePricesAfterDeclineCommand(), CommandType.UpdatePricesAfterDeclineCommand);
+        sendToServer(command);
+        waitForServerResponse();
+        handleUpdatePricesAfterDeclineFromServer();
+    }
+
+    public void handleUpdatePricesAfterDeclineFromServer() throws IOException{
+        System.out.println("handleUpdatePricesAfterDeclineFromServer");
+        Main.getInstance().goToCompanyManagerServices();
     }
     
     @Override
