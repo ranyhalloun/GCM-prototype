@@ -29,7 +29,13 @@ public enum CommandType
     SendNewPricesCommand(25),
     GetPricesCommand(26),
     UpdatePricesAfterAcceptCommand(27),
-    UpdatePricesAfterDeclineCommand(28);
+    UpdatePricesAfterDeclineCommand(28),
+    GetCustomersCitiesCommand(29),
+    GetCityReportCommand(30),
+    CheckCustomerCommand(31),
+    GetPurchasesCommand(32),
+    GetViewsCommand(33),
+	GetDownloadsCommand(34);
     
     private int CommandTypeValue;
 

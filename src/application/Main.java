@@ -1,14 +1,19 @@
 package application;
 
 import java.io.IOException;
+import java.time.LocalDate;
 
 import Entities.Attraction;
 import Entities.AttractionTimePair;
 import Entities.City;
+import Entities.DownloadDetails;
 import Entities.Map;
+import Entities.PurchaseDetails;
+import Entities.Report;
 import Entities.SearchMapResult;
 import Entities.StringIntPair;
 import Entities.Tour;
+import Entities.ViewDetails;
 import Users.UserType;
 import application.companyManager.companyManagerServicesController;
 import application.companyManager.pricesController;
@@ -21,6 +26,13 @@ import application.insertMap.externalMapsController;
 import application.insertMap.insertCityController;
 import application.login.loginController;
 import application.login.registrationController;
+import application.reports.citiesAndDatesController;
+import application.reports.cityReportController;
+import application.reports.customerReportController;
+import application.reports.downloadsHistoryController;
+import application.reports.purchasesHistoryController;
+import application.reports.searchCustomerController;
+import application.reports.viewsHistoryController;
 import application.searchmap.addAttractionToTourController;
 import application.searchmap.attractionController;
 import application.searchmap.cityController;
@@ -368,6 +380,68 @@ public class Main extends Application {
 
     public void addTourToCity(String cityName, String description) throws IOException {
         gcmClient.handleAddTourToCity(cityName, description);
+    }
+    
+    public void goToCityReport(String cityName, LocalDate fromDate, LocalDate toDate) throws IOException {
+        Report report = gcmClient.handleGetCityReport(cityName, fromDate, toDate);
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("reports/cityReportView.fxml"));
+        loader.setController(new cityReportController(report, cityName));
+        AnchorPane cityReportView = loader.load();
+        mainLayout.getChildren().setAll(cityReportView);
+    }
+    
+    public void goToCitiesReport(String errorMessage) throws IOException {
+        arrayOfStrings cities = gcmClient.handleGetCustomersCities();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("reports/citiesAndDatesView.fxml"));
+        loader.setController(new citiesAndDatesController(cities.getArrayList(), errorMessage));
+        AnchorPane citiesAndDatesView = loader.load();
+        mainLayout.getChildren().setAll(citiesAndDatesView);
+    }
+    
+    public void goToSearchCustomer(String errorMessage) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("reports/searchCustomerView.fxml"));
+        loader.setController(new searchCustomerController(errorMessage));
+        AnchorPane searchCustomerView = loader.load();
+        mainLayout.getChildren().setAll(searchCustomerView);
+    }
+    
+    public void CheckCustomer(String username)throws IOException {
+    	gcmClient.handleCheckCustomer(username);
+    }
+    
+    public void goToCustomerReport(String username) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("reports/customerReportView.fxml"));
+        loader.setController(new customerReportController(username));
+        AnchorPane customerReportView = loader.load();
+        mainLayout.getChildren().setAll(customerReportView);
+    }
+    
+    
+    public void goToPurchasesHistory(String customerUsername) throws IOException {
+        
+    	ArrayList<PurchaseDetails> purchases = gcmClient.handleGetPurchases(customerUsername);
+    	FXMLLoader loader = new FXMLLoader(getClass().getResource("reports/purchasesHistoryView.fxml"));
+        loader.setController(new purchasesHistoryController(customerUsername, purchases));
+        AnchorPane purchasesHistoryView = loader.load();
+        mainLayout.getChildren().setAll(purchasesHistoryView);
+    }
+    
+    public void goToViewsHistory(String customerUsername) throws IOException {
+        
+    	ArrayList<ViewDetails> views = gcmClient.handleGetViews(customerUsername);
+    	FXMLLoader loader = new FXMLLoader(getClass().getResource("reports/viewsHistoryView.fxml"));
+        loader.setController(new viewsHistoryController(customerUsername, views));
+        AnchorPane viewsHistoryView = loader.load();
+        mainLayout.getChildren().setAll(viewsHistoryView);
+    }
+    
+    public void goToDownloadsHistory(String customerUsername) throws IOException {
+        
+    	ArrayList<DownloadDetails> downloads = gcmClient.handleGetDownloads(customerUsername);
+    	FXMLLoader loader = new FXMLLoader(getClass().getResource("reports/downloadsHistoryView.fxml"));
+        loader.setController(new downloadsHistoryController(customerUsername, downloads));
+        AnchorPane downloadsHistoryView = loader.load();
+        mainLayout.getChildren().setAll(downloadsHistoryView);
     }
 
     public void updateUserType(UserType userType) {

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<AnchorPane prefHeight="400.0" prefWidth="300.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8">
+   <children>
+      <Label layoutX="73.0" layoutY="46.0" prefHeight="36.0" prefWidth="155.0" text="Purchases History">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Label>
+      <Button fx:id="backBtn" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#back" prefHeight="25.0" prefWidth="52.0" text="Back" />
+      <TableView fx:id="tableView" layoutX="14.0" layoutY="100.0" prefHeight="200.0" prefWidth="276.0">
+        <columns>
+          <TableColumn fx:id="cityNameColumn" prefWidth="89.0" text="City Name" />
+          <TableColumn fx:id="dateColumn" prefWidth="81.0" text="Date" />
+            <TableColumn fx:id="purchaseTypeColumn" prefWidth="104.0" text="Purchase Type" />
+        </columns>
+      </TableView>
+   </children>
+</AnchorPane>

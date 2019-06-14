@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<AnchorPane prefHeight="400.0" prefWidth="300.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8">
+   <children>
+      <Button fx:id="backBtn" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#back" prefHeight="25.0" prefWidth="53.0" text="Back" />
+      <Label layoutX="68.0" layoutY="59.0" prefHeight="27.0" prefWidth="164.0" text="Downloads History">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Label>
+      <TableView fx:id="tableView" layoutX="50.0" layoutY="100.0" prefHeight="200.0" prefWidth="200.0">
+        <columns>
+          <TableColumn fx:id="cityNameColumn" prefWidth="99.0" text="City Name" />
+          <TableColumn fx:id="dateColumn" prefWidth="100.0" text="Date" />
+        </columns>
+      </TableView>
+   </children>
+</AnchorPane>

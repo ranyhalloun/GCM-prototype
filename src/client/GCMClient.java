@@ -3,13 +3,18 @@ package client;
 import ocsf.client.*;
 
 import java.io.*;
+import java.time.LocalDate;
 import java.util.concurrent.TimeUnit;
 
 import Entities.Attraction;
 import Entities.City;
+import Entities.DownloadDetails;
 import Entities.Map;
+import Entities.PurchaseDetails;
+import Entities.Report;
 import Entities.StringIntPair;
 import Entities.Tour;
+import Entities.ViewDetails;
 
 import java.util.ArrayList;
 
@@ -20,6 +25,7 @@ import application.boolObject;
 import application.customer.Customer;
 import commands.AddAttractionToTourCommand;
 import commands.CheckCityExistanceCommand;
+import commands.CheckCustomerCommand;
 import commands.AddTourToCityCommand;
 import commands.Command;
 import commands.CommandType;
@@ -27,13 +33,18 @@ import commands.ConnectionCommand;
 import commands.EditCustomerInfoCommand;
 import commands.GetAttractionsOfCityCommand;
 import commands.GetCitiesQueueCommand;
+import commands.GetCityReportCommand;
 import commands.GetCityToursCommand;
 import commands.GetCustomerInfoCommand;
+import commands.GetCustomersCitiesCommand;
+import commands.GetDownloadsCommand;
 import commands.GetNewExternalMapsCommand;
 import commands.GetOldPricesCommand;
 import commands.GetPricesCommand;
+import commands.GetPurchasesCommand;
 import commands.GetMapInfoFromIDCommand;
 import commands.GetTourInfoFromIDCommand;
+import commands.GetViewsCommand;
 import commands.InsertMapCommand;
 import commands.InsertNewCityCommand;
 import commands.RegisterCommand;
@@ -312,6 +323,20 @@ public class GCMClient extends AbstractClient {
             System.out.println("Cities info got successfully!");
         else
             System.out.println("There is a problem in the database connection");
+    }
+    
+    public arrayOfStrings handleGetCustomersCities() throws IOException {
+    	commandRequest = true;
+        System.out.println("handleGetCustomersCities");
+        Command command = new Command(new GetCustomersCitiesCommand(), CommandType.GetCustomersCitiesCommand);
+        sendToServer(command);
+        waitForServerResponse();
+        return handleGetCustomersCitiesFromServer();
+    }
+    
+    public arrayOfStrings handleGetCustomersCitiesFromServer() {
+        System.out.println("handleGetCustomersCitiesFromServer");
+        return command.getCommand(GetCustomersCitiesCommand.class).getCities();
     }
     
     public void handleEditingCustomerInfo(Customer customer, String oldUsername, boolObject exists) throws IOException
@@ -632,6 +657,79 @@ public class GCMClient extends AbstractClient {
         Main.getInstance().goToCompanyManagerServices();
     }
     
+    public Report handleGetCityReport(String cityName, LocalDate fromDate, LocalDate toDate) throws IOException{
+        commandRequest = true;
+        System.out.println("handleGetCityReport");
+        Command command = new Command(new GetCityReportCommand(cityName, fromDate, toDate), CommandType.GetCityReportCommand);
+        sendToServer(command);
+        waitForServerResponse();
+        return handleGetCityReportFromServer();
+    }
+    
+    public Report handleGetCityReportFromServer() throws IOException{
+        System.out.println("handleSendNewPricesFromServer");
+        return command.getCommand(GetCityReportCommand.class).getReport();
+    }
+    
+    public void handleCheckCustomer(String username) throws IOException{
+        commandRequest = true;
+        System.out.println("handleCheckCustomer");
+        Command command = new Command(new CheckCustomerCommand(username), CommandType.CheckCustomerCommand);
+        sendToServer(command);
+        waitForServerResponse();
+        handleCheckCustomerFromServer(username);
+    }
+    
+    public void handleCheckCustomerFromServer(String username) throws IOException{
+        System.out.println("handleCheckCustomerFromServer");
+        if(command.getCommand(CheckCustomerCommand.class).getExists())
+        	Main.getInstance().goToCustomerReport(username);
+        else
+        	Main.getInstance().goToSearchCustomer("No customer with this username");
+    }
+
+    public ArrayList<PurchaseDetails> handleGetPurchases(String customerUsername) throws IOException{
+        commandRequest = true;
+        System.out.println("handleCheckCustomer");
+        Command command = new Command(new GetPurchasesCommand(customerUsername), CommandType.GetPurchasesCommand);
+        sendToServer(command);
+        waitForServerResponse();
+        return handleGetPurchasesFromServer();
+    }
+    
+    public ArrayList<PurchaseDetails> handleGetPurchasesFromServer(){
+        System.out.println("handleCheckCustomerFromServer");
+        return command.getCommand(GetPurchasesCommand.class).getPurchases();
+    }
+    
+    public ArrayList<ViewDetails> handleGetViews(String customerUsername) throws IOException{
+        commandRequest = true;
+        System.out.println("handleGetViews");
+        Command command = new Command(new GetViewsCommand(customerUsername), CommandType.GetViewsCommand);
+        sendToServer(command);
+        waitForServerResponse();
+        return handleGetViewsFromServer();
+    }
+    
+    public ArrayList<ViewDetails> handleGetViewsFromServer(){
+        System.out.println("handleGetViewsFromServer");
+        return command.getCommand(GetViewsCommand.class).getViews();
+    }
+    
+    public ArrayList<DownloadDetails> handleGetDownloads(String customerUsername) throws IOException{
+        commandRequest = true;
+        System.out.println("handleGetDownloads");
+        Command command = new Command(new GetDownloadsCommand(customerUsername), CommandType.GetDownloadsCommand);
+        sendToServer(command);
+        waitForServerResponse();
+        return handleGetDownloadsFromServer();
+    }
+    
+    public ArrayList<DownloadDetails> handleGetDownloadsFromServer(){
+        System.out.println("handleGetDownloadsFromServer");
+        return command.getCommand(GetDownloadsCommand.class).getDownloads();
+    }
+    
     @Override
     protected void handleMessageFromServer(Object msg)
     {
@@ -641,7 +739,7 @@ public class GCMClient extends AbstractClient {
         System.out.println("Command type: " + type.toString());
         commandRequest = false;
     }
-
+    
     public void handleShowNumOfPurchases(String username) throws IOException
     {
 //        sendToServer("#numOfPurchases " + username);

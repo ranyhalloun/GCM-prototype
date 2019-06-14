@@ -2,6 +2,7 @@ package server;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 import Entities.Attraction;
@@ -18,10 +19,14 @@ import commands.CommandType;
 import commands.EditCustomerInfoCommand;
 import commands.GetAttractionsOfCityCommand;
 import commands.GetCitiesQueueCommand;
+import commands.GetCityReportCommand;
 import commands.GetCityToursCommand;
 import commands.GetCustomerInfoCommand;
+import commands.GetCustomersCitiesCommand;
+import commands.GetDownloadsCommand;
 import commands.GetMapInfoFromIDCommand;
 import commands.GetTourInfoFromIDCommand;
+import commands.GetViewsCommand;
 import commands.RegisterCommand;
 import commands.RemoveAttractionFromTourCommand;
 import commands.RemoveTourFromCityToursCommand;
@@ -31,9 +36,11 @@ import commands.SigninCommand;
 import commands.SearchMapCommand;
 import commands.InsertMapCommand;
 import commands.CheckCityExistanceCommand;
+import commands.CheckCustomerCommand;
 import commands.GetNewExternalMapsCommand;
 import commands.GetOldPricesCommand;
 import commands.GetPricesCommand;
+import commands.GetPurchasesCommand;
 import commands.UpdateDBAfterAcceptCommand;
 import commands.UpdateDBAfterDeclineCommand;
 import commands.UpdatePricesAfterAcceptCommand;
@@ -316,6 +323,68 @@ public class GCMServer extends AbstractServer
             case UpdatePricesAfterDeclineCommand:
                 try {
                     handleUpdatePricesAfterDeclineCommand(command, client);
+                    client.sendToClient(command);
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
+                
+            case GetCustomersCitiesCommand:
+                try {
+                    handleGetCustomersCitiesCommand(command, client);
+                    client.sendToClient(command);
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
+                
+            case  GetCityReportCommand:
+                try {
+                    handleGetCityReportCommand(command, client);
+                    client.sendToClient(command);
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case  CheckCustomerCommand:
+                try {
+                    handleCheckCustomerCommand(command, client);
+                    client.sendToClient(command);
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case  GetPurchasesCommand:
+                try {
+                    handleGetPurchasesCommand(command, client);
+                    client.sendToClient(command);
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case  GetViewsCommand:
+                try {
+                    handleGetViewsCommand(command, client);
+                    client.sendToClient(command);
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case  GetDownloadsCommand:
+                try {
+                    handleGetDownloadsCommand(command, client);
                     client.sendToClient(command);
                 } catch (SQLException e1) {
                     e1.printStackTrace();
@@ -670,7 +739,51 @@ public class GCMServer extends AbstractServer
         System.out.println("handleUpdatePricesAfterDeclineCommand");
         db.updatePricesAfterDecline();
     }
-
+    
+    private void handleGetCustomersCitiesCommand(Command command, ConnectionToClient client) throws SQLException{
+    	System.out.println("handleGetCustomersCitiesCommand");
+    	GetCustomersCitiesCommand getCustomersCitiesCommand  = command.getCommand(GetCustomersCitiesCommand.class);
+    	
+    	getCustomersCitiesCommand.setCities(db.getCustomersCities());
+    }
+    
+    private void handleGetCityReportCommand(Command command, ConnectionToClient client) throws SQLException{
+    	System.out.println("handleGetCityReportCommand");
+    	GetCityReportCommand getCityReportCommand  = command.getCommand(GetCityReportCommand.class);
+    	String cityName = getCityReportCommand.getCityName();
+    	LocalDate fromDate = getCityReportCommand.getFromDate();
+    	LocalDate toDate = getCityReportCommand.getToDate();
+    	getCityReportCommand.setReport(db.getCityReport(cityName, fromDate, toDate));
+    }
+    
+    private void handleCheckCustomerCommand(Command command, ConnectionToClient client) throws SQLException{
+    	System.out.println("handleCheckCustomerCommand");
+    	CheckCustomerCommand checkCustomerCommand  = command.getCommand(CheckCustomerCommand.class);
+    	String username = checkCustomerCommand.getUsername();
+    	checkCustomerCommand.setExists(db.customerExists(username));
+    }
+    
+    private void handleGetPurchasesCommand(Command command, ConnectionToClient client) throws SQLException{
+    	System.out.println("handleGetPurchasesCommand");
+    	GetPurchasesCommand getPurchasesCommand  = command.getCommand(GetPurchasesCommand.class);
+    	String customerUsername = getPurchasesCommand.getCustomerUsername();
+    	getPurchasesCommand.setPurchases((db.getPurchases(customerUsername)));
+    }
+    
+    private void handleGetViewsCommand(Command command, ConnectionToClient client) throws SQLException{
+    	System.out.println("handleGetViewsCommand");
+    	GetViewsCommand getViewsCommand  = command.getCommand(GetViewsCommand.class);
+    	String customerUsername = getViewsCommand.getCustomerUsername();
+    	getViewsCommand.setViews((db.getViews(customerUsername)));
+    }
+    
+    private void handleGetDownloadsCommand(Command command, ConnectionToClient client) throws SQLException{
+    	System.out.println("handleGetDownloadsCommand");
+    	GetDownloadsCommand getDownloadsCommand  = command.getCommand(GetDownloadsCommand.class);
+    	String customerUsername = getDownloadsCommand.getCustomerUsername();
+    	getDownloadsCommand.setDownloads((db.getDownloads(customerUsername)));
+    }
+    
     protected void serverStarted()
     {
       System.out.println("Server listening for connections on port " + getPort());

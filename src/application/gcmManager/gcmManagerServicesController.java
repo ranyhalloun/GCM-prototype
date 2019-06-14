@@ -24,6 +24,19 @@ public class gcmManagerServicesController {
     @FXML
     private Button checkRequestsBtn;
 
+
+    @FXML
+    private Button citiesReportsBtn;
+    
+    @FXML
+    private Button customersReportsBtn;
+    
+    @FXML
+    void customersReports(ActionEvent event) throws IOException {
+    	System.out.println("Going to search map");
+        Main.getInstance().goToSearchCustomer("");
+    }
+    
     @FXML
     void searchMap(ActionEvent event) throws IOException {
         System.out.println("Going to search map");
@@ -54,6 +67,12 @@ public class gcmManagerServicesController {
         Main.getInstance().changePrices();
     }
 
+
+    @FXML
+    void citiesReports(ActionEvent event) throws IOException {
+    	 System.out.println("Going to cities reports");
+         Main.getInstance().goToCitiesReport("");
+    }
 
     @FXML
     void initialize() {

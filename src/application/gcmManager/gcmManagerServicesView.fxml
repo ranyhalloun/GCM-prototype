@@ -13,10 +13,12 @@
             <Font name="System Bold" size="16.0" />
          </font>
       </Label>
-      <Button fx:id="searchMapBtn" layoutX="104.0" layoutY="129.0" mnemonicParsing="false" onAction="#searchMap" prefHeight="36.0" prefWidth="101.0" text="Search Map" />
-      <Button fx:id="insertMapBtn" layoutX="105.0" layoutY="182.0" mnemonicParsing="false" onAction="#insertMap" prefHeight="36.0" prefWidth="101.0" text="Insert Map" />
-      <Button fx:id="checkRequestsBtn" layoutX="105.0" layoutY="233.0" mnemonicParsing="false" onAction="#checkRequests" prefHeight="36.0" prefWidth="101.0" text="Check Requests" />
+      <Button fx:id="searchMapBtn" layoutX="19.0" layoutY="124.0" mnemonicParsing="false" onAction="#searchMap" prefHeight="36.0" prefWidth="117.0" text="Search Map" />
+      <Button fx:id="insertMapBtn" layoutX="19.0" layoutY="182.0" mnemonicParsing="false" onAction="#insertMap" prefHeight="36.0" prefWidth="117.0" text="Insert Map" />
+      <Button fx:id="checkRequestsBtn" layoutX="19.0" layoutY="231.0" mnemonicParsing="false" onAction="#checkRequests" prefHeight="36.0" prefWidth="117.0" text="Check Requests" />
       <Button fx:id="logOutBtn" layoutX="14.0" layoutY="339.0" mnemonicParsing="false" onAction="#logOut" prefHeight="36.0" prefWidth="71.0" text="Log out" />
-      <Button fx:id="changePricesBtn" layoutX="105.0" layoutY="283.0" mnemonicParsing="false" onAction="#changePrices" prefHeight="36.0" prefWidth="101.0" text="Change Prices" />
+      <Button fx:id="changePricesBtn" layoutX="150.0" layoutY="124.0" mnemonicParsing="false" onAction="#changePrices" prefHeight="36.0" prefWidth="117.0" text="Change Prices" />
+      <Button fx:id="citiesReportsBtn" layoutX="150.0" layoutY="182.0" mnemonicParsing="false" onAction="#citiesReports" prefHeight="36.0" prefWidth="117.0" text="Cities Reports" />
+      <Button fx:id="customersReportsBtn" layoutX="150.0" layoutY="231.0" mnemonicParsing="false" onAction="#customersReports" prefHeight="36.0" prefWidth="117.0" text="Customers Reports" />
    </children>
 </AnchorPane>

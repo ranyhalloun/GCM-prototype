@@ -19,6 +19,10 @@ public class companyManagerServicesController {
 
     @FXML
     private Button checkNewPricesBtn;
+    
+
+    @FXML
+    private Button citiesReportsBtn;
 
     @FXML
     void logout(ActionEvent event) throws IOException {
@@ -41,6 +45,13 @@ public class companyManagerServicesController {
     void checkNewPrices(ActionEvent event) throws IOException {
         System.out.println("Going to check new prices");
         Main.getInstance().getPrices();
+    }
+    
+
+    @FXML
+    void citiesReports(ActionEvent event) throws IOException {
+        System.out.println("Going to cities reports");
+        Main.getInstance().goToCitiesReport("");
     }
 
 }
