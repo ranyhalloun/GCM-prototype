@@ -13,6 +13,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 
@@ -24,8 +25,12 @@ public class toursTableController {
 	{
 		this.cityName = cityName;
 		this.tours = tours;
+		System.out.println("Number of Tours:" + tours.size());
+		for (Tour tour : tours) {
+		    tour.print();
+		}
 	}
-	
+
     @FXML
     private Button tourInfoBtn;
 
@@ -45,42 +50,48 @@ public class toursTableController {
     private Button addTourBtn;
 
     @FXML
-    private TableColumn<Tour, String> descriptionColumn;
-    
+    private TableColumn<Tour, Integer>  numAttractionsColumn;
+
     @FXML
     private Label title;
-    
-    @FXML
-    void back(ActionEvent event) {
 
+    @FXML
+    private TextArea tourDescription;
+
+    @FXML
+    void back(ActionEvent event) throws IOException {
+        Main.getInstance().goToCityInfo(cityName);
     }
 
     @FXML
     void userClickOnTable() {
         if(toursTable.getSelectionModel().getSelectedItem()!=null)
-        { 
+        {
         	this.tourInfoBtn.setDisable(false);
         	this.removeTourBtn.setDisable(false);
+        	tourDescription.setText(toursTable.getSelectionModel().getSelectedItem().getDescription());
         }
     }
+
     @FXML
     void tourInfo(ActionEvent event) throws IOException {
-    	Main.getInstance().goToTourInfo(toursTable.getSelectionModel().getSelectedItem().getAttractionsName(), cityName, tours, toursTable.getSelectionModel().getSelectedItem().getId());
+    	Main.getInstance().goToTourInfo(toursTable.getSelectionModel().getSelectedItem().getId());
     }
 
     @FXML
-    void addTour(ActionEvent event) {
-
+    void addTour(ActionEvent event) throws IOException {
+        Main.getInstance().goToAddTourToCity(cityName);
     }
 
     @FXML
-    void removeTour(ActionEvent event) {
-
+    void removeTour(ActionEvent event) throws IOException {
+        Main.getInstance().removeTourFromCityTours(toursTable.getSelectionModel().getSelectedItem().getId());
+        Main.getInstance().goToCityTours(cityName);
     }
     @FXML
     void initialize() {
     	tourIDColumn.setCellValueFactory(new PropertyValueFactory<Tour, Integer>("id"));
-        descriptionColumn.setCellValueFactory(new PropertyValueFactory<Tour, String>("description"));
+    	numAttractionsColumn.setCellValueFactory(new PropertyValueFactory<Tour, Integer>("numOfAttractions"));
         
         toursTable.setItems(getTours());
         title.setText(cityName + "'s Tours");

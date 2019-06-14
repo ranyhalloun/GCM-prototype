@@ -18,6 +18,7 @@ public class searchMapController {
 	public searchMapController(String errorMessage) {
 		this.errorMessage = errorMessage;
 	}
+	
     @FXML
     private ResourceBundle resources;
 
@@ -44,9 +45,18 @@ public class searchMapController {
     
     @FXML
     void searchMap(ActionEvent event) throws IOException {
-    	if(attraction.getText().isEmpty() || cityName.getText().isEmpty() || description.getText().isEmpty())
+    	if(attraction.getText().isEmpty() && cityName.getText().isEmpty() && description.getText().isEmpty())
     		Main.getInstance().goToSearchMap("You have to fill at least one field!");
-        Main.getInstance().searchMap(attraction.getText(), cityName.getText(), description.getText());
+    	else {
+    	    //Search By City Name only -> Show City Info.
+    	    if (attraction.getText().isEmpty() && !cityName.getText().isEmpty() && description.getText().isEmpty()) {
+    	        Main.getInstance().goToCityInfo(cityName.getText());
+    	    }
+            //Search By other combination -> Show Maps Info.
+    	    else {
+    	        Main.getInstance().goToMapsInfo(attraction.getText(), cityName.getText(), description.getText());
+    	    }
+    	}
     }
 
     @FXML

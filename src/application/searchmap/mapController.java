@@ -23,14 +23,17 @@ import javafx.scene.control.cell.PropertyValueFactory;
 
 public class mapController {
     
-    private SearchMapResult searchMapResult;
-    
+    private String attraction;
+    private String cityName;
+    private String description;
     private Map map;
     
-    public mapController(Map map, SearchMapResult searchMapResult)
+    public mapController(Map map, String attraction, String cityName, String description)
     {
         this.map = map;
-        this.searchMapResult = searchMapResult;
+        this.attraction = attraction;
+        this.cityName = cityName;
+        this.description = description;
     }
 
     @FXML
@@ -49,7 +52,7 @@ public class mapController {
     private TableColumn<Attraction, String> attractionNameColumn;
 
     @FXML
-    private TextField cityName;
+    private TextField mapCityName;
 
     @FXML
     private TextArea mapDescription;
@@ -68,18 +71,18 @@ public class mapController {
     
     @FXML
     void back(ActionEvent event) throws IOException {
-        Main.getInstance().goToMapsTable(searchMapResult);
+        Main.getInstance().goToMapsInfo(attraction, cityName, description);
     }
     
     @FXML
     void displayMap(ActionEvent event) {
-    	//Main.getInstance().displayImage(map)
+//        Main.getInstance().displayImage(map)
     }
     
     @FXML
     void initialize() {
         assert attractionsTable != null : "fx:id=\"attractionsTable\" was not injected: check your FXML file 'mapView.fxml'.";
-        assert cityName != null : "fx:id=\"cityName\" was not injected: check your FXML file 'mapView.fxml'.";
+        assert mapCityName != null : "fx:id=\"mapCityName\" was not injected: check your FXML file 'mapView.fxml'.";
         assert mapDescription != null : "fx:id=\"mapDescription\" was not injected: check your FXML file 'mapView.fxml'.";
         assert mapID != null : "fx:id=\"mapID\" was not injected: check your FXML file 'mapView.fxml'.";
         assert version != null : "fx:id=\"version\" was not injected: check your FXML file 'mapView.fxml'.";
@@ -88,7 +91,7 @@ public class mapController {
         attractionDescriptionColumn.setCellValueFactory(new PropertyValueFactory<Attraction, String>("description"));
         
         attractionsTable.setItems(getAttractions());
-        cityName.setText(map.getCityName());
+        mapCityName.setText(map.getCityName());
         version.setText(Integer.toString(map.getVersion()));
         mapID.setText(Integer.toString(map.getMapID()));
         mapDescription.setText(map.getDescription());

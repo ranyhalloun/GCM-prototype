@@ -14,7 +14,7 @@ public class SearchMapCommand implements Serializable {
 
     // Output
     private boolean success;
-    private SearchMapResult searchMapResult;
+    private ArrayList<Map> maps;
 
     // Constructor
     public SearchMapCommand(String attraction, String cityName, String description) {
@@ -22,7 +22,7 @@ public class SearchMapCommand implements Serializable {
         this.cityName = cityName;
         this.description = description;
         this.success = false;
-        this.searchMapResult = new SearchMapResult();
+        this.maps = new ArrayList<Map>();
     }
 
     // Setters
@@ -30,8 +30,8 @@ public class SearchMapCommand implements Serializable {
         this.success = success;
     }
 
-    public void setSearchMapResult(SearchMapResult searchMapResult) {
-        this.searchMapResult = searchMapResult;
+    public void setMaps(ArrayList<Map> maps) {
+        this.maps = maps;
     }
 
     // Getters
@@ -51,7 +51,7 @@ public class SearchMapCommand implements Serializable {
         return this.success;
     }
 
-    public SearchMapResult getSearchMapResult() {
-        return searchMapResult;
+    public ArrayList<Map> getMaps() {
+        return maps;
     }
 }

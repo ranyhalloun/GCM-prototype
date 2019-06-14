@@ -22,13 +22,15 @@ public class addAttractionToTourController {
 	private ArrayList<Attraction> attractions;
 	private int tourID;
 	private String errorMessage;
-	public addAttractionToTourController(ArrayList<Attraction> attractions, String errorMessage, int tourID)
+	private String cityName;
+	
+	public addAttractionToTourController(ArrayList<Attraction> attractions, int tourID, String cityName)
 	{
 		this.attractions = attractions;
-		this.errorMessage = errorMessage;
 		this.tourID = tourID;
+		this.cityName = cityName;
 	}
-	
+
     @FXML
     private TableColumn<Attraction, String> nameColumn;
 
@@ -37,7 +39,7 @@ public class addAttractionToTourController {
 
     @FXML
     private Button backBtn;
-    
+
     @FXML
     private TableColumn<Attraction, Integer> accessibleColumn;
 
@@ -46,16 +48,16 @@ public class addAttractionToTourController {
 
     @FXML
     private TableColumn<Attraction, String> categoryColumn;
-    
+
     @FXML
     private TextArea descriptionFT;
-    
+
     @FXML
     private TextField timeFT;
     
     @FXML
     private Label errorText;
-    
+
     @FXML
     void userClickOnTable() {
     	Attraction attraction = attractionsTable.getSelectionModel().getSelectedItem();
@@ -68,25 +70,21 @@ public class addAttractionToTourController {
 
     @FXML
     void add(ActionEvent event) throws IOException {
-    	if(timeFT.getText().isEmpty()) {
-    		Main.getInstance().goToAddAttractionToTour(attractions, "Fill time field please!", tourID);
+    	if (timeFT.getText().isEmpty()) {
+    		System.out.println("Enter time");
     	}
-    	else
-    	{
+    	else {
         	Attraction attraction = attractionsTable.getSelectionModel().getSelectedItem();
-        	attractionsTable.getItems().remove((attraction));
-        	Main.getInstance().goToAddAttractionToTour(attraction.getId(), tourID, Integer.parseInt(timeFT.getText()));
-        	timeFT.setText("");
-            descriptionFT.setText("");
-            timeFT.setEditable(false);
+        	Main.getInstance().addAttractionToTour(attraction.getId(), tourID, Integer.parseInt(timeFT.getText()), cityName);
+        	Main.getInstance().goToAddAttractionToTour(cityName, tourID);
     	}
     }
-    
+
     @FXML
-    void back(ActionEvent event) {
-    	
+    void back(ActionEvent event) throws IOException {
+        Main.getInstance().goToTourInfo(tourID);
     }
-    
+
     @FXML
     void initialize() {
         nameColumn.setCellValueFactory(new PropertyValueFactory<Attraction, String>("name"));

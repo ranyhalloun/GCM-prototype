@@ -76,9 +76,9 @@ public class attractionController {
         
         description.setEditable(false);
         
-        ObservableList<String> tempCities = FXCollections.observableArrayList(searchMapResult.getCitiesNameOfAttraction());
+//        ObservableList<String> tempCities = FXCollections.observableArrayList(searchMapResult.getCitiesNameOfAttraction());
         nameColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue()));
-        attractionsTableView.setItems(tempCities);
+//        attractionsTableView.setItems(tempCities);
     }
 }
 

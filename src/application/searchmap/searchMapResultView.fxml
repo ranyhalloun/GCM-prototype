@@ -9,19 +9,26 @@
 <AnchorPane prefHeight="400.0" prefWidth="300.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2">
   <!-- TODO Add Nodes -->
   <children>
-    <Label layoutX="102.0" layoutY="16.0" text="TableView Maps">
+    <Label layoutX="105.0" layoutY="18.0" prefWidth="135.0" text="Search Result">
       <font>
-        <Font name="System Bold" size="15.0" />
+        <Font name="System Bold" size="18.0" />
       </font>
     </Label>
     <Button fx:id="backBtn" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#back" prefHeight="25.0" prefWidth="70.0" text="Back" />
-    <TableView fx:id="tableView" layoutX="13.0" layoutY="49.0" onMouseClicked="#userClickOnTable" prefHeight="237.0" prefWidth="273.0">
+    <TableView fx:id="tableView" layoutX="13.0" layoutY="49.0" onMouseClicked="#userClickOnTable" prefHeight="189.0" prefWidth="273.0">
       <columns>
-        <TableColumn prefWidth="75.0" text="MapID" fx:id="mapIDColumn" />
-        <TableColumn prefWidth="100.0" text="Description" fx:id="descriptionColumn" />
-        <TableColumn minWidth="0.0" prefWidth="100.0" text="City" fx:id="cityColumn" />
+        <TableColumn maxWidth="5000.0" minWidth="10.0" prefWidth="131.0" text="MapID" fx:id="mapIDColumn" />
+        <TableColumn maxWidth="5000.0" minWidth="0.0" prefWidth="142.0" text="City" fx:id="cityColumn" />
       </columns>
     </TableView>
-    <Button fx:id="displayMapBtn" layoutX="115.0" layoutY="299.0" mnemonicParsing="false" onAction="#displayMap" text="Display Map" />
+    <Button fx:id="displayMapBtn" layoutX="63.0" layoutY="354.0" mnemonicParsing="false" onAction="#displayMapInfo" prefWidth="173.0" text="Map Info" />
+    <TextArea id="descriptionFT" fx:id="mapDescription" layoutX="14.0" layoutY="277.0" prefHeight="70.0" prefWidth="187.99990000000253" />
+    <Label layoutX="13.0" layoutY="246.0" text="Description:">
+      <font>
+        <Font size="14.0" fx:id="x1" />
+      </font>
+    </Label>
+    <Label font="$x1" layoutX="217.0" layoutY="246.0" text="#Maps:" />
+    <TextField fx:id="numOfMaps" layoutX="216.0" layoutY="277.0" prefWidth="70.0" />
   </children>
 </AnchorPane>

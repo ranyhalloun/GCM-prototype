@@ -5,20 +5,16 @@ import java.io.Serializable;
 
 public class SearchMapResult implements Serializable {
     
-    private ArrayList<Map> maps;
-    
     private boolean searchByCity;
     private boolean searchByAttraction;
     private boolean searchByDescription;
 
-    // Search by city name
+    // Search by city name Only
     private City city;
     
-    // Search by attraction
-    private ArrayList<String> citiesName;
-    private int numOfMapsIncludeAttraction;
-    private String attractionDescription;
-    
+    // Else
+    private ArrayList<Map> maps;
+
     //----------------------------------------//
 
     public SearchMapResult() {
@@ -50,17 +46,6 @@ public class SearchMapResult implements Serializable {
         this.searchByDescription = bool;
     }
     
-    public void setCitiesNameOfAttraction(ArrayList<String> citiesName) {
-        this.citiesName = citiesName;
-    }
-    
-    public void setNumOfMapsIncludeAttraction(int num) {
-        this.numOfMapsIncludeAttraction = num;
-    }
-    
-    public void setAttractionDescription(String attractionDescription) {
-        this.attractionDescription = attractionDescription;
-    }
 
     public void setCity(City city) {
         this.city = city;
@@ -84,21 +69,8 @@ public class SearchMapResult implements Serializable {
     public ArrayList<Map> getMaps() {
         return this.maps;
     }
-    
-    public ArrayList<String> getCitiesNameOfAttraction() {
-        return this.citiesName;
-    }
-    
-    public int getNumOfMapsIncludeAttraction() {
-        return this.numOfMapsIncludeAttraction;
-    }
-
-    public String getAttractionDescription() {
-        return this.attractionDescription;
-    }
 
     public City getCity() {
         return city;
     }
-    
 }

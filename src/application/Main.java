@@ -3,6 +3,8 @@ package application;
 import java.io.IOException;
 
 import Entities.Attraction;
+import Entities.AttractionTimePair;
+import Entities.City;
 import Entities.Map;
 import Entities.SearchMapResult;
 import Entities.StringIntPair;
@@ -24,6 +26,7 @@ import application.searchmap.searchMapController;
 import application.searchmap.searchMapResultController;
 import application.searchmap.tourController;
 import application.searchmap.toursTableController;
+import application.tours.AddTourToCityController;
 import client.GCMClient;
 import javafx.application.Application;
 import javafx.event.EventHandler;
@@ -48,7 +51,7 @@ public class Main extends Application {
     private static AnchorPane mainLayout;
     private static GCMClient gcmClient;
     private static UserType userType;
-    
+
     final public static int DEFAULT_PORT = 458;
 
 
@@ -81,7 +84,7 @@ public class Main extends Application {
 	    primaryStage.setScene(scene);
         primaryStage.setTitle("GCM Application");
         primaryStage.show();
-        
+
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             public void handle(WindowEvent we) {
                 stopConnection();
@@ -89,20 +92,24 @@ public class Main extends Application {
         });
     }
 
-	public void searchMap(String attraction, String cityName, String description) throws IOException
+	public void goToMapsInfo(String attraction, String cityName, String description) throws IOException
 	{
-	    gcmClient.handleSearchMap(attraction, cityName, description);
+	    // Get the maps
+	    ArrayList<Map> maps = gcmClient.handleGetMapsInfo(attraction, cityName, description);
+	    // Show the maps
+	    FXMLLoader loader = new FXMLLoader(getClass().getResource("searchmap/searchMapResultView.fxml"));
+        loader.setController(new searchMapResultController(maps, attraction, cityName, description));
+        AnchorPane searchMapView = loader.load();
+        mainLayout.getChildren().setAll(searchMapView);
 	}
-	
-	public void getCityTours(String cityName) throws IOException
+
+	public void goToCityInfo(String cityName) throws IOException
 	{
-		gcmClient.handleGetCityTours(cityName);
-	}
-	
-	public void cityInfo(SearchMapResult searchMapResult) throws IOException
-	{
+	    // Get City Info
+        City city = gcmClient.handleSearchCity(cityName);
+        // Go to City Window
 	    FXMLLoader loader = new FXMLLoader(getClass().getResource("searchmap/cityView.fxml"));
-	    loader.setController(new cityController(searchMapResult));
+	    loader.setController(new cityController(city));
         AnchorPane cityView = loader.load();
         mainLayout.getChildren().setAll(cityView);
 	}
@@ -115,49 +122,48 @@ public class Main extends Application {
         mainLayout.getChildren().setAll(attractionView);
 	}
 	
-	public void goToTourInfo(ArrayList<StringIntPair> attractionsTime, String cityName, ArrayList<Tour> tours, int tourID) throws IOException
+	public void goToTourInfo(int tourID) throws IOException
 	{
+	    // get Tour Info
+	    Tour tour = gcmClient.handleGetTourInfoFromID(tourID);
+	    // Go To Tour Info Windows
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("searchmap/tourView.fxml"));
-	    loader.setController(new tourController(attractionsTime, cityName, tours, tourID));
+	    loader.setController(new tourController(tour));
         AnchorPane tourView = loader.load();
         mainLayout.getChildren().setAll(tourView);
 	}
-	
-	public void goToMapsTable(SearchMapResult searchMapResult) throws IOException
-	{
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("searchmap/searchMapResultView.fxml"));
-        loader.setController(new searchMapResultController(searchMapResult));
-        AnchorPane searchMapView = loader.load();
-        mainLayout.getChildren().setAll(searchMapView);
-	}
-	
-	
-	
-   public void goToMapInfo(Map map, SearchMapResult searchMapResult) throws IOException
+
+    public void goToMapInfo(int mapID, String attraction, String cityName, String description) throws IOException 
     {
+        // Get map
+        Map map = gcmClient.handleGetMapInfoFromID(mapID);
+        // Go To show map info
         FXMLLoader loader = new FXMLLoader(getClass().getResource("searchmap/mapView.fxml"));
-        loader.setController(new mapController(map, searchMapResult));
+        loader.setController(new mapController(map, attraction, cityName, description));
         AnchorPane mapView = loader.load();
         mainLayout.getChildren().setAll(mapView);
     }
 
-   	public void goToCityToursTable(ArrayList<Tour> tours, String cityName) throws IOException {
+   	public void goToCityTours(String cityName) throws IOException {
+   	    // Get Tours.
+   	    ArrayList<Tour> tours = gcmClient.handleGetCityTours(cityName);
+   	    // Go To Tours Windows.
         FXMLLoader loader = new FXMLLoader(getClass().getResource("searchmap/toursTable.fxml"));
         loader.setController(new toursTableController(tours, cityName));
         AnchorPane toursTableView = loader.load();
-        mainLayout.getChildren().setAll(toursTableView);   		
+        mainLayout.getChildren().setAll(toursTableView);
    	}
-   	
+
 	public void registerNewUser(String firstname, String lastname, String username, String password, String email, String phone) throws IOException, InterruptedException
 	{
 	    gcmClient.handleRegistration(firstname, lastname, username, password, email, phone);
 	}
-	
+
 	public void editCustomerInfo(Customer customer, String oldUsername, boolObject exists) throws IOException
 	{
         gcmClient.handleEditingCustomerInfo(customer, oldUsername, exists);
 	}
-	
+
 	public void requestApproval(String cityName) throws IOException
     {
         gcmClient.handleRequestApproval(cityName);
@@ -258,35 +264,50 @@ public class Main extends Application {
         mainLayout.getChildren().setAll(root);
     }
     
-    public void removeAttractionFromTour(String attractionName, int tourID) throws IOException {
-    	gcmClient.handleRemoveAttractionFromTour(attractionName, tourID);
-    }    	
-    
-    public void getAttractionsOfCity(String cityName,int tourID) throws IOException {
-    	gcmClient.handleGetAttractionsOfCity(cityName, tourID);
+    public void removeAttractionFromTour(String attractionID, int tourID) throws IOException {
+    	gcmClient.handleRemoveAttractionFromTour(attractionID, tourID);
     }
-    public void goToAddAttractionToTour(ArrayList<Attraction> attractions, String errorMessage, int tourID) throws IOException {
+    
+    public void removeTourFromCityTours(int tourID) throws IOException {
+        gcmClient.handleRemoveTourFromCityTours(tourID);
+    }
+    
+    public void goToAddAttractionToTour(String cityName, int tourID) throws IOException {
+        // Get Attractions that we can add
+        ArrayList<Attraction> attractions = gcmClient.handleGetAttractionsOfCity(cityName, tourID);
+        // Go To Add Attractions to Tour Window
         FXMLLoader loader = new FXMLLoader(getClass().getResource("searchMap/addAttractionToTourView.fxml"));
-        loader.setController(new addAttractionToTourController(attractions, errorMessage, tourID));
+        loader.setController(new addAttractionToTourController(attractions, tourID, cityName));
         AnchorPane addAttractionToTourView = loader.load();
         mainLayout.getChildren().setAll(addAttractionToTourView);
     }
     
-    public void goToAddAttractionToTour(String attractionID, int tourID, int time) throws IOException {
-    	gcmClient.handleAddAttractionsToTour(attractionID, tourID, time);
+    public void addAttractionToTour(String attractionID, int tourID, int time, String cityName) throws IOException {
+        gcmClient.handleAddAttractionsToTour(attractionID, tourID, time, cityName);
     }
-    
+
+    public void goToAddTourToCity(String cityName) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("tours/AddTourToCityView.fxml"));
+        loader.setController(new AddTourToCityController(cityName));
+        AnchorPane addTourToCityView = loader.load();
+        mainLayout.getChildren().setAll(addTourToCityView);
+    }
+
+    public void addTourToCity(String cityName, String description) throws IOException {
+        gcmClient.handleAddTourToCity(cityName, description);
+    }
+
     public void updateUserType(UserType userType) {
         Main.userType = userType;
     }
-    
+
     public UserType getUserType() {
     	return userType;
     }
     public void error(String message) throws IOException {
     	System.out.println(message);
     }
-    
+
 	public void connect(String ip, int port) throws IOException
 	{
         gcmClient = new GCMClient("127.0.0.1", DEFAULT_PORT);

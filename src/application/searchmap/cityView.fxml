@@ -6,26 +6,24 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="400.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="400.0" prefWidth="300.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2">
   <!-- TODO Add Nodes -->
   <children>
-    <Label layoutX="14.0" layoutY="71.0" text="City Name:" />
     <Label layoutX="13.0" layoutY="106.0" text="#Attractions:" />
     <Label layoutX="14.0" layoutY="149.0" text="#Tours:" />
     <Label layoutX="13.0" layoutY="188.0" text="#Maps:" />
     <Label layoutX="13.0" layoutY="236.0" text="City Description:" />
     <Button fx:id="backBtn" layoutX="14.0" layoutY="10.0" mnemonicParsing="false" onAction="#back" prefHeight="25.0" prefWidth="58.0" text="Back" />
-    <Button fx:id="cityToursBtn" layoutX="28.0" layoutY="332.0" mnemonicParsing="false" onAction="#cityTours" text="City Tours" />
-    <Button fx:id="mapInfoBtn" layoutX="181.0" layoutY="333.0" mnemonicParsing="false" onAction="#mapInfo" text="City Maps " />
-    <TextField fx:id="cityName" layoutX="115.0" layoutY="65.0" prefWidth="171.0" />
+    <Button fx:id="cityToursBtn" layoutX="24.0" layoutY="337.0" mnemonicParsing="false" onAction="#cityTours" text="City Tours" />
+    <Button fx:id="mapInfoBtn" layoutX="177.0" layoutY="338.0" mnemonicParsing="false" onAction="#mapInfo" text="City Maps " />
     <TextField fx:id="numOfTours" layoutX="115.0" layoutY="146.0" prefWidth="171.0" />
     <TextField fx:id="numOfMaps" layoutX="115.0" layoutY="188.0" prefWidth="171.0" />
     <TextField id="num" fx:id="numOfAttractions" layoutX="115.0" layoutY="103.0" prefWidth="171.0" />
-    <TextArea fx:id="cityDescription" layoutX="27.0" layoutY="260.0" prefHeight="60.0" prefWidth="256.0" wrapText="true" />
-      <Label layoutX="145.0" layoutY="14.0" prefHeight="27.0" prefWidth="76.0" text="City Info">
-         <font>
-            <Font name="System Bold" size="18.0" />
-         </font>
-      </Label>
+    <TextArea fx:id="cityDescription" layoutX="27.0" layoutY="264.0" prefHeight="60.0" prefWidth="256.0" wrapText="true" />
+    <Label fx:id="cityName" layoutX="107.0" layoutY="14.0" prefHeight="44.0" prefWidth="154.0" text="City Name">
+      <font>
+        <Font name="System Bold" size="22.0" />
+      </font>
+    </Label>
   </children>
 </AnchorPane>

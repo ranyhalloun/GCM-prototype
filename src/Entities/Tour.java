@@ -6,9 +6,11 @@ import java.io.Serializable;
 
 public class Tour implements Serializable {
 
+    private String cityName;
     private int id;
     private String description;
-    private ArrayList<StringIntPair> attractionsName;
+    private ArrayList<AttractionTimePair> attractionsTimePair;
+    private int numOfAttractions;
     
     //------------------------------------------//
 
@@ -16,20 +18,36 @@ public class Tour implements Serializable {
     {
         this.id = -1;
         this.description = "";
-        this.attractionsName = new ArrayList<StringIntPair>();
+        this.cityName = "";
+        this.attractionsTimePair = new ArrayList<AttractionTimePair>();
+        this.numOfAttractions = 0;
     }
     
-    public Tour(int id, String description, ArrayList<StringIntPair> attractionsName)
+    public Tour(int id, String description, ArrayList<AttractionTimePair> attractionsTimePair)
     {
         this.id = id;
         this.description = description;
-        this.attractionsName = attractionsName;
+        this.cityName = "";
+        this.attractionsTimePair = attractionsTimePair;
+        this.numOfAttractions = this.attractionsTimePair.size();
     }
     
     public Tour(int id, String description)
     {
         this.id = id;
         this.description = description;
+        this.cityName = "";
+        this.attractionsTimePair = new ArrayList<AttractionTimePair>();
+        this.numOfAttractions = 0;
+    }
+    
+    public Tour(int id, String description, String cityName)
+    {
+        this.id = id;
+        this.description = description;
+        this.cityName = cityName;
+        this.attractionsTimePair = new ArrayList<AttractionTimePair>();
+        this.numOfAttractions = 0;
     }
     
     //------------------------------------------//
@@ -43,8 +61,16 @@ public class Tour implements Serializable {
         return description;
     }
 
-    public ArrayList<StringIntPair> getAttractionsName() {
-        return attractionsName;
+    public ArrayList<AttractionTimePair> getAttractionsTimePair() {
+        return attractionsTimePair;
+    }
+    
+    public String getCityName() {
+        return cityName;
+    }
+    
+    public int getNumOfAttractions() {
+        return numOfAttractions;
     }
     
 
@@ -59,8 +85,18 @@ public class Tour implements Serializable {
         this.description = description;
     }
     
-    public void setAttractionsName(ArrayList<StringIntPair> attractionsName) {
-        this.attractionsName = attractionsName;
+    public void setAttractionsTimePair(ArrayList<AttractionTimePair> attractionsTimePair) {
+        this.attractionsTimePair = attractionsTimePair;
+        this.numOfAttractions = this.attractionsTimePair.size();
+    }
+
+    public void setCityName(String cityName) {
+        this.cityName = cityName;
+    }
+    
+    public void print() {
+        System.out.printf("City Name of Tour: %s, Tour ID: %d, Tour Description: %s, Num of Attractions in Tour: %d.%n", 
+                this.cityName, this.id, this.description, this.numOfAttractions);
     }
     
 }

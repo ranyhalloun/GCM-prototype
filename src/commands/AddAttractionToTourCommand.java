@@ -4,23 +4,25 @@ import java.util.ArrayList;
 
 import Entities.Attraction;
 
-public class AddAttractionToTourCommand implements Serializable{
+public class AddAttractionToTourCommand implements Serializable {
 
 	//input
 	private String attractionID;
 	private int tourID;
 	private int time;
+	private String cityName;
 	
 	//output
 	private boolean success;
 	private String error;
 	
-	public AddAttractionToTourCommand(String attractionID, int tourID, int time)
+	public AddAttractionToTourCommand(String attractionID, int tourID, int time, String cityName)
 	{
 		this.attractionID = attractionID;
 		this.success = false;
 		this.tourID = tourID;
 		this.time = time;
+		this.cityName = cityName;
 	}
 
 	public String getAttractionId() {
@@ -58,4 +60,12 @@ public class AddAttractionToTourCommand implements Serializable{
 	public void setTime(int time) {
 		this.time = time;
 	}
+
+    public String getCityName() {
+        return cityName;
+    }
+
+    public void setCityName(String cityName) {
+        this.cityName = cityName;
+    }
 }

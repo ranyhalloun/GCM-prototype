@@ -1,10 +1,10 @@
 package commands;
 import java.io.Serializable;
 
-public class RemoveAttractionFromTourCommand implements Serializable{
+public class RemoveAttractionFromTourCommand implements Serializable {
 
 	//input 
-	private String attractionName;
+	private String attractionID;
 	private int tourID;
 	
 	//output
@@ -12,9 +12,9 @@ public class RemoveAttractionFromTourCommand implements Serializable{
     private String error = "";
     
     // Constructor
-        public RemoveAttractionFromTourCommand(String attractionName, int tourID){
+        public RemoveAttractionFromTourCommand(String attractionID, int tourID){
         	this.success = false;
-        	this.attractionName = attractionName;
+        	this.attractionID = attractionID;
         	this.tourID = tourID;
         }
 
@@ -31,12 +31,12 @@ public class RemoveAttractionFromTourCommand implements Serializable{
         return this.error;
     }
 
-	public String getAttractionName() {
-		return attractionName;
+	public String getAttractionID() {
+		return attractionID;
 	}
 
-	public void setAttractionName(String attractionName) {
-		this.attractionName = attractionName;
+	public void setAttractionID(String attractionID) {
+		this.attractionID = attractionID;
 	}
 
 	public int getTourID() {

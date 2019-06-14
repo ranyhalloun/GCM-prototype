@@ -2,6 +2,7 @@ package application.searchmap;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import Entities.Map;
@@ -12,6 +13,8 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.collections.FXCollections;
@@ -24,19 +27,22 @@ import javafx.scene.control.Button;
 
 public class searchMapResultController {
     
-    private SearchMapResult searchMapResult;
+    private String attraction;
+    private String cityName;
+    private String description;
+    private ArrayList<Map> maps;
     
-    public searchMapResultController(SearchMapResult searchMapResult)
+    public searchMapResultController(ArrayList<Map> maps, String attraction, String cityName, String description)
     {
-        this.searchMapResult = searchMapResult;
-        System.out.println("Num of maps: " + Integer.toString(searchMapResult.getMaps().size()));
+        this.maps = maps;
+        System.out.println("Num of maps: " + maps.size());
+        this.attraction = attraction;
+        this.cityName = cityName;
+        this.description = description;
     }
 
     @FXML
     private TableColumn<Map, Integer> mapIDColumn;
-
-    @FXML
-    private TableColumn<Map, String> descriptionColumn;
 
     @FXML
     private Button backBtn;
@@ -49,45 +55,51 @@ public class searchMapResultController {
 
     @FXML
     private TableView<Map> tableView;
+    
+    @FXML
+    private TextArea mapDescription;
+    
+    @FXML
+    private TextField numOfMaps;
 
     
     @FXML
     void back(ActionEvent event) throws IOException {
-        System.out.println("Back to SearchMap view");
-        boolean searchMapByCity = searchMapResult.getSearchByCity();
-        boolean searchMapByAttraction = searchMapResult.getSearchByAttraction();
-        boolean searchMapByDescription = searchMapResult.getSearchByDescription();
+        System.out.println("Back..");
+        boolean searchMapByCity = !this.cityName.isEmpty();
+        boolean searchMapByAttraction = !this.attraction.isEmpty();
+        boolean searchMapByDescription = !this.description.isEmpty();
         
+        // City Name only, go to City Info..
         if(searchMapByCity&&!searchMapByAttraction&&!searchMapByDescription)
-        	Main.getInstance().cityInfo(searchMapResult);
-        else if(!searchMapByCity&&searchMapByAttraction&&!searchMapByDescription)
-        	Main.getInstance().attractionInfo(searchMapResult);
-        else
+        	Main.getInstance().goToCityInfo(this.cityName);
+        // Else, go to search Windows..
+        else {
         	Main.getInstance().goToSearchMap("");
-        	
+        }
     }
     
     @FXML
-    void displayMap(ActionEvent event) throws IOException {
-        Main.getInstance().goToMapInfo(tableView.getSelectionModel().getSelectedItem(), searchMapResult);
+    void displayMapInfo(ActionEvent event) throws IOException {
+        Main.getInstance().goToMapInfo(tableView.getSelectionModel().getSelectedItem().getMapID(), attraction, cityName, description);
     }
     
     //This method will enable the displayMap button once a row in the table is selected
     @FXML
     public void userClickOnTable() {
-        if(tableView.getSelectionModel().getSelectedItem()!=null)
+        if(tableView.getSelectionModel().getSelectedItem()!=null) {
             this.displayMapBtn.setDisable(false);
+            this.mapDescription.setText(tableView.getSelectionModel().getSelectedItem().getDescription());
+        }
     }
 
     @FXML
     void initialize() {
-        assert backBtn != null : "fx:id=\"backBtn\" was not injected: check your FXML file 'searchMapResultView.fxml'.";
         mapIDColumn.setCellValueFactory(new PropertyValueFactory<Map, Integer>("mapID"));
-        descriptionColumn.setCellValueFactory(new PropertyValueFactory<Map, String>("description"));
         cityColumn.setCellValueFactory(new PropertyValueFactory<Map, String>("cityName"));
         
         tableView.setItems(getMaps());
-        
+        this.numOfMaps.setText(Integer.toString(this.maps.size()));
         //Disable the displayMap button until a row is selected
         this.displayMapBtn.setDisable(true);
 
@@ -95,8 +107,9 @@ public class searchMapResultController {
     
     public ObservableList<Map> getMaps(){
         ObservableList<Map> maps = FXCollections.observableArrayList();
-        for (Map map : searchMapResult.getMaps()) {
+        for (Map map : this.maps) {
             maps.add(map);
+            System.out.println("Added map: " + map.getMapID());
         }
         return maps;
     }
