@@ -67,6 +67,10 @@ import commands.UpdatePricesAfterAcceptCommand;
 import commands.UpdatePricesAfterDeclineCommand;
 import javafx.collections.ObservableList;
 import application.login.registrationController;
+import commands.AddNewAttractionToMapCommand;
+import commands.EditAttractionInMapCommand;
+import commands.RemoveAttractionFromMapCommand;
+
 
 // **This class overrides some of the methods defined in the abstract
 // **superclass in order to give more functionality to the client.
@@ -416,7 +420,7 @@ public class GCMClient extends AbstractClient {
             System.out.println("Failed to remove Tour!");
     }
 
-    public void handleRemoveAttractionFromTour(String attractionID, int tourID) throws IOException {
+    public void handleRemoveAttractionFromTour(int attractionID, int tourID) throws IOException {
     	commandRequest = true;
         System.out.println("handleRemoveAttractionFromTour");
         Command command = new Command(new RemoveAttractionFromTourCommand(attractionID, tourID), CommandType.RemoveAttractionFromTourCommand);
@@ -496,8 +500,67 @@ public class GCMClient extends AbstractClient {
             System.out.println("Failed to add tour to city!");
     }
     
-    public void handleAddAttractionsToTour(String attractionID, int tourID, int time, String cityName) throws IOException {
-    	commandRequest = true;
+    public void handleAddNewAttractionToMap(int mapID, Attraction attraction) throws IOException {
+        commandRequest = true;
+        System.out.println("handleAddNewAttractionToMap");
+        Command command = new Command(new AddNewAttractionToMapCommand(mapID, attraction), CommandType.AddNewAttractionToMapCommand);
+        sendToServer(command);
+        waitForServerResponse();
+        handleAddNewAttractionToMapCommandFromServer();
+    }
+
+    public void handleAddNewAttractionToMapCommandFromServer() {
+        System.out.println("handleAddNewAttractionToMapCommandFromServer");
+        boolean success = command.getCommand(AddNewAttractionToMapCommand.class).getSuccess();
+        if (success)
+            System.out.println("Attraction added successfully to map!");
+        else
+            System.out.println("Failed to add attraction to map!");
+    }
+
+    public void handleEditAttractionInMap(int mapID, Attraction attraction) throws IOException {
+        commandRequest = true;
+        System.out.println("handleEditAttractionInMap");
+        Command command = new Command(new EditAttractionInMapCommand(mapID, attraction), CommandType.EditAttractionInMapCommand);
+        System.out.println("----------------------------------------");
+        System.out.println("CLIENNNNNNNNNNNNNNNNT");
+        Attraction a7md = command.getCommand(EditAttractionInMapCommand.class).getAttraction();
+        a7md.print();
+        System.out.println("----------------------------------------");
+        sendToServer(command);
+        waitForServerResponse();
+        handleEditAttractionInMapCommandFromServer();
+    }
+
+    public void handleEditAttractionInMapCommandFromServer() {
+        System.out.println("handleEditAttractionInMapCommandFromServer");
+        boolean success = command.getCommand(EditAttractionInMapCommand.class).getSuccess();
+        if (success)
+            System.out.println("Attraction editied successfully!");
+        else
+            System.out.println("Failed to edit attraction!");
+    }
+
+    public void handleRemoveAttractionFromMap(int mapID, int attractionID) throws IOException {
+        commandRequest = true;
+        System.out.println("handleRemoveAttractionFromMap");
+        Command command = new Command(new RemoveAttractionFromMapCommand(mapID, attractionID), CommandType.RemoveAttractionFromMapCommand);
+        sendToServer(command);
+        waitForServerResponse();
+        handleRemoveAttractionFromMapCommandFromServer();
+    }
+
+    public void handleRemoveAttractionFromMapCommandFromServer() {
+        System.out.println("handleRemoveAttractionFromMapCommandFromServer");
+        boolean success = command.getCommand(RemoveAttractionFromMapCommand.class).getSuccess();
+        if (success)
+            System.out.println("Attraction removed successfully from map!");
+        else
+            System.out.println("Failed to remove attraction from map!");
+    }
+
+    public void handleAddAttractionToTour(int attractionID, int tourID, int time, String cityName) throws IOException {
+        commandRequest = true;
         System.out.println("handleAddAttractionsToTour");
         Command command = new Command(new AddAttractionToTourCommand(attractionID, tourID, time, cityName), CommandType.AddAttractionToTourCommand);
         sendToServer(command);

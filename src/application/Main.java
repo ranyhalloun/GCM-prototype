@@ -30,6 +30,7 @@ import application.insertMap.externalMapsController;
 import application.insertMap.insertCityController;
 import application.login.loginController;
 import application.login.registrationController;
+import application.mapImage.mapImageController;
 import application.reports.citiesAndDatesController;
 import application.reports.cityReportController;
 import application.reports.customerReportController;
@@ -310,7 +311,7 @@ public class Main extends Application {
         mainLayout.getChildren().setAll(root);
     }
     
-    public void removeAttractionFromTour(String attractionID, int tourID) throws IOException {
+    public void removeAttractionFromTour(int attractionID, int tourID) throws IOException {
     	gcmClient.handleRemoveAttractionFromTour(attractionID, tourID);
     }
     
@@ -339,8 +340,8 @@ public class Main extends Application {
         gcmClient.handleInsertNewCity(maps, cityName, description);
     }
     
-    public void addAttractionToTour(String attractionID, int tourID, int time, String cityName) throws IOException {
-        gcmClient.handleAddAttractionsToTour(attractionID, tourID, time, cityName);
+    public void addAttractionToTour(int attractionID, int tourID, int time, String cityName) throws IOException {
+        gcmClient.handleAddAttractionToTour(attractionID, tourID, time, cityName);
     }
     
     public void updateDBAfterDecline(String cityName) throws IOException {
@@ -489,6 +490,36 @@ public class Main extends Application {
         loader.setController(new newVersionsController(newVersions));
         AnchorPane newVersionsView = loader.load();
         mainLayout.getChildren().setAll(newVersionsView);
+    }
+    
+    public void goToDisplayImageOfMap(int mapID, String attraction, String cityName, String description) throws IOException 
+    {
+        // Get map
+        Map map = gcmClient.handleGetMapInfoFromID(mapID);
+        // Go to display map image
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("mapImage/mapImageView.fxml"));
+        loader.setController(new mapImageController(map, attraction, cityName, description));
+        AnchorPane mapImageView = loader.load();
+        // Show in Another Windows!
+        Stage displayMapImageStage = new Stage();
+        displayMapImageStage.setTitle("Display Map Image");
+        displayMapImageStage.initModality(Modality.APPLICATION_MODAL);
+        displayMapImageStage.initOwner(primaryStage);
+        Scene scene = new Scene(mapImageView);
+        displayMapImageStage.setScene(scene);
+        displayMapImageStage.showAndWait();
+    }
+    
+    public void addNewAttractionToMap(int mapID, Attraction attraction) throws IOException {
+        gcmClient.handleAddNewAttractionToMap(mapID, attraction);
+    }
+
+    public void editAttractionInMap(int mapID, Attraction attraction) throws IOException {
+        gcmClient.handleEditAttractionInMap(mapID, attraction);
+    }
+
+    public void removeAttractionFromMap(int mapID, int attractionID) throws IOException {
+        gcmClient.handleRemoveAttractionFromMap(mapID, attractionID);
     }
 
     public void updateUserType(UserType userType) {

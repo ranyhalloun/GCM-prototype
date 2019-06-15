@@ -41,7 +41,10 @@ public enum CommandType
 	CheckSubscriptionCommand(36),
 	GetExpirationDateCommand(37),
 	GetManagerNotifCommand(38),
-	GetNewVersionsCommand(39);
+	GetNewVersionsCommand(39),
+	AddNewAttractionToMapCommand(29),
+    EditAttractionInMapCommand(30),
+    RemoveAttractionFromMapCommand(31);
     
     private int CommandTypeValue;
 

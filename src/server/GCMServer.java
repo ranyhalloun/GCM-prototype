@@ -51,6 +51,10 @@ import commands.UpdateDBAfterPurchasingCommand;
 import commands.UpdatePricesAfterAcceptCommand;
 import commands.SendNewPricesCommand;
 import commands.InsertNewCityCommand;
+import commands.AddNewAttractionToMapCommand;
+import commands.EditAttractionInMapCommand;
+import commands.RemoveAttractionFromMapCommand;
+
 import database.Database;
 import javafx.collections.ObservableList;
 import ocsf.server.AbstractServer;
@@ -452,6 +456,36 @@ public class GCMServer extends AbstractServer
                     e.printStackTrace();
                 }
                 break;
+            case AddNewAttractionToMapCommand:
+                try {
+                    handleAddNewAttractionToMapCommand(command, client);
+                    client.sendToClient(command);
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case EditAttractionInMapCommand:
+                try {
+                    handleEditAttractionInMapCommand(command, client);
+                    client.sendToClient(command);
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case RemoveAttractionFromMapCommand:
+                try {
+                    handleRemoveAttractionFromMapCommand(command, client);
+                    client.sendToClient(command);
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
           default:
             break;
         }
@@ -473,7 +507,7 @@ public class GCMServer extends AbstractServer
     }
 
     private void handleGetTourInfoFromIDCommand(Command command, ConnectionToClient client) {
-        System.out.println("handleGetTourInfoFromIDCommand In Server");
+        System.out.println("handleGetTourInfoFromIDCommand in Server");
         GetTourInfoFromIDCommand getTourInfoFromIDCommand = command.getCommand(GetTourInfoFromIDCommand.class);
         int tourID = getTourInfoFromIDCommand.getTourID();
         Tour tour = db.getTourInfoByID(tourID);
@@ -674,7 +708,7 @@ public class GCMServer extends AbstractServer
     private void handleRemoveAttractionFromTourCommand(Command command, ConnectionToClient client) throws SQLException {
     	System.out.println("RemoveAttractionFromTourCommand");
     	RemoveAttractionFromTourCommand removeAttractionFromTourCommand = command.getCommand(RemoveAttractionFromTourCommand.class);
-        String attractionID = removeAttractionFromTourCommand.getAttractionID();
+        int attractionID = removeAttractionFromTourCommand.getAttractionID();
         int tourID = removeAttractionFromTourCommand.getTourID();
         db.removeAttractionFromTour(attractionID, tourID);
         removeAttractionFromTourCommand.setSuccess(true);
@@ -700,7 +734,7 @@ public class GCMServer extends AbstractServer
     private void handleAddAttractionToTourCommand(Command command, ConnectionToClient client) throws SQLException{
     	System.out.println("handleAddAttractionToTourCommand");
     	AddAttractionToTourCommand addAttractionToTourCommand  = command.getCommand(AddAttractionToTourCommand.class);
-        String attractionID = addAttractionToTourCommand.getAttractionId();
+        int attractionID = addAttractionToTourCommand.getAttractionId();
         int tourID = addAttractionToTourCommand.getTourID();
         int time = addAttractionToTourCommand.getTime();
         String cityName = addAttractionToTourCommand.getCityName();
@@ -879,6 +913,34 @@ public class GCMServer extends AbstractServer
     	System.out.println("handleGetNewVersionsCommand");
     	GetNewVersionsCommand getNewVersionsCommand  = command.getCommand(GetNewVersionsCommand.class);
     	getNewVersionsCommand.setNewVersions(db.getNewVersions());
+    }
+    
+    private void handleAddNewAttractionToMapCommand(Command command, ConnectionToClient client) throws SQLException {
+        System.out.println("handleAddNewAttractionToMapCommand in server");
+        int mapID = command.getCommand(AddNewAttractionToMapCommand.class).getMapID();
+        Attraction attraction = command.getCommand(AddNewAttractionToMapCommand.class).getAttraction();
+        db.addNewAttractionToMap(mapID, attraction);
+        command.getCommand(AddNewAttractionToMapCommand.class).setSuccess(true);
+    }
+
+    private void handleEditAttractionInMapCommand(Command command, ConnectionToClient client) throws SQLException {
+        System.out.println("handleEditAttractionInMapCommand in server");
+        int mapID = command.getCommand(EditAttractionInMapCommand.class).getMapID();
+        Attraction attraction = command.getCommand(EditAttractionInMapCommand.class).getAttraction();
+        System.out.println("----------------------------------------");
+        System.out.println("SERVERRRRRRRRRRRRRRRR");
+        attraction.print();
+        System.out.println("----------------------------------------");
+        db.editAttractionInMap(mapID, attraction);
+        command.getCommand(EditAttractionInMapCommand.class).setSuccess(true);
+    }
+
+    private void handleRemoveAttractionFromMapCommand(Command command, ConnectionToClient client) throws SQLException {
+        System.out.println("handleRemoveAttractionFromMapCommand in server");
+        int mapID = command.getCommand(RemoveAttractionFromMapCommand.class).getMapID();
+        int attractionID = command.getCommand(RemoveAttractionFromMapCommand.class).getAttractionID();
+        db.removeAttractionFromMap(mapID, attractionID);
+        command.getCommand(RemoveAttractionFromMapCommand.class).setSuccess(true);
     }
     
     protected void serverStarted()
