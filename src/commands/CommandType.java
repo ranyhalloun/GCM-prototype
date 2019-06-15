@@ -1,5 +1,6 @@
 package commands;
 
+
 public enum CommandType
 {
     ConnectionCommand(1),
@@ -35,7 +36,12 @@ public enum CommandType
     CheckCustomerCommand(31),
     GetPurchasesCommand(32),
     GetViewsCommand(33),
-	GetDownloadsCommand(34);
+	GetDownloadsCommand(34),
+	UpdateDBAfterPurchasingCommand(35),
+	CheckSubscriptionCommand(36),
+	GetExpirationDateCommand(37),
+	GetManagerNotifCommand(38),
+	GetNewVersionsCommand(39);
     
     private int CommandTypeValue;
 

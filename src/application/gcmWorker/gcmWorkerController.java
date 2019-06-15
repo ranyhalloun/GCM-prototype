@@ -29,7 +29,14 @@ public class gcmWorkerController {
 
     @FXML
     private Button searchMapBtn;
+    
+    @FXML
+    private Button notfiticationsBtn;
 
+    @FXML
+    void notfitications(ActionEvent event) throws IOException {
+    	Main.getInstance().goToManagerNotif();
+    }
 
     @FXML
     void goToInsertMap(ActionEvent event) throws IOException {

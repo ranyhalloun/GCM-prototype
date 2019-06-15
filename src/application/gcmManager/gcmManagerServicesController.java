@@ -32,8 +32,11 @@ public class gcmManagerServicesController {
     private Button customersReportsBtn;
     
     @FXML
+    private Button myProfileBtn;
+    
+    @FXML
     void customersReports(ActionEvent event) throws IOException {
-    	System.out.println("Going to search map");
+    	System.out.println("Going to search customer");
         Main.getInstance().goToSearchCustomer("");
     }
     
@@ -74,6 +77,11 @@ public class gcmManagerServicesController {
          Main.getInstance().goToCitiesReport("");
     }
 
+    @FXML
+    void myProfile(ActionEvent event) throws IOException {
+    	Main.getInstance().goToMyProfile();
+    }
+    
     @FXML
     void initialize() {
         assert insertMapBtn != null : "fx:id=\"insertMapBtn\" was not injected: check your FXML file 'gcmManagerView.fxml'.";

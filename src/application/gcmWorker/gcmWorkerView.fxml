@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="400.0" prefWidth="300.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2">
+<AnchorPane prefHeight="400.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
   <!-- TODO Add Nodes -->
   <children>
     <Text layoutX="104.0" layoutY="72.0" scaleX="2.251344625915683" scaleY="1.6466797285746746" strokeType="OUTSIDE" strokeWidth="0.0" text="GCM Worker">
@@ -15,17 +15,14 @@
         <Font size="16.0" fx:id="x1" />
       </font>
     </Text>
-    <VBox layoutX="59.0" layoutY="139.0" prefHeight="214.0" prefWidth="190.0">
-      <children>
-        <Button fx:id="searchMapBtn" font="$x1" mnemonicParsing="false" onAction="#goToSearchMap" prefWidth="166.0" text="Search Map">
-          <VBox.margin>
-            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" fx:id="x2" />
-          </VBox.margin>
-        </Button>
-        <Button fx:id="insertMapBtn" font="$x1" mnemonicParsing="false" onAction="#goToInsertMap" prefWidth="166.0" text="Insert Map" VBox.margin="$x2" />
-        <Button fx:id="requestApprovalBtn" font="$x1" mnemonicParsing="false" onAction="#requestApproval" prefWidth="166.0" text="Request Approval" VBox.margin="$x2" />
-      </children>
-    </VBox>
     <Button id="logout" fx:id="logoutBtn" font="$x1" layoutX="27.0" layoutY="338.0" mnemonicParsing="false" onAction="#logout" text="Logout" />
+  <Button fx:id="searchMapBtn" font="$x1" layoutX="51.0" layoutY="105.0" mnemonicParsing="false" onAction="#goToSearchMap" prefHeight="37.0" prefWidth="199.0" text="Search Map" />
+  <Button fx:id="insertMapBtn" font="$x1" layoutX="51.0" layoutY="152.0" mnemonicParsing="false" onAction="#goToInsertMap" prefHeight="37.0" prefWidth="199.0" text="Insert Map" />
+  <Button fx:id="requestApprovalBtn" font="$x1" layoutX="51.0" layoutY="200.0" mnemonicParsing="false" onAction="#requestApproval" prefHeight="37.0" prefWidth="199.0" text="Request Approval" />
+      <Button fx:id="notfiticationsBtn" layoutX="50.0" layoutY="249.0" mnemonicParsing="false" onAction="#notfitications" prefHeight="37.0" prefWidth="199.0" text="GCM Manager Notifications">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Button>
   </children>
 </AnchorPane>

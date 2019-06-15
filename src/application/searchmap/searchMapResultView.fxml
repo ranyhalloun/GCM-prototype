@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="400.0" prefWidth="300.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2">
+<AnchorPane prefHeight="400.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
   <!-- TODO Add Nodes -->
   <children>
     <Label layoutX="105.0" layoutY="18.0" prefWidth="135.0" text="Search Result">
@@ -17,18 +17,20 @@
     <Button fx:id="backBtn" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#back" prefHeight="25.0" prefWidth="70.0" text="Back" />
     <TableView fx:id="tableView" layoutX="13.0" layoutY="49.0" onMouseClicked="#userClickOnTable" prefHeight="189.0" prefWidth="273.0">
       <columns>
-        <TableColumn maxWidth="5000.0" minWidth="10.0" prefWidth="131.0" text="MapID" fx:id="mapIDColumn" />
-        <TableColumn maxWidth="5000.0" minWidth="0.0" prefWidth="142.0" text="City" fx:id="cityColumn" />
+        <TableColumn fx:id="mapIDColumn" maxWidth="5000.0" minWidth="10.0" prefWidth="131.0" text="MapID" />
+        <TableColumn fx:id="cityColumn" maxWidth="5000.0" minWidth="0.0" prefWidth="142.0" text="City" />
       </columns>
     </TableView>
     <Button fx:id="displayMapBtn" layoutX="63.0" layoutY="354.0" mnemonicParsing="false" onAction="#displayMapInfo" prefWidth="173.0" text="Map Info" />
-    <TextArea id="descriptionFT" fx:id="mapDescription" layoutX="14.0" layoutY="277.0" prefHeight="70.0" prefWidth="187.99990000000253" />
+    <TextArea id="descriptionFT" fx:id="mapDescription" layoutX="14.0" layoutY="265.0" prefHeight="82.0" prefWidth="173.0" />
     <Label layoutX="13.0" layoutY="246.0" text="Description:">
       <font>
         <Font size="14.0" fx:id="x1" />
       </font>
     </Label>
     <Label font="$x1" layoutX="217.0" layoutY="246.0" text="#Maps:" />
-    <TextField fx:id="numOfMaps" layoutX="216.0" layoutY="277.0" prefWidth="70.0" />
+    <TextField fx:id="numOfMaps" layoutX="215.0" layoutY="265.0" prefHeight="25.0" prefWidth="70.0" />
+      <Label fx:id="expirationDateLabel" layoutX="211.0" layoutY="298.0" text="Expiration Date:" />
+      <TextField fx:id="expirationDate" layoutX="191.0" layoutY="322.0" prefHeight="25.0" prefWidth="102.0" />
   </children>
 </AnchorPane>

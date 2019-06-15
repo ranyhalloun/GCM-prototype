@@ -12,7 +12,7 @@ public class PurchaseDetails implements Serializable {
 	public PurchaseDetails(String cityName, LocalDate date, int purchaseType) {
 		this.cityName = cityName;
 		this.date = date;
-		this.purchaseType = purchaseType == 1 ? "Susbscription":"OneTime";
+		this.purchaseType = purchaseType == 1 ? "Subscription":"OneTime";
 	}
 	
 	public String getCityName() {

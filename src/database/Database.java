@@ -20,6 +20,7 @@ import Entities.SearchMapResult;
 import Entities.StringIntPair;
 import Entities.Tour;
 import Entities.ViewDetails;
+import Entities.updateCityRequest;
 import application.arrayOfStrings;
 import application.customer.Customer;
 import javafx.collections.ObservableList;
@@ -112,7 +113,7 @@ public class Database {
     }
     
     public boolean cityWaiting(String cityName) throws SQLException {
-        String sql = "SELECT name FROM CitiesQueue WHERE name = '" + cityName + "'";
+        String sql = "SELECT name FROM CitiesQueue WHERE name = '" + cityName + "' AND answer = -1";
         ResultSet rs = stmt.executeQuery(sql);
 
         return rs.next();
@@ -187,7 +188,7 @@ public class Database {
 
     public ArrayList<String> getCitiesQueue() throws SQLException {
         ArrayList<String> cities = new ArrayList<String>();
-        String sql = "SELECT name FROM CitiesQueue";
+        String sql = "SELECT name FROM CitiesQueue WHERE answer = -1";
         ResultSet rs = stmt.executeQuery(sql);
         while (rs.next())
             cities.add(rs.getString(1));
@@ -763,6 +764,7 @@ public class Database {
     
     public void updateDBAfterDecline(String cityName) throws SQLException {
         ResultSet rs;
+        int version = getCityVersion(cityName);
         String sql = "DELETE FROM GCMCities WHERE name = '" + cityName + "'";
         stmt.executeUpdate(sql);
 
@@ -783,7 +785,10 @@ public class Database {
 
         sql = "INSERT INTO GCMToursAttractions SELECT * FROM ToursAttractions WHERE cityName = '" + cityName + "'";
         stmt.executeUpdate(sql);
-        deleteFromCitiesQueue(cityName);
+        
+        sql = "UPDATE CitiesQueue SET answer = 0 , date = '" + LocalDate.now() + "', version = '" + version + "' WHERE name = '" + cityName + "' AND answer = -1";
+        stmt.execute(sql);
+        //deleteFromCitiesQueue(cityName);
     }
 
     public void updateDBAfterAccept(String cityName) throws SQLException {
@@ -811,15 +816,17 @@ public class Database {
 
         sql = "UPDATE Cities SET version = '" + newVersion + "' WHERE name = '" + cityName + "'";
         stmt.executeUpdate(sql);
-
-        deleteFromCitiesQueue(cityName);
+        
+        sql = "UPDATE CitiesQueue SET answer = 1 , date = '" + LocalDate.now() + "', version = '" + newVersion + "' WHERE name = '" + cityName + "' AND answer = -1";
+        stmt.execute(sql);
 
     }
     
-    public void deleteFromCitiesQueue(String cityName) throws SQLException {
+    /*public void updateCitiesQueue(String cityName) throws SQLException {
+    	
         String sql = "DELETE FROM CitiesQueue WHERE name = '" + cityName + "'";
         stmt.executeUpdate(sql);
-    }
+    }*/
 
     public ArrayList<Map> getNewExternalMaps() throws SQLException {
         ArrayList<Map> maps = new ArrayList<Map>();
@@ -1011,5 +1018,81 @@ public class Database {
         	downloads.add(new DownloadDetails(cityName, date));
         }
         return downloads;
+	}
+	
+	public void updateDBAfterPurchasing(int purchaseType, LocalDate date, String customerUsername, String cityName) throws SQLException{
+    	String sql = "INSERT INTO PurchaseStatistics (purchaseType, date, customerUsername, cityName) VALUES ('"
+    	+ purchaseType + "', " + "'" + date + "', " + "'" + customerUsername + "', " + "'" + cityName + "')";
+    	stmt.executeUpdate(sql);
+    	
+    	if(purchaseType == 1) {
+    		sql = "SELECT expirationDate FROM Subscriptions WHERE customerUsername = '" + customerUsername + "' AND cityName = '" + cityName + "'";
+    		ResultSet rs = stmt.executeQuery(sql);
+    		if(rs.next())
+    		{	
+    			LocalDate oldDate = LocalDate.parse(rs.getString(1));
+    			sql = "UPDATE Subscriptions SET expirationDate  = '" + oldDate.plusMonths(6) + "'";
+    		}
+    		else {
+    			sql = "INSERT INTO Subscriptions (customerUsername, cityName, expirationDate) VALUES ('" + 
+    											  customerUsername + "', '" + cityName + "', '" + date.plusMonths(6) + "')";
+    		}
+    		stmt.executeUpdate(sql);
+    	}
+	}
+	
+	public boolean checkSubscription(String customerUsername, String cityName) throws SQLException{
+        String sql = "SELECT * FROM Subscriptions WHERE cityName = '" + cityName + "' AND customerUsername = '" + customerUsername + "'";
+        ResultSet rs = stmt.executeQuery(sql);
+
+        return rs.next();
+	}
+	
+	public String getExpirationDate(String customerUsername, String cityName) throws SQLException{
+        String sql = "SELECT expirationDate FROM Subscriptions WHERE cityName = '" + cityName + "' AND customerUsername = '" + customerUsername + "'";
+        ResultSet rs = stmt.executeQuery(sql);
+        if(rs.next())
+        	return rs.getString(1);
+        else
+        	return "";
+	}
+	
+	public ArrayList<updateCityRequest> getManagerNotif() throws SQLException{
+		ArrayList<updateCityRequest> notifis = new ArrayList<updateCityRequest>();
+		String sql = "SELECT name, answer, date, version FROM CitiesQueue WHERE date IS NOT NULL";
+        ResultSet rs = stmt.executeQuery(sql);
+        String name = "";
+        String answer = "";
+        LocalDate date;
+        int version;
+        while(rs.next()) {
+        	name = rs.getString(1);
+        	answer = rs.getInt(2) == 1 ? "Accept" : "Decline";
+        	date = LocalDate.parse(rs.getString(3));
+        	version = rs.getInt(4);
+        	notifis.add(new updateCityRequest(name, answer, date, version));
+        }
+        return notifis;
+	}
+	
+	public ArrayList<updateCityRequest> getNewVersions() throws SQLException{
+		ArrayList<updateCityRequest> newVersions = new ArrayList<updateCityRequest>();
+		String sql = "SELECT name, answer, date, version FROM CitiesQueue WHERE answer = 1";
+        ResultSet rs = stmt.executeQuery(sql);
+        String name = "";
+        LocalDate date;
+        int version;
+        while(rs.next()) {
+        	name = rs.getString(1);
+        	date = LocalDate.parse(rs.getString(3));
+        	version = rs.getInt(4);
+        	newVersions.add(new updateCityRequest(name, date, version));
+        }
+        return newVersions;
+	}
+	
+	public void removeExpiredSubscriptions() throws SQLException{
+		String sql = "DELETE FROM Subscriptions WHERE expirationDate <= '" + LocalDate.now() + "'";
+		stmt.executeUpdate(sql);
 	}
 }

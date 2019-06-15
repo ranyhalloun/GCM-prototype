@@ -24,6 +24,8 @@ import commands.GetCityToursCommand;
 import commands.GetCustomerInfoCommand;
 import commands.GetCustomersCitiesCommand;
 import commands.GetDownloadsCommand;
+import commands.GetExpirationDateCommand;
+import commands.GetManagerNotifCommand;
 import commands.GetMapInfoFromIDCommand;
 import commands.GetTourInfoFromIDCommand;
 import commands.GetViewsCommand;
@@ -37,12 +39,15 @@ import commands.SearchMapCommand;
 import commands.InsertMapCommand;
 import commands.CheckCityExistanceCommand;
 import commands.CheckCustomerCommand;
+import commands.CheckSubscriptionCommand;
 import commands.GetNewExternalMapsCommand;
+import commands.GetNewVersionsCommand;
 import commands.GetOldPricesCommand;
 import commands.GetPricesCommand;
 import commands.GetPurchasesCommand;
 import commands.UpdateDBAfterAcceptCommand;
 import commands.UpdateDBAfterDeclineCommand;
+import commands.UpdateDBAfterPurchasingCommand;
 import commands.UpdatePricesAfterAcceptCommand;
 import commands.SendNewPricesCommand;
 import commands.InsertNewCityCommand;
@@ -392,11 +397,65 @@ public class GCMServer extends AbstractServer
                     e.printStackTrace();
                 }
                 break;
+                
+            case  UpdateDBAfterPurchasingCommand:
+                try {
+                    handleUpdateDBAfterPurchasingCommand(command, client);
+                    client.sendToClient(command);
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
+                
+            case  CheckSubscriptionCommand:
+                try {
+                    handleCheckSubscriptionCommand(command, client);
+                    client.sendToClient(command);
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
+                
+            case GetExpirationDateCommand:
+                try {
+                    handleGetExpirationDateCommand(command, client);
+                    client.sendToClient(command);
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
+                
+            case GetManagerNotifCommand:
+                try {
+                    handleGetManagerNotifCommand(command, client);
+                    client.sendToClient(command);
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
+                
+            case GetNewVersionsCommand:
+                try {
+                    handleGetNewVersionsCommand(command, client);
+                    client.sendToClient(command);
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
           default:
             break;
         }
     }
-
     private void handleGetMapInfoFromIDCommand(Command command, ConnectionToClient client) {
         Map map = new Map();
         System.out.println("handleGetMapInfoFromIDCommand in server");
@@ -784,6 +843,44 @@ public class GCMServer extends AbstractServer
     	getDownloadsCommand.setDownloads((db.getDownloads(customerUsername)));
     }
     
+    private void handleUpdateDBAfterPurchasingCommand(Command command, ConnectionToClient client) throws SQLException{
+    	System.out.println("handleUpdateDBAfterPurchasingCommand");
+    	UpdateDBAfterPurchasingCommand updateDBAfterPurchasingCommand  = command.getCommand(UpdateDBAfterPurchasingCommand.class);
+    	String cityName = updateDBAfterPurchasingCommand.getCityName();
+    	int purchaseType = updateDBAfterPurchasingCommand.getPurchaseType();
+    	String customerUsername = client.getInfo("username").toString();
+    	LocalDate date = LocalDate.now();
+    	db.updateDBAfterPurchasing(purchaseType, date, customerUsername, cityName);
+    }
+    
+    private void handleCheckSubscriptionCommand(Command command, ConnectionToClient client) throws SQLException{
+    	System.out.println("handleCheckSubscriptionCommand");
+    	CheckSubscriptionCommand checkSubscriptionCommand  = command.getCommand(CheckSubscriptionCommand.class);
+    	String cityName = checkSubscriptionCommand.getCityName();
+    	String customerUsername = client.getInfo("username").toString();
+    	checkSubscriptionCommand.setExists(db.checkSubscription(customerUsername, cityName));
+    }
+    
+    private void handleGetExpirationDateCommand(Command command, ConnectionToClient client) throws SQLException{
+    	System.out.println("handleGetExpirationDateCommand");
+    	GetExpirationDateCommand getExpirationDateCommand  = command.getCommand(GetExpirationDateCommand.class);
+    	String cityName = getExpirationDateCommand.getCityName();
+    	String customerUsername = client.getInfo("username").toString();
+    	getExpirationDateCommand.setExpirationDate(db.getExpirationDate(customerUsername, cityName));
+    }
+    
+    private void handleGetManagerNotifCommand(Command command, ConnectionToClient client) throws SQLException{
+    	System.out.println("handleGetManagerNotifCommand");
+    	GetManagerNotifCommand getManagerNotifCommand  = command.getCommand(GetManagerNotifCommand.class);
+    	getManagerNotifCommand.setNotifis(db.getManagerNotif());
+    }
+    
+    private void handleGetNewVersionsCommand(Command command, ConnectionToClient client) throws SQLException{
+    	System.out.println("handleGetNewVersionsCommand");
+    	GetNewVersionsCommand getNewVersionsCommand  = command.getCommand(GetNewVersionsCommand.class);
+    	getNewVersionsCommand.setNewVersions(db.getNewVersions());
+    }
+    
     protected void serverStarted()
     {
       System.out.println("Server listening for connections on port " + getPort());
@@ -824,8 +921,9 @@ public class GCMServer extends AbstractServer
 
     public static void main(String[] args) 
     {
+    	
         int port = 0;
-
+        
         try {
             port = Integer.parseInt(args[0]); //Get port from command line
         }
@@ -833,6 +931,14 @@ public class GCMServer extends AbstractServer
             port = DEFAULT_PORT; //Set port to 458
         }
 
+        Thread gcmThread = new Thread(new Runnable() {
+        	public void run()
+        	{
+        		DailyThread gcm = new DailyThread();
+        		gcm.start();
+        	}
+        });
+        gcmThread.start();
         GCMServer sv = new GCMServer(port);
       
         try {

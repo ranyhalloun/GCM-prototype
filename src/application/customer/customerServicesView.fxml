@@ -6,16 +6,16 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-
-<AnchorPane prefHeight="400.0" prefWidth="300.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8">
+<AnchorPane prefHeight="400.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Button fx:id="logOutBtn" layoutX="14.0" layoutY="345.0" mnemonicParsing="false" onAction="#logOut" text="Log out" />
+      <Button fx:id="logOutBtn" layoutX="14.0" layoutY="330.0" mnemonicParsing="false" onAction="#logOut" prefHeight="40.0" prefWidth="87.0" text="Log out" />
       <Label layoutX="82.0" layoutY="62.0" prefHeight="21.0" prefWidth="137.0" text="Customer Services">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
       </Label>
-      <Button fx:id="searchMapBtn" layoutX="112.0" layoutY="175.0" mnemonicParsing="false" onAction="#searchMap" text="SearchMap" />
-      <Button fx:id="myProfileBtn" layoutX="17.0" layoutY="20.0" mnemonicParsing="false" onAction="#myProfile" text="My Profile" />
+      <Button fx:id="searchMapBtn" layoutX="100.0" layoutY="160.0" mnemonicParsing="false" onAction="#searchMap" prefHeight="40.0" prefWidth="97.0" text="SearchMap" />
+      <Button fx:id="myProfileBtn" layoutX="17.0" layoutY="20.0" mnemonicParsing="false" onAction="#myProfile" prefHeight="40.0" prefWidth="87.0" text="My Profile" />
+      <Button fx:id="newVersionsBtn" layoutX="102.0" layoutY="228.0" mnemonicParsing="false" onAction="#newVersions" prefHeight="40.0" prefWidth="97.0" text="New Versions" />
    </children>
 </AnchorPane>

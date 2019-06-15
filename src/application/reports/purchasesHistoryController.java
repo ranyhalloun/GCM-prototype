@@ -42,7 +42,15 @@ public class purchasesHistoryController {
 
     @FXML
     void back(ActionEvent event) throws IOException {
-    	Main.getInstance().goToCustomerReport(customerUsername);
+    	switch(Main.getInstance().getUserType()) {
+        case GCMManager:
+        case CompanyManager:
+        	Main.getInstance().goToCustomerReport(customerUsername);
+            break;
+        case Customer:
+        	Main.getInstance().goToMyProfile();
+        	break;
+    	}
     }
     
     

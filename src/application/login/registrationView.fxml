@@ -27,6 +27,6 @@
       <TextField fx:id="email" layoutX="106.0" layoutY="238.0" onAction="#registration" prefWidth="155.0" />
       <TextField fx:id="phone" layoutX="106.0" layoutY="280.0" onAction="#registration" prefWidth="155.0" />
       <Button fx:id="backBtn" layoutX="14.0" layoutY="21.0" mnemonicParsing="false" onAction="#back" text="Back" />
-      <Label fx:id="errorMessageText" layoutX="78.0" layoutY="369.0" prefHeight="17.0" prefWidth="172.0" textFill="RED" />
+      <Label fx:id="errorMessageText" layoutX="29.0" layoutY="369.0" prefHeight="17.0" prefWidth="251.0" textFill="RED" />
   </children>
 </AnchorPane>

@@ -60,7 +60,7 @@
             <TextField fx:id="phone" GridPane.columnIndex="1" GridPane.rowIndex="5" />
          </children>
       </GridPane>
-      <Label layoutX="90.0" layoutY="14.0" text="Customer Details">
+      <Label layoutX="110.0" layoutY="13.0" text="User Details">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
@@ -70,5 +70,7 @@
       <Button fx:id="historyBtn" layoutX="44.0" layoutY="295.0" mnemonicParsing="false" onAction="#History" text="History" />
       <Button fx:id="saveBtn" layoutX="133.0" layoutY="295.0" mnemonicParsing="false" onAction="#save" prefHeight="25.0" prefWidth="52.0" text="Save" />
       <Button fx:id="cancelBtn" layoutX="133.0" layoutY="320.0" mnemonicParsing="false" onAction="#cancel" text="Cancel" />
+      <Label fx:id="errorText" layoutX="86.0" layoutY="269.0" prefHeight="17.0" prefWidth="172.0" textFill="RED" />
+      <Label fx:id="successText" layoutX="74.0" layoutY="345.0" prefHeight="17.0" prefWidth="155.0" textFill="#0004ff" />
    </children>
 </AnchorPane>

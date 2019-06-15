@@ -1,16 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-
-<AnchorPane prefHeight="400.0" prefWidth="300.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8">
+<AnchorPane prefHeight="400.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Button fx:id="getReportBtn" layoutX="107.0" layoutY="217.0" mnemonicParsing="false" onAction="#getReport" prefHeight="37.0" prefWidth="78.0" text="Get Report" />
       <TextField fx:id="username" layoutX="72.0" layoutY="138.0" promptText="Username" />
       <Button fx:id="backBtn" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#back" prefHeight="25.0" prefWidth="48.0" text="Back" />
       <Label fx:id="errorText" layoutX="56.0" layoutY="183.0" prefHeight="17.0" prefWidth="184.0" textFill="RED" />
+      <Label layoutX="71.0" layoutY="39.0" prefHeight="27.0" prefWidth="158.0" text="Customer Reports">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>
