@@ -29,7 +29,10 @@ public enum CommandType
     SendNewPricesCommand(25),
     GetPricesCommand(26),
     UpdatePricesAfterAcceptCommand(27),
-    UpdatePricesAfterDeclineCommand(28);
+    UpdatePricesAfterDeclineCommand(28),
+    AddNewAttractionToMapCommand(29),
+    EditAttractionInMapCommand(30),
+    RemoveAttractionFromMapCommand(31);
     
     private int CommandTypeValue;
 

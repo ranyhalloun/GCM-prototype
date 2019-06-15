@@ -12,7 +12,7 @@ public class Map implements Serializable {
     private String imagePath;
     private ArrayList<Attraction> attractions;
     private int version;
-    
+
     //Constructor
     public Map() {
         this.mapID = -1;

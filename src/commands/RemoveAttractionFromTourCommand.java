@@ -4,7 +4,7 @@ import java.io.Serializable;
 public class RemoveAttractionFromTourCommand implements Serializable {
 
 	//input 
-	private String attractionID;
+	private int attractionID;
 	private int tourID;
 	
 	//output
@@ -12,7 +12,7 @@ public class RemoveAttractionFromTourCommand implements Serializable {
     private String error = "";
     
     // Constructor
-        public RemoveAttractionFromTourCommand(String attractionID, int tourID){
+        public RemoveAttractionFromTourCommand(int attractionID, int tourID){
         	this.success = false;
         	this.attractionID = attractionID;
         	this.tourID = tourID;
@@ -31,11 +31,11 @@ public class RemoveAttractionFromTourCommand implements Serializable {
         return this.error;
     }
 
-	public String getAttractionID() {
+	public int getAttractionID() {
 		return attractionID;
 	}
 
-	public void setAttractionID(String attractionID) {
+	public void setAttractionID(int attractionID) {
 		this.attractionID = attractionID;
 	}
 

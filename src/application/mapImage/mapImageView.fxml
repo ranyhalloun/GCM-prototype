@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane fx:id="anchorPane" prefHeight="600.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2">
+  <!-- TODO Add Nodes -->
+  <children>
+    <Button fx:id="addAttractionBtn" layoutX="47.0" layoutY="383.0" mnemonicParsing="false" onAction="#addAttractionToMap" prefWidth="140.0" text="Add Attraction" />
+    <Button fx:id="removeAttractionBtn" layoutX="47.0" layoutY="421.0" mnemonicParsing="false" onAction="#removeAttractionFromMap" prefWidth="140.0" text="Remove Attraction" />
+    <Button id="viewAttractionBtn" fx:id="editAttractionBtn" layoutX="47.0" layoutY="458.0" mnemonicParsing="false" onAction="#editAttractionInMap" prefWidth="140.0" text="Edit Attraction" />
+    <Label layoutX="220.0" layoutY="389.0" text="Attraction Name:" />
+    <Label layoutX="220.0" layoutY="420.0" text="" />
+    <TextField id="cityName" fx:id="attractionNameField" layoutX="372.0" layoutY="386.0" prefWidth="173.0" />
+    <TextArea id="descriptionFT" fx:id="descriptionField" layoutX="372.0" layoutY="510.0" prefHeight="68.0" prefWidth="174.0" />
+    <Label layoutX="220.0" layoutY="510.0" text="Description:" />
+    <Button id="removeAttractionBtn" fx:id="saveBtn" layoutX="47.0" layoutY="495.0" mnemonicParsing="false" onAction="#saveAttractionChanges" prefWidth="140.0" text="Save" />
+    <Label layoutX="220.0" layoutY="429.0" text="Category:" />
+    <TextField id="cityName" fx:id="categoryField" layoutX="372.0" layoutY="426.0" prefWidth="173.0" />
+    <Label layoutX="220.0" layoutY="471.0" text="Is Accessible:" />
+    <TextField id="cityName" fx:id="isAccessbleField" layoutX="372.0" layoutY="468.0" prefWidth="173.0" />
+    <Label fx:id="msgToUser" layoutX="47.0" layoutY="567.0" prefWidth="295.0000999999975" text="" />
+    <AnchorPane id="AnchorPane" fx:id="imgViewWrapAnchorPane" layoutX="14.0" layoutY="14.0">
+      <children>
+        <ImageView fx:id="imgView" fitHeight="354.0000305175781" fitWidth="565.0" layoutX="0.0" layoutY="0.0" onMouseClicked="#getCoordinates" pickOnBounds="true" preserveRatio="false" />
+      </children>
+    </AnchorPane>
+    <Button id="removeAttractionBtn" fx:id="discardBtn" layoutX="47.0" layoutY="532.0" mnemonicParsing="false" onMousePressed="#discardChanges" prefWidth="140.0" text="Discard" />
+  </children>
+</AnchorPane>

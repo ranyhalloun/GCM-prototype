@@ -4,9 +4,9 @@ import java.io.Serializable;
 
 public class Attraction implements Serializable {
     
-    private String id;
+    private int id;
     private String name;
-    private String location;
+    private Coordinates location;
     private String category;
     private String description;
     private String cityName;
@@ -15,14 +15,14 @@ public class Attraction implements Serializable {
     public Attraction()
     {
         this.name = "";
-        this.location = "";
+        this.location = new Coordinates();
         this.category = "";
         this.description = "";
         this.setCityName("");
         this.isAccessible = false;
     }
     
-    public Attraction(String name, String location)
+    public Attraction(String name, Coordinates location)
     {
         this.name = name;
         this.location = location;
@@ -45,7 +45,7 @@ public class Attraction implements Serializable {
     	this.cityName = cityName;
     }
     
-    public Attraction(String id, String name, String category, String description, boolean isAccessible, String cityName)
+    public Attraction(int id, String name, String category, String description, boolean isAccessible, String cityName)
     {
         this.id = id;
         this.name = name;
@@ -55,9 +55,19 @@ public class Attraction implements Serializable {
         this.cityName = cityName;
     }
     
-    public Attraction(String id, String name, String category, String description, boolean isAccessible, String cityName, String location)
+    public Attraction(int id, String name, String category, String description, boolean isAccessible, String cityName, Coordinates location)
     {
         this.id = id;
+        this.name = name;
+        this.category = category;
+        this.isAccessible = isAccessible;
+        this.description = description;
+        this.cityName = cityName;
+        this.location = location;
+    }
+    
+    public Attraction(String name, String category, String description, boolean isAccessible, String cityName, Coordinates location)
+    {
         this.name = name;
         this.category = category;
         this.isAccessible = isAccessible;
@@ -69,7 +79,7 @@ public class Attraction implements Serializable {
     //----------------------------------//
     
     //Getters
-    public String getId() {
+    public int getId() {
         return id;
     }
 
@@ -77,7 +87,7 @@ public class Attraction implements Serializable {
         return name;
     }
 
-    public String getLocation() {
+    public Coordinates getLocation() {
         return location;
     }
 
@@ -100,7 +110,7 @@ public class Attraction implements Serializable {
     //----------------------------------//
     
     // Setters
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
     
@@ -108,7 +118,7 @@ public class Attraction implements Serializable {
         this.name = name;
     }
     
-    public void setLocation(String location) {
+    public void setLocation(Coordinates location) {
         this.location = location;
     }
     
@@ -129,10 +139,8 @@ public class Attraction implements Serializable {
     }
     
     public void print() {
-        System.out.printf("Attraction name: %s, location: %s, "
-                + "category: %s, description: %s, cityName: %s, "
-                + "isAccessible %b%n", this.name, this.location, 
-                this.category, this.description, this.cityName, 
-                this.isAccessible);
+        System.out.printf("Attraction ID: %d, Attraction name: %s, category: %s, description: %s, cityName: %s, "
+                + "isAccessible %b, X_COORD = %f, Y_COORD = %f%n", this.id, this.name, this.category, this.description, this.cityName, this.isAccessible, 
+                this.location.getX_cord(), this.location.getY_cord());
     }
 }

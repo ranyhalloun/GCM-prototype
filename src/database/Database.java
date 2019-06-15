@@ -11,12 +11,10 @@ import java.util.LinkedHashSet;
 import Entities.Attraction;
 import Entities.AttractionTimePair;
 import Entities.City;
+import Entities.Coordinates;
 import Entities.Map;
-import Entities.SearchMapResult;
-import Entities.StringIntPair;
 import Entities.Tour;
 import application.customer.Customer;
-import javafx.collections.ObservableList;
 
 
 public class Database {
@@ -161,10 +159,6 @@ public class Database {
     public ArrayList<Map> searchMaps(String attractionName, String cityName, String description) throws SQLException {
         ArrayList<Map> maps = new ArrayList<Map>();
 
-        boolean byCityName = !cityName.isEmpty();
-        boolean byAttraction = !attractionName.isEmpty();
-        boolean byDescription = !description.isEmpty();
-        
         System.out.println("Before Find Maps.");
         maps = findMaps(cityName, attractionName, description);
         
@@ -187,27 +181,6 @@ public class Database {
             cities.add(rs.getString(1));
         return cities;
     }
-
-    private void addAdditionalInfoOfCity(SearchMapResult searchMapResult, String cityName) {
-        City cityInfo = searchMapResult.getCity();
-        int numOfAttractions = getNumOfAttractionsOfCity(cityName);
-        int numOfMaps = getNumOfMaps(cityName);
-        ArrayList<Tour> tours = getToursOfCity(cityName);
-        int numOfTours = tours.size();
-        String cityDescription = getCityDescription(cityName);
-
-        cityInfo.setNumOfAttractions(numOfAttractions);
-        cityInfo.setNumOfTours(numOfTours);
-        cityInfo.setNumOfMaps(numOfMaps);
-        cityInfo.setTours(tours);
-        cityInfo.setCityName(cityName);
-        cityInfo.setDescription(cityDescription);
-
-        System.out.printf("numOfAttractionsInCity: %d, numOfToursInCity: %d, numOfMapsInCity: %d, cityDescription: %s%n", numOfAttractions, numOfTours, 
-                numOfMaps, cityDescription);
-        System.out.println("Tours:");
-        printTours(tours);
-    }
     
     private String getCityDescription(String cityName) {
         String description = "";
@@ -220,20 +193,6 @@ public class Database {
             e.printStackTrace();
         }
         return description;
-    }
-
-    private void printTours(ArrayList<Tour> tours) {
-        for (Tour tour : tours) {
-            System.out.printf("tour id: %d, tour description: %s, attractions:%n",tour.getId(), tour.getDescription());
-            printTourAttractions(tour.getAttractionsTimePair());
-        }
-    }
-
-    private void printTourAttractions(ArrayList<AttractionTimePair> attractionsTimePair) {
-        for (AttractionTimePair attr : attractionsTimePair) {
-            attr.getAttraction().print();
-            System.out.println("Time: " + Integer.toString(attr.getTime()));
-        }
     }
 
     public ArrayList<Tour> getToursOfCity(String cityName) {
@@ -255,7 +214,7 @@ public class Database {
                 ArrayList<AttractionTimePair> attractionsTimePair = new ArrayList<AttractionTimePair>();
                 while (rs.next()) {
                     int time = rs.getInt(1);
-                    Attraction attraction = new Attraction(rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getBoolean(6), cityName);
+                    Attraction attraction = new Attraction(rs.getInt(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getBoolean(6), cityName);
                     attractionsTimePair.add(new AttractionTimePair(attraction, time));
                 }
                 tour.setAttractionsTimePair(attractionsTimePair);
@@ -281,7 +240,7 @@ public class Database {
 
     private int getNumOfAttractionsOfCity(String cityName){
         int numOfAttractions = -1;
-        String sql = "SELECT DISTINCT COUNT(attractionID) FROM AttractionsMaps WHERE cityName = '" + cityName + "'";
+        String sql = "SELECT DISTINCT COUNT(id) FROM Attractions WHERE cityName = '" + cityName + "'";
         try {
             ResultSet rs = stmt.executeQuery(sql);
             if (rs.next())
@@ -290,48 +249,6 @@ public class Database {
             e.printStackTrace();
         }
         return numOfAttractions;
-    }
-  
-    private Attraction getAttractionInfo(String attractionName) throws SQLException {
-    	String sql = "SELECT id, category, description, isAccessible, cityName FROM Attractions WHERE name = '" + attractionName + "'";
-    	
-    	ResultSet rs = stmt.executeQuery(sql);
-    	rs.next();
-    	return (new Attraction(rs.getString(1), attractionName, rs.getString(2), rs.getString(3), Boolean.parseBoolean(rs.getString(4)), rs.getString(5)));
-    }
-
-    private String getAttractionDescription(String attractionName) {
-        String description = "";
-        String sql = "SELECT description FROM Attractions WHERE name = '" + attractionName + "'";
-        try {
-            ResultSet rs = stmt.executeQuery(sql);
-            if (rs.next())
-                description = rs.getString(1);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return description;
-    }
-
-    private ArrayList<String> getCitiesNameOfAttraction(String attractionName) {
-        ArrayList<String> citiesName = new ArrayList<String>();
-        String sql = "SELECT DISTINCT cityName FROM Attractions WHERE Attractions.name = '" + attractionName + "'";
-        try {
-            ResultSet rs = stmt.executeQuery(sql);
-            while (rs.next())
-                citiesName.add(rs.getString(1));
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return citiesName;
-    }
-
-    private int getNumOfMapsIncludeAttraction(ArrayList<Map> maps, String attractionName) {
-        int numOfMaps = 0;
-        for (Map map : maps) {
-            
-        }
-        return numOfMaps;
     }
 
     private ArrayList<Map> findMaps(String cityName, String attractionName, String description) {
@@ -387,9 +304,8 @@ public class Database {
     
     private void findMapsByCityAttractionDescription(ArrayList<Map> maps, String cityName, String attraction,
             String description) {
-        String sql = "SELECT Maps.id FROM Maps INNER JOIN AttractionsMaps ON Maps.id = AttractionsMaps.mapID INNER JOIN Attractions "
-                + "ON Attractions.name = AttractionsMaps.attractionName  WHERE Maps.cityName = '" + cityName + "' AND Attractions.name = '"
-                + attraction + "' AND Maps.description LIKE '%" + description + "%'";
+        String sql = "SELECT Maps.id FROM Maps INNER JOIN Attractions ON Maps.id = Attractions.mapID WHERE Maps.cityName = '" 
+            + cityName + "' AND Attractions.name = '" + attraction + "' AND Maps.description LIKE '%" + description + "%'";
         try {
             ResultSet rs = stmt.executeQuery(sql);
             while (rs.next()) {
@@ -411,7 +327,7 @@ public class Database {
     }
 
     private void findMapsByAttractionDescription(ArrayList<Map> maps, String attraction, String description) {
-        String sql = "SELECT Maps.id FROM Maps INNER JOIN AttractionsMaps ON Maps.id = AttractionsMaps.mapID INNER JOIN Attractions ON Attractions.name = AttractionsMaps.attractionName  WHERE Attractions.name = '"
+        String sql = "SELECT Maps.id FROM Maps INNER JOIN Attractions ON Maps.id = Attractions.mapID WHERE Attractions.name = '"
                 + attraction + "' AND Attractions.description LIKE '%" + description + "%'";
           try {
               ResultSet rs = stmt.executeQuery(sql);
@@ -457,7 +373,7 @@ public class Database {
     }
 
     private void findMapsByCityAttraction(ArrayList<Map> maps, String cityName, String attraction) {
-        String sql = "SELECT DISTINCT Maps.id FROM Maps INNER JOIN AttractionsMaps ON Maps.id = AttractionsMaps.mapID INNER JOIN Attractions ON Attractions.id = AttractionsMaps.attractionID  WHERE Attractions.name = '"
+        String sql = "SELECT DISTINCT Maps.id FROM Maps INNER JOIN Attractions ON Maps.id = Attractions.mapID WHERE Attractions.name = '"
               + attraction + "' AND Maps.cityName = '" + cityName + "'";
         try {
             ResultSet rs = stmt.executeQuery(sql);
@@ -518,7 +434,7 @@ public class Database {
     }
 
     private void findMapsByAttraction(ArrayList<Map> maps, String attractionName) {
-        String sql = "SELECT mapID FROM AttractionsMaps INNER JOIN Attractions ON Attractions.id = AttractionsMaps.attractionID WHERE Attractions.name = '" + attractionName + "'";
+        String sql = "SELECT mapID FROM Attractions WHERE Attractions.name = '" + attractionName + "'";
         
         try {
             ResultSet rs = stmt.executeQuery(sql);
@@ -601,21 +517,17 @@ public class Database {
     private ArrayList<Attraction> getAttractionsOfMap(int mapID) {
         ArrayList<Attraction> attractions = new ArrayList<Attraction>();
         
-        String sql = "SELECT AttractionsMaps.attractionID, AttractionsMaps.coordinate, "
-                + "Attractions.name, Attractions.category, Attractions.description, "
-                + "Attractions.isAccessible, Maps.cityName FROM AttractionsMaps INNER JOIN Maps "
-                + "ON AttractionsMaps.mapID = Maps.id INNER JOIN Attractions "
-                + "ON Attractions.id = AttractionsMaps.attractionID WHERE mapID = '" + mapID + "'";
+        String sql = "SELECT id, xCoord, yCoord, name, category, description, isAccessible, cityName FROM Attractions WHERE mapID = '" + mapID + "'";
         try {
             ResultSet rs = stmt.executeQuery(sql);
             while (rs.next()) {
-                String attractionID = rs.getString(1);
-                String location = rs.getString(2);
-                String attractionName = rs.getString(3);
-                String category = rs.getString(4);
-                String description = rs.getString(5);
-                boolean accessible = rs.getBoolean(6);
-                String cityName = rs.getString(7);
+                int attractionID = rs.getInt(1);
+                Coordinates location = new Coordinates(rs.getDouble(2), rs.getDouble(3));
+                String attractionName = rs.getString(4);
+                String category = rs.getString(5);
+                String description = rs.getString(6);
+                boolean accessible = rs.getBoolean(7);
+                String cityName = rs.getString(8);
                 Attraction attraction = new Attraction(attractionID, attractionName, category, description, accessible, cityName, location);
                 attractions.add(attraction);
             }
@@ -643,7 +555,7 @@ public class Database {
     	return true;
     }
     
-    public void removeAttractionFromTour(String attractionID, int tourID) throws SQLException {
+    public void removeAttractionFromTour(int attractionID, int tourID) throws SQLException {
     	String sql = "DELETE FROM ToursAttractions WHERE attractionID = '" + attractionID + "' AND tourID = '" + tourID + "'";
     	stmt.executeUpdate(sql);
     }
@@ -659,15 +571,12 @@ public class Database {
     
     public ArrayList<Attraction> getAttractionsOfCity(String cityName, int tourID){
         ArrayList<Attraction> attractions = new ArrayList<Attraction>();
-    	String sql = "SELECT DISTINCT Attractions.id, Attractions.name, Attractions.category, Attractions.description, "
-    	        + "Attractions.isAccessible FROM AttractionsMaps INNER JOIN Maps ON "
-    	        + "AttractionsMaps.mapID = Maps.id INNER JOIN Attractions ON "
-    	        + "Attractions.id = AttractionsMaps.attractionID WHERE Maps.cityName = '" + cityName + "'";
+    	String sql = "SELECT DISTINCT id, name, category, description, isAccessible FROM Attractions WHERE cityName = '" + cityName + "'";
     	ResultSet rs;
 		try {
 			rs = stmt.executeQuery(sql);
 			while(rs.next()) {
-			    String attractionID = rs.getString(1);
+			    int attractionID = rs.getInt(1);
 	            String attractionName = rs.getString(2);
 	            String category = rs.getString(3);
 	            String description = rs.getString(4);
@@ -683,9 +592,9 @@ public class Database {
 		try {
 			rs = stmt.executeQuery(sql);
 			while(rs.next()) {
-	            String attractionID = rs.getString(1);
+	            int attractionID = rs.getInt(1);
 	            for (Attraction attr : attractions) {
-	            	if (attractionID.equals(attr.getId())) {
+	            	if (attractionID == attr.getId()) {
 	    	            attractions.remove(attr);
 	            		break;
 	            	}
@@ -697,7 +606,7 @@ public class Database {
 		return attractions;
     }
     
-   public void addAttractionToTour(String attractionID, int tourID, int time, String cityName) throws SQLException {
+   public void addAttractionToTour(int attractionID, int tourID, int time, String cityName) throws SQLException {
     	String sql = "INSERT INTO  ToursAttractions (tourID, attractionID, cityName, time) VALUES ('"
     			 + tourID + "', " + "'" + attractionID + "', " + "'" + cityName + "', " + "'" + time + "')";
 
@@ -745,7 +654,7 @@ public class Database {
             ArrayList<AttractionTimePair> attractionsTimePair = new ArrayList<AttractionTimePair>();
             while (rs.next()) {
                 int time = rs.getInt(1);
-                Attraction attraction = new Attraction(rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getBoolean(6), cityName);
+                Attraction attraction = new Attraction(rs.getInt(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getBoolean(6), cityName);
                 attractionsTimePair.add(new AttractionTimePair(attraction, time));
             }
             tour.setAttractionsTimePair(attractionsTimePair);
@@ -756,7 +665,6 @@ public class Database {
     }
     
     public void updateDBAfterDecline(String cityName) throws SQLException {
-        ResultSet rs;
         String sql = "DELETE FROM GCMCities WHERE name = '" + cityName + "'";
         stmt.executeUpdate(sql);
 
@@ -875,6 +783,53 @@ public class Database {
 
     public void updatePricesAfterDecline() throws SQLException {
         String sql = "UPDATE Prices SET nextSubscriptionPrice = '" + -1 + "', nextOneTimePurchasePrice = '" + -1 + "'";
+        stmt.executeUpdate(sql);
+    }
+
+    public void addNewAttractionToMap(int mapID, Attraction attraction) throws SQLException {
+        // convert bool to int
+        int isAccessibleInt = attraction.getIsAccessible() ? 1 : 0;
+
+        // Create new Attraction  ID
+        int newAttractionID = -1;
+        String sql = "SELECT MAX(id) FROM Attractions";
+        ResultSet rs;
+        try {
+            rs = stmt.executeQuery(sql);
+            if (rs.next())
+                newAttractionID = rs.getInt(1);
+            else {
+                newAttractionID = 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        newAttractionID++;
+        
+        sql = "INSERT INTO Attractions (id, name, cityName, mapID, category, description, isAccessible, xCoord, yCoord) VALUES ('"
+                + newAttractionID + "', " + "'" + attraction.getName() + "', " + "'" + attraction.getCityName() + "', " 
+                + "'" + mapID + "', " + "'" + attraction.getCategory() + "', " + "'" + attraction.getDescription() + "', " + "'" 
+                + isAccessibleInt + "', " + "'" + attraction.getLocation().getX_cord() + "', " + "'" + attraction.getLocation().getY_cord() + "')";
+        stmt.executeUpdate(sql);
+    }
+
+    public void editAttractionInMap(int mapID, Attraction attraction) throws SQLException {
+        // Convert bool to int 
+        int isAccessibleInt = attraction.getIsAccessible() ? 1 : 0;
+        
+        System.out.println("Updating inside database Attraction:");
+        attraction.print();
+
+        String sql = "UPDATE Attractions SET id = '" + attraction.getId() + "', name = '" + attraction.getName() + "', cityName = '" + 
+                attraction.getCityName() + "', mapID = '" + mapID + "', category = '" + attraction.getCategory() + "', description = '" + 
+                attraction.getDescription() + "', isAccessible = '" + isAccessibleInt + "', xCoord = '" + attraction.getLocation().getX_cord() + 
+                "', yCoord = '" + attraction.getLocation().getY_cord() + "' WHERE id = '" + attraction.getId() + "'";;
+
+        stmt.executeUpdate(sql);
+    }
+    
+    public void removeAttractionFromMap(int mapID, int attractionID) throws SQLException {
+        String sql = "DELETE FROM Attractions WHERE id = '" + attractionID + "' AND mapID = '" + mapID + "'";
         stmt.executeUpdate(sql);
     }
 }
