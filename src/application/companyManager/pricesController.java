@@ -60,12 +60,12 @@ public class pricesController {
 
     @FXML
     void initialize() {
-        oldOne.setText("old = " + oldOnePrice);
-        oldSubs.setText("old = " + oldSubsPrice);
-        newOne.setText("new = " + newOnePrice);
-        newSubs.setText("new = " + newSubsPrice);
+        oldOne.setText(oldOnePrice);
+        oldSubs.setText(oldSubsPrice);
+        newOne.setText(newOnePrice);
+        newSubs.setText(newSubsPrice);
 
-        if(newSubs.getText().equals("new = -1") && newOne.getText().equals("new = -1"))
+        if(newSubs.getText().equals("-1") && newOne.getText().equals("-1"))
         {
             acceptBtn.setDisable(true);
             declineBtn.setDisable(true);

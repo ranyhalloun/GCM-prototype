@@ -25,6 +25,12 @@ public class companyManagerServicesController {
     private Button citiesReportsBtn;
 
     @FXML
+    private Button customersReportsBtn;
+    
+    @FXML
+    private Button myProfileBtn;
+
+    @FXML
     void logout(ActionEvent event) throws IOException {
         System.out.println("Logging out");
         Main.getInstance().goToLogin("");
@@ -52,6 +58,17 @@ public class companyManagerServicesController {
     void citiesReports(ActionEvent event) throws IOException {
         System.out.println("Going to cities reports");
         Main.getInstance().goToCitiesReport("");
+    }
+    
+    @FXML
+    void customersReports(ActionEvent event) throws IOException {
+    	System.out.println("Going to search customer");
+        Main.getInstance().goToSearchCustomer("");
+    }
+    
+    @FXML
+    void myProfile(ActionEvent event) throws IOException {
+    	Main.getInstance().goToMyProfile();
     }
 
 }

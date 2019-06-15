@@ -48,7 +48,7 @@ public class changePricesController {
         if(newOneTime.getText().isEmpty() && newSubs.getText().isEmpty())
             Main.getInstance().goToChangePrices(oldSubsPrice, oldOneTimePrice, "Enter new price please!");
         else
-            Main.getInstance().sendNewPrices(newOneTime.getText(), newSubs.getText());
+            Main.getInstance().sendNewPrices(newSubs.getText(), newOneTime.getText());
     }
 
 

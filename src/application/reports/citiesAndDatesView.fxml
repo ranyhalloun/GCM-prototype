@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
@@ -17,5 +18,10 @@
       <DatePicker fx:id="fromDate" layoutX="14.0" layoutY="315.0" prefHeight="25.0" prefWidth="120.0" promptText="From" />
       <DatePicker fx:id="toDate" layoutX="166.0" layoutY="315.0" prefHeight="25.0" prefWidth="120.0" promptText="To" />
       <Label fx:id="errorText" layoutX="66.0" layoutY="298.0" prefHeight="17.0" prefWidth="174.0" textFill="RED" />
+      <Label layoutX="90.0" layoutY="10.0" prefHeight="33.0" prefWidth="120.0" text="Cities Reports">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>

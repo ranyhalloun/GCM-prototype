@@ -15,6 +15,7 @@ import Entities.Report;
 import Entities.StringIntPair;
 import Entities.Tour;
 import Entities.ViewDetails;
+import Entities.updateCityRequest;
 
 import java.util.ArrayList;
 
@@ -26,6 +27,7 @@ import application.customer.Customer;
 import commands.AddAttractionToTourCommand;
 import commands.CheckCityExistanceCommand;
 import commands.CheckCustomerCommand;
+import commands.CheckSubscriptionCommand;
 import commands.AddTourToCityCommand;
 import commands.Command;
 import commands.CommandType;
@@ -38,7 +40,10 @@ import commands.GetCityToursCommand;
 import commands.GetCustomerInfoCommand;
 import commands.GetCustomersCitiesCommand;
 import commands.GetDownloadsCommand;
+import commands.GetExpirationDateCommand;
+import commands.GetManagerNotifCommand;
 import commands.GetNewExternalMapsCommand;
+import commands.GetNewVersionsCommand;
 import commands.GetOldPricesCommand;
 import commands.GetPricesCommand;
 import commands.GetPurchasesCommand;
@@ -57,6 +62,7 @@ import commands.SendNewPricesCommand;
 import commands.SigninCommand;
 import commands.UpdateDBAfterAcceptCommand;
 import commands.UpdateDBAfterDeclineCommand;
+import commands.UpdateDBAfterPurchasingCommand;
 import commands.UpdatePricesAfterAcceptCommand;
 import commands.UpdatePricesAfterDeclineCommand;
 import javafx.collections.ObservableList;
@@ -123,11 +129,13 @@ public class GCMClient extends AbstractClient {
             System.out.println("Role: " + userType);
             switch(userType) {
                 case Anonymous:
-                case Worker:
                     Main.getInstance().goToSearchMap("");
                     break;
+                case Worker:
+                	Main.getInstance().goToWorkerServices();
+                	break;
                 case Customer:
-                	Main.getInstance().goToCostumerServices();
+                	Main.getInstance().goToCustomerServices();
                 	break;
                 case GCMWorker:
                     Main.getInstance().goToGCMWorkerServices();
@@ -580,20 +588,23 @@ public class GCMClient extends AbstractClient {
             Main.getInstance().goToInsertNewCity(maps, "City Exists", "");
     }
 
-    public void handleChangePrices() throws IOException {
+    public ArrayList<String> handleChangePrices() throws IOException {
         commandRequest = true;
         System.out.println("handleChangePrices");
         Command command = new Command(new GetOldPricesCommand(), CommandType.GetOldPricesCommand);
         sendToServer(command);
         waitForServerResponse();
-        handleChangePricesFromServer();
+        return handleChangePricesFromServer();
     }
 
-    public void handleChangePricesFromServer() throws IOException{
-        System.out.println("handleChangePricesFromServer");
+    public ArrayList<String> handleChangePricesFromServer() throws IOException{
+        ArrayList<String> prices = new ArrayList<String>();
+    	System.out.println("handleChangePricesFromServer");
         String oldSubsPrice = command.getCommand(GetOldPricesCommand.class).getSubscriptionPrice();
         String oldOnePrice = command.getCommand(GetOldPricesCommand.class).getOneTimePurchasePrice();
-        Main.getInstance().goToChangePrices(oldSubsPrice, oldOnePrice, "");
+        prices.add(oldOnePrice);
+        prices.add(oldSubsPrice);
+        return prices;
     }
 
     public void handleSendNewPrices(String newOnePrice, String newSubsPrice) throws IOException{
@@ -620,12 +631,11 @@ public class GCMClient extends AbstractClient {
     }
 
     public void handleGetPricesFromServer() throws IOException{
-        System.out.println("handleSendNewPricesFromServer");
+    	System.out.println("handleSendNewPricesFromServer");
         String oldSubsPrice = command.getCommand(GetPricesCommand.class).getOldSubs();
         String oldOnePrice = command.getCommand(GetPricesCommand.class).getOldOne();
         String newSubsPrice = command.getCommand(GetPricesCommand.class).getNewSubs();
         String newOnePrice = command.getCommand(GetPricesCommand.class).getNewOne();
-
         Main.getInstance().goToPricesView(oldSubsPrice, oldOnePrice, newSubsPrice, newOnePrice);
     }
 
@@ -728,6 +738,75 @@ public class GCMClient extends AbstractClient {
     public ArrayList<DownloadDetails> handleGetDownloadsFromServer(){
         System.out.println("handleGetDownloadsFromServer");
         return command.getCommand(GetDownloadsCommand.class).getDownloads();
+    }
+    
+    public void handleUpdateDBAfterPurchasing(String cityName, String purchaseType) throws IOException {
+        commandRequest = true;
+        System.out.println("handleUpdateDBAfterPurchasing");
+        Command command = new Command(new UpdateDBAfterPurchasingCommand(cityName, purchaseType), CommandType.UpdateDBAfterPurchasingCommand);
+        sendToServer(command);
+        waitForServerResponse();
+        handleUpdateDBAfterPurchasingFromServer();
+    }
+    
+    public void handleUpdateDBAfterPurchasingFromServer(){
+        System.out.println("handleUpdateDBAfterPurchasingFromServer");
+    }    
+    
+    public boolean handleCheckSubscription(String cityName) throws IOException {
+        commandRequest = true;
+        System.out.println("handleCheckSubscription");
+        Command command = new Command(new CheckSubscriptionCommand(cityName), CommandType.CheckSubscriptionCommand);
+        sendToServer(command);
+        waitForServerResponse();
+        return handleCheckSubscriptionFromServer();
+    }
+    
+    public boolean handleCheckSubscriptionFromServer(){
+        System.out.println("handleCheckSubscriptionFromServer");
+        return command.getCommand(CheckSubscriptionCommand.class).getExists();
+    } 
+    
+    public String handleGetExpirationDate(String cityName) throws IOException {
+        commandRequest = true;
+        System.out.println("handleGetExpirationDate");
+        Command command = new Command(new GetExpirationDateCommand(cityName), CommandType.GetExpirationDateCommand);
+        sendToServer(command);
+        waitForServerResponse();
+        return handleGetExpirationDateFromServer();
+    }
+    
+    public String handleGetExpirationDateFromServer(){
+        System.out.println("handleGetExpirationDateFromServer");
+        return command.getCommand(GetExpirationDateCommand.class).getExpirationDate();
+    } 
+    
+    public ArrayList<updateCityRequest> handleGetManagerNotif() throws IOException {
+    	commandRequest = true;
+        System.out.println("handleGetManagerNotif");
+        Command command = new Command(new GetManagerNotifCommand(), CommandType.GetManagerNotifCommand);
+        sendToServer(command);
+        waitForServerResponse();
+        return handleGetManagerNotifFromServer();
+    }
+    
+    public ArrayList<updateCityRequest> handleGetManagerNotifFromServer() throws IOException {
+    	System.out.println("handleGetManagerNotifFromServer");
+        return command.getCommand(GetManagerNotifCommand.class).getNotifis();
+    }
+    
+    public ArrayList<updateCityRequest> handleGetNewVersions() throws IOException {
+    	commandRequest = true;
+        System.out.println("handleGetNewVersions");
+        Command command = new Command(new GetNewVersionsCommand(), CommandType.GetNewVersionsCommand);
+        sendToServer(command);
+        waitForServerResponse();
+        return handleGetNewVersionsFromServer();
+    }
+    
+    public ArrayList<updateCityRequest> handleGetNewVersionsFromServer() throws IOException {
+    	System.out.println("handleGetNewVersionsFromServer");
+        return command.getCommand(GetNewVersionsCommand.class).getNewVersions();
     }
     
     @Override

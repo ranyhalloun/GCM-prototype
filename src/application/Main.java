@@ -14,6 +14,7 @@ import Entities.SearchMapResult;
 import Entities.StringIntPair;
 import Entities.Tour;
 import Entities.ViewDetails;
+import Entities.updateCityRequest;
 import Users.UserType;
 import application.companyManager.companyManagerServicesController;
 import application.companyManager.pricesController;
@@ -21,7 +22,10 @@ import application.connection.connectionController;
 import application.customer.Customer;
 import application.customer.customerProfileController;
 import application.customer.customerServicesController;
+import application.customer.newVersionsController;
+import application.customer.purchaseController;
 import application.gcmWorker.gcmWorkerController;
+import application.gcmWorker.managerRequestNotifiController;
 import application.insertMap.externalMapsController;
 import application.insertMap.insertCityController;
 import application.login.loginController;
@@ -42,6 +46,7 @@ import application.searchmap.searchMapResultController;
 import application.searchmap.tourController;
 import application.searchmap.toursTableController;
 import application.tours.AddTourToCityController;
+import application.worker.workerServicesController;
 import client.GCMClient;
 import javafx.application.Application;
 import javafx.event.EventHandler;
@@ -113,8 +118,9 @@ public class Main extends Application {
 	    // Get the maps
 	    ArrayList<Map> maps = gcmClient.handleGetMapsInfo(attraction, cityName, description);
 	    // Show the maps
+	    String date = gcmClient.handleGetExpirationDate(cityName);
 	    FXMLLoader loader = new FXMLLoader(getClass().getResource("searchmap/searchMapResultView.fxml"));
-        loader.setController(new searchMapResultController(maps, attraction, cityName, description));
+        loader.setController(new searchMapResultController(maps, attraction, cityName, description, date));
         AnchorPane searchMapView = loader.load();
         mainLayout.getChildren().setAll(searchMapView);
 	}
@@ -201,6 +207,14 @@ public class Main extends Application {
         mainLayout.getChildren().setAll(companyManagerServicesView);
     }
 	
+	public void goToWorkerServices() throws IOException
+	{
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("worker/workerServicesView.fxml"));
+        loader.setController(new workerServicesController());
+        AnchorPane workerServicesView = loader.load();
+        mainLayout.getChildren().setAll(workerServicesView);
+	}
+	
 	public void goToCheckRequests() throws IOException{
         arrayOfStrings cities = new arrayOfStrings();
         gcmClient.handleGetCitiesQueue(cities);
@@ -234,7 +248,7 @@ public class Main extends Application {
     }
     
     
-    public void goToCostumerServices() throws IOException{
+    public void goToCustomerServices() throws IOException{
         FXMLLoader loader = new FXMLLoader(getClass().getResource("customer/customerServicesView.fxml"));
         loader.setController(new customerServicesController());
         AnchorPane customerServicesView = loader.load();
@@ -284,7 +298,7 @@ public class Main extends Application {
         mainLayout.getChildren().setAll(insertMapView);
     }
     
-    public void goToCustomerProfile() throws IOException {
+    public void goToMyProfile() throws IOException {
     	Customer customer = new Customer();
     	gcmClient.handleGetCustomerInfo(customer);
     	FXMLLoader loader = new FXMLLoader(getClass().getResource("customer/customerProfileView.fxml"));
@@ -357,7 +371,8 @@ public class Main extends Application {
     }
 
     public void changePrices() throws IOException{
-        gcmClient.handleChangePrices();
+        ArrayList<String> prices = gcmClient.handleChangePrices();
+        Main.getInstance().goToChangePrices(prices.get(1), prices.get(0), "");
     }
 
     public void goToChangePrices(String oldSubsPrice, String oldOnePrice, String errorMessage) throws IOException{
@@ -442,6 +457,38 @@ public class Main extends Application {
         loader.setController(new downloadsHistoryController(customerUsername, downloads));
         AnchorPane downloadsHistoryView = loader.load();
         mainLayout.getChildren().setAll(downloadsHistoryView);
+    }
+    
+    public void goToPurchaseView(int mapID, String attraction, String cityName, String description) throws IOException {
+    	ArrayList<String> prices = gcmClient.handleChangePrices();
+    	FXMLLoader loader = new FXMLLoader(getClass().getResource("customer/purchaseView.fxml"));
+        loader.setController(new purchaseController(mapID, attraction, cityName, description, prices.get(0), prices.get(1)));
+        AnchorPane purchaseView = loader.load();
+        mainLayout.getChildren().setAll(purchaseView);
+    }
+    
+    public void updateDBAfterPurchasing(String cityName, String purchaseType) throws IOException {
+    	gcmClient.handleUpdateDBAfterPurchasing(cityName, purchaseType);
+    }
+    
+    public boolean checkSubscription(String cityName) throws IOException {
+    	return gcmClient.handleCheckSubscription(cityName);
+    }
+    
+    public void goToManagerNotif() throws IOException {
+    	ArrayList<updateCityRequest> notifi = gcmClient.handleGetManagerNotif();
+    	FXMLLoader loader = new FXMLLoader(getClass().getResource("gcmWorker/managerRequestNotifiView.fxml"));
+        loader.setController(new managerRequestNotifiController(notifi));
+        AnchorPane managerRequestNotifi = loader.load();
+        mainLayout.getChildren().setAll(managerRequestNotifi);
+    }
+    
+    public void goToNewVersions() throws IOException {
+    	ArrayList<updateCityRequest> newVersions = gcmClient.handleGetNewVersions();
+    	FXMLLoader loader = new FXMLLoader(getClass().getResource("customer/newVersionsView.fxml"));
+        loader.setController(new newVersionsController(newVersions));
+        AnchorPane newVersionsView = loader.load();
+        mainLayout.getChildren().setAll(newVersionsView);
     }
 
     public void updateUserType(UserType userType) {

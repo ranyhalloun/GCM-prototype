@@ -23,6 +23,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 
 
 public class searchMapResultController {
@@ -31,14 +32,16 @@ public class searchMapResultController {
     private String cityName;
     private String description;
     private ArrayList<Map> maps;
+    private String date; 
     
-    public searchMapResultController(ArrayList<Map> maps, String attraction, String cityName, String description)
+    public searchMapResultController(ArrayList<Map> maps, String attraction, String cityName, String description, String date)
     {
         this.maps = maps;
         System.out.println("Num of maps: " + maps.size());
         this.attraction = attraction;
         this.cityName = cityName;
         this.description = description;
+        this.date = date;
     }
 
     @FXML
@@ -61,7 +64,12 @@ public class searchMapResultController {
     
     @FXML
     private TextField numOfMaps;
-
+    
+    @FXML
+    private TextField expirationDate;
+    
+    @FXML
+    private Label expirationDateLabel;
     
     @FXML
     void back(ActionEvent event) throws IOException {
@@ -102,7 +110,19 @@ public class searchMapResultController {
         this.numOfMaps.setText(Integer.toString(this.maps.size()));
         //Disable the displayMap button until a row is selected
         this.displayMapBtn.setDisable(true);
-
+        expirationDate.setText(date);
+        expirationDate.setEditable(false);
+        
+    	switch(Main.getInstance().getUserType()) {
+		case Customer:
+			expirationDate.setVisible(true);
+			expirationDateLabel.setVisible(true);
+			break;
+		default:
+			expirationDate.setVisible(false);
+			expirationDateLabel.setVisible(false);
+			break;
+    	}
     }
     
     public ObservableList<Map> getMaps(){

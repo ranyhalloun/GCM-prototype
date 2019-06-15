@@ -6,7 +6,9 @@ import application.boolObject;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import Users.UserType;
 
 public class customerProfileController {
 
@@ -44,11 +46,33 @@ public class customerProfileController {
     private Button cancelBtn;
 
     @FXML
+    private Label errorText;
+    
+    @FXML
+    private Label successText;
+
+    @FXML
     private TextField username;
 	    @FXML
 	    void back(ActionEvent event) throws IOException {
-	    	System.out.println("Going back to customer services");
-	    	Main.getInstance().goToCostumerServices();
+	    	switch(Main.getInstance().getUserType()) {
+	    		case Worker:
+	    			Main.getInstance().goToWorkerServices();
+	    			break;
+	    		case Customer:
+	    			Main.getInstance().goToCustomerServices();
+	    			break;
+	    		case GCMWorker:
+	    			Main.getInstance().goToGCMWorkerServices();
+	    			break;
+	            case GCMManager:
+	                Main.getInstance().goToGCMManagerServices();
+	                break;
+	            case CompanyManager:
+	                Main.getInstance().goToCompanyManagerServices();
+	                break;
+	            	
+	    	}
 	    }
 
 	    @FXML
@@ -62,8 +86,8 @@ public class customerProfileController {
 	    }
 
 	    @FXML
-	    void History(ActionEvent event) {
-
+	    void History(ActionEvent event) throws IOException {
+	    	Main.getInstance().goToPurchasesHistory(customer.getUsername());
 	    }
 	    
 
@@ -78,10 +102,15 @@ public class customerProfileController {
             if(!exists.getValue()) {
                 getCustomer(newCustomer);
                 viewState();
+                successText.setText("Change saved");
+                errorText.setText("");
             }
             else
-                getCustomer(customer);
-	    	
+                {
+            		getCustomer(customer);
+            		errorText.setText("Username exists!");
+            		successText.setText("");
+                }
 	    }
 
 	    @FXML
@@ -117,6 +146,14 @@ public class customerProfileController {
 	    	historyBtn.setVisible(true);
 	    	editBtn.setVisible(true);
 	    	backBtn.setVisible(true);
+	    	switch(Main.getInstance().getUserType()) {
+    		case Customer:
+    			historyBtn.setVisible(true);
+    			break;
+    		default:
+    			historyBtn.setVisible(false);
+    			break;
+	    	}
 	    }
 	    
 	    @FXML
@@ -124,6 +161,14 @@ public class customerProfileController {
 	    	fieldsStatus(false);
 	    	saveBtn.setVisible(false);
 	    	cancelBtn.setVisible(false);
+	    	switch(Main.getInstance().getUserType()) {
+	    		case Customer:
+	    			historyBtn.setVisible(true);
+	    			break;
+	    		default:
+	    			historyBtn.setVisible(false);
+	    			break;
+	    	}
 	    }
 	}
 

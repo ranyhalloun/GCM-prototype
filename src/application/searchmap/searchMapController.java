@@ -64,11 +64,13 @@ public class searchMapController {
     	System.out.println("Back to login view");
     	switch(Main.getInstance().getUserType()) {
     		case Anonymous:
-    		case Worker:
     			Main.getInstance().goToLogin("");
     			break;
+    		case Worker:
+    			Main.getInstance().goToWorkerServices();
+    			break;
     		case Customer:
-    			Main.getInstance().goToCostumerServices();
+    			Main.getInstance().goToCustomerServices();
     			break;
     		case GCMWorker:
     			Main.getInstance().goToGCMWorkerServices();

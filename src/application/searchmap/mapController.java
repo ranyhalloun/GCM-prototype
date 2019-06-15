@@ -14,6 +14,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
@@ -70,6 +71,15 @@ public class mapController {
     private Button displayMapBtn;
     
     @FXML
+    private Button purchaseBtn;
+    
+    @FXML
+    private Button downloadBtn;
+    
+    @FXML
+    private Label errorText;
+    
+    @FXML
     void back(ActionEvent event) throws IOException {
         Main.getInstance().goToMapsInfo(attraction, cityName, description);
     }
@@ -77,6 +87,18 @@ public class mapController {
     @FXML
     void displayMap(ActionEvent event) {
 //        Main.getInstance().displayImage(map)
+    }
+    
+    @FXML
+    void purchase(ActionEvent event) throws IOException {
+    	Main.getInstance().goToPurchaseView(map.getMapID(), attraction, cityName, description);
+    }
+
+    @FXML
+    void download(ActionEvent event) throws IOException {
+    	boolean exists = Main.getInstance().checkSubscription(cityName);
+    	if(!exists)
+    		errorText.setText("You should subscribe first");
     }
     
     @FXML
@@ -95,6 +117,7 @@ public class mapController {
         version.setText(Integer.toString(map.getVersion()));
         mapID.setText(Integer.toString(map.getMapID()));
         mapDescription.setText(map.getDescription());
+        errorText.setText("");
     }
     
     

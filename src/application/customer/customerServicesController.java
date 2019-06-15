@@ -19,6 +19,9 @@ public class customerServicesController {
     private Button myProfileBtn;
 
     @FXML
+    private Button newVersionsBtn;
+    
+    @FXML
     void logOut(ActionEvent event) throws IOException {
         System.out.println("Logging out");
         Main.getInstance().goToLogin("");
@@ -33,7 +36,12 @@ public class customerServicesController {
     @FXML
     void myProfile(ActionEvent event) throws IOException {
     	System.out.println("Going to customer profile");
-        Main.getInstance().goToCustomerProfile();
+        Main.getInstance().goToMyProfile();
+    }
+    
+    @FXML
+    void newVersions(ActionEvent event) throws IOException {
+    	Main.getInstance().goToNewVersions();
     }
 
 }
