@@ -1,10 +1,14 @@
 package application.mapImage;
 
 
+import java.awt.image.RenderedImage;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+
+import javax.imageio.ImageIO;
 
 import Entities.Attraction;
 import Entities.Coordinates;
@@ -17,13 +21,17 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
+import javafx.scene.Node;
 
 
 public class mapImageController {
@@ -122,6 +130,29 @@ public class mapImageController {
     @FXML
     private AnchorPane imgViewWrapAnchorPane;
 
+    
+    @FXML
+    void download(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+
+        //Set extension filter
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("png files (*.png)", "*.png"));
+
+        //Prompt user to select a file
+        File file = fileChooser.showSaveDialog(null);
+
+        if(file != null){
+            try {
+                //Pad the capture area
+                WritableImage writableImage = new WritableImage((int)imgViewWrapAnchorPane.getWidth() + 20,
+                        (int)imgViewWrapAnchorPane.getHeight() + 20);
+                imgViewWrapAnchorPane.snapshot(null, writableImage);
+                RenderedImage renderedImage = SwingFXUtils.fromFXImage(writableImage, null);
+                //Write the snapshot to the chosen file
+                ImageIO.write(renderedImage, "png", file);
+            } catch (IOException ex) { ex.printStackTrace(); }
+        }
+    }
 
     @FXML
     void addAttractionToMap(ActionEvent event) {
