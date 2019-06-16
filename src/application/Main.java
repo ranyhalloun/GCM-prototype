@@ -521,6 +521,14 @@ public class Main extends Application {
     public void removeAttractionFromMap(int mapID, int attractionID) throws IOException {
         gcmClient.handleRemoveAttractionFromMap(mapID, attractionID);
     }
+    
+    public void incrementNumViewOfMap(int mapID, String cityName) throws IOException {
+        gcmClient.handleIncrementNumViewOfMap(mapID, cityName);
+    }
+    
+    public void incrementNumDownloadsOfMap(int mapID, String cityName) throws IOException {
+        gcmClient.handleIncrementNumDownloadsOfMap(mapID, cityName);
+    }
 
     public void updateUserType(UserType userType) {
         Main.userType = userType;

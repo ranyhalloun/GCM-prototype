@@ -152,6 +152,11 @@ public class mapImageController {
                 ImageIO.write(renderedImage, "png", file);
             } catch (IOException ex) { ex.printStackTrace(); }
         }
+        try {
+            Main.getInstance().incrementNumDownloadsOfMap(this.map.getMapID(), this.cityName);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML

@@ -42,9 +42,11 @@ public enum CommandType
 	GetExpirationDateCommand(37),
 	GetManagerNotifCommand(38),
 	GetNewVersionsCommand(39),
-	AddNewAttractionToMapCommand(29),
-    EditAttractionInMapCommand(30),
-    RemoveAttractionFromMapCommand(31);
+	AddNewAttractionToMapCommand(40),
+    EditAttractionInMapCommand(41),
+    RemoveAttractionFromMapCommand(42),
+    IncrementNumViewOfMapCommand(43),
+    IncrementNumDownloadsOfMapCommand(44);
     
     private int CommandTypeValue;
 

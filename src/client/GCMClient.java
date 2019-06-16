@@ -50,6 +50,8 @@ import commands.GetPurchasesCommand;
 import commands.GetMapInfoFromIDCommand;
 import commands.GetTourInfoFromIDCommand;
 import commands.GetViewsCommand;
+import commands.IncrementNumDownloadsOfMapCommand;
+import commands.IncrementNumViewOfMapCommand;
 import commands.InsertMapCommand;
 import commands.InsertNewCityCommand;
 import commands.RegisterCommand;
@@ -871,6 +873,23 @@ public class GCMClient extends AbstractClient {
     	System.out.println("handleGetNewVersionsFromServer");
         return command.getCommand(GetNewVersionsCommand.class).getNewVersions();
     }
+
+    public void handleIncrementNumViewOfMap(int mapID, String cityName) throws IOException {
+        commandRequest = true;
+        System.out.println("handleIncrementNumViewOfMap");
+        Command command = new Command(new IncrementNumViewOfMapCommand(mapID, cityName), CommandType.IncrementNumViewOfMapCommand);
+        sendToServer(command);
+        waitForServerResponse();
+    }
+
+    public void handleIncrementNumDownloadsOfMap(int mapID, String cityName) throws IOException {
+        commandRequest = true;
+        System.out.println("handleIncrementNumDownloadsOfMap");
+        Command command = new Command(new IncrementNumDownloadsOfMapCommand(mapID, cityName), CommandType.IncrementNumDownloadsOfMapCommand);
+        sendToServer(command);
+        waitForServerResponse();
+    }
+
     
     @Override
     protected void handleMessageFromServer(Object msg)

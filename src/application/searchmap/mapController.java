@@ -86,6 +86,7 @@ public class mapController {
     
     @FXML
     void displayMap(ActionEvent event) throws IOException {
+        Main.getInstance().incrementNumViewOfMap(this.map.getMapID(), this.cityName);
         Main.getInstance().goToDisplayImageOfMap(this.map.getMapID(), this.attraction, this.cityName, this.description);
         Main.getInstance().goToMapInfo(this.map.getMapID(), this.attraction, this.cityName, this.description);
     }

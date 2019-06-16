@@ -29,6 +29,8 @@ import commands.GetManagerNotifCommand;
 import commands.GetMapInfoFromIDCommand;
 import commands.GetTourInfoFromIDCommand;
 import commands.GetViewsCommand;
+import commands.IncrementNumDownloadsOfMapCommand;
+import commands.IncrementNumViewOfMapCommand;
 import commands.RegisterCommand;
 import commands.RemoveAttractionFromTourCommand;
 import commands.RemoveTourFromCityToursCommand;
@@ -486,10 +488,27 @@ public class GCMServer extends AbstractServer
                     e.printStackTrace();
                 }
                 break;
+            case IncrementNumViewOfMapCommand:
+                handleIncrementNumViewOfMapCommand(command, client);
+            try {
+                client.sendToClient(command);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+                break;
+            case IncrementNumDownloadsOfMapCommand:
+                handleIncrementNumDownloadsOfMapCommand(command, client);
+            try {
+                client.sendToClient(command);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+                break;
           default:
             break;
         }
     }
+
     private void handleGetMapInfoFromIDCommand(Command command, ConnectionToClient client) {
         Map map = new Map();
         System.out.println("handleGetMapInfoFromIDCommand in server");
@@ -941,6 +960,20 @@ public class GCMServer extends AbstractServer
         int attractionID = command.getCommand(RemoveAttractionFromMapCommand.class).getAttractionID();
         db.removeAttractionFromMap(mapID, attractionID);
         command.getCommand(RemoveAttractionFromMapCommand.class).setSuccess(true);
+    }
+    
+    private void handleIncrementNumViewOfMapCommand(Command command, ConnectionToClient client) {
+        System.out.println("handleIncrementNumViewOfMapCommand in server");
+        int mapID = command.getCommand(IncrementNumViewOfMapCommand.class).getMapID();
+        String cityName = command.getCommand(IncrementNumViewOfMapCommand.class).getCityName();
+        db.incrementNumViewOfMap(mapID, cityName, client.getInfo("username"));
+    }
+
+    private void handleIncrementNumDownloadsOfMapCommand(Command command, ConnectionToClient client) {
+        System.out.println("handleIncrementNumViewOfMapCommand in server");
+        int mapID = command.getCommand(IncrementNumDownloadsOfMapCommand.class).getMapID();
+        String cityName = command.getCommand(IncrementNumDownloadsOfMapCommand.class).getCityName();
+        db.incrementNumDownloadsOfMap(mapID, cityName, client.getInfo("username"));
     }
     
     protected void serverStarted()

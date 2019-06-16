@@ -1052,4 +1052,26 @@ public class Database {
         String sql = "DELETE FROM Attractions WHERE id = '" + attractionID + "' AND mapID = '" + mapID + "'";
         stmt.executeUpdate(sql);
     }
+
+    public void incrementNumViewOfMap(int mapID, String cityName, Object info) {
+        LocalDate date = LocalDate.now();
+        String sql = "INSERT INTO ViewStatistics (cityName, date, customerUsername, mapID) VALUES ('"
+                + cityName + "', " + "'" + date + "', " + "'" + info.toString() + "', " + "'" + mapID + "')";
+        try {
+            stmt.executeUpdate(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void incrementNumDownloadsOfMap(int mapID, String cityName, Object info) {
+        LocalDate date = LocalDate.now();
+        String sql = "INSERT INTO DownloadStatistics (mapID, cityName, customerUsername, date) VALUES ('"
+                + mapID + "', " + "'" + cityName + "', " + "'" + info.toString() + "', " + "'" + date + "')";
+        try {
+            stmt.executeUpdate(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }
