@@ -15,6 +15,7 @@ import Entities.Coordinates;
 import Entities.Map;
 import application.Main;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
@@ -31,7 +32,6 @@ import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
-import javafx.scene.Node;
 
 
 public class mapImageController {
@@ -69,10 +69,12 @@ public class mapImageController {
     private int markerIndex;
     private Operation op;
     private boolean firstAttemptRemove;
+    private Image image;
 
 
     public mapImageController(Map map, String attractionName, String cityName, String description) {
         this.map = map;
+        this.image = new Image(this.map.getImagePath());
         this.attractionName = attractionName;
         this.cityName = cityName;
         this.description = description;
@@ -217,7 +219,11 @@ public class mapImageController {
         // Update the database with the new attractions.
         this.markerIndex = -1;
         resetInfo();
-        this.msgToUser.setText("Saved.");
+        try {
+            save();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     void saveAddAttraction() {
@@ -278,6 +284,11 @@ public class mapImageController {
         this.texts.remove(markerIndex);
         resetInfo();
         resetFields();
+        try {
+            save();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         this.msgToUser.setText("Attraction removed!");
     }
 
@@ -324,10 +335,15 @@ public class mapImageController {
     }
 
     void handleEditOperationWhenClicked(MouseEvent event) {
+        System.out.println("handleEditOperationWhenClicked");
+        System.out.println("MARKERS SIZE: " + this.markers.size());
         if (markerIndex != -1) {
             this.coordinates.setX_cord(event.getX());
             this.coordinates.setY_cord(event.getY());
-            imgViewWrapAnchorPane.getChildren().remove(markers.get(markerIndex));
+            if (!imgViewWrapAnchorPane.getChildren().remove(markers.get(markerIndex))) {
+                System.out.println("MONIKAAAAAAA");
+                System.out.println("Marker Index: " + markerIndex);
+            }
             imgViewWrapAnchorPane.getChildren().remove(texts.get(markerIndex));
             markers.get(markerIndex).setCenterX(event.getX());
             markers.get(markerIndex).setCenterY(event.getY());
@@ -415,10 +431,25 @@ public class mapImageController {
         this.descriptionField.setText("");
         this.msgToUser.setText("");
     }
+    
+    private void save() throws IOException {
+        this.map = Main.getInstance().GetMapInfoFromID(map.getMapID());
+        imgViewWrapAnchorPane.getChildren().clear();
+        imgViewWrapAnchorPane.getChildren().add(imgView);
+        this.attractions.clear();
+        this.attractions = map.getAttractions();
+        this.op = Operation.UNDEFINED;
+        this.coordinates = new Coordinates();
+        this.markers.clear();
+        this.texts.clear();
+        this.markerIndex = -1;
+        this.firstAttemptRemove = true;
+        initialize();
+        this.msgToUser.setText("Saved.");
+    }
 
     @FXML
     void initialize() {
-        Image image = new Image(this.map.getImagePath());
         this.imgView.setImage(image);
         System.out.println("Image URL: " + this.map.getImagePath());
         setEnableEditing(false);

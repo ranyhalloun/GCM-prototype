@@ -510,6 +510,11 @@ public class Main extends Application {
         displayMapImageStage.showAndWait();
     }
     
+    public Map GetMapInfoFromID(int mapID) throws IOException {
+        return gcmClient.handleGetMapInfoFromID(mapID);
+
+    }
+    
     public void addNewAttractionToMap(int mapID, Attraction attraction) throws IOException {
         gcmClient.handleAddNewAttractionToMap(mapID, attraction);
     }
