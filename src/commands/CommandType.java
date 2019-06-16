@@ -46,7 +46,15 @@ public enum CommandType
     EditAttractionInMapCommand(41),
     RemoveAttractionFromMapCommand(42),
     IncrementNumViewOfMapCommand(43),
-    IncrementNumDownloadsOfMapCommand(44);
+    IncrementNumDownloadsOfMapCommand(44),
+    SendRenewalEmailCommand(45),
+    SendNewVersionCommand(46),
+    SendNewPricesRequestEmailCommand(47),
+    SendNewPricesDecisionEmailCommand(48),
+    SendNewEditedMapsEmailCommand(49),
+    SendEditedMapsDecisionCommand(50);
+    
+    
     
     private int CommandTypeValue;
 

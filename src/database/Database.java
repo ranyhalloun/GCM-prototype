@@ -9,6 +9,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 
+import javax.mail.MessagingException;
+
+import commands.SendRenewalEmailCommand;
 import Entities.Attraction;
 import Entities.AttractionTimePair;
 import Entities.City;
@@ -22,6 +25,14 @@ import Entities.updateCityRequest;
 import Entities.Coordinates;
 import application.arrayOfStrings;
 import application.customer.Customer;
+import commands.Command;
+import commands.CommandType;
+import commands.SendEditedMapsDecisionCommand;
+import commands.SendNewEditedMapsEmailCommand;
+import commands.SendNewPricesDecisionEmailCommand;
+import commands.SendNewPricesRequestEmailCommand;
+import commands.SendNewVersionCommand;
+import server.Email;
 
 
 public class Database {
@@ -93,6 +104,19 @@ public class Database {
             return 0;
         String sql = "INSERT INTO CitiesQueue (name) VALUES ('" + cityName + "')";
         stmt.executeUpdate(sql);
+        
+        sql = "SELECT emailAddress FROM  Users WHERE role = 'GCMManager'";
+    	ResultSet rs = stmt.executeQuery(sql);
+    	
+    	while(rs.next()) {
+    		Command command = new Command(new SendNewEditedMapsEmailCommand(rs.getString(1)), CommandType.SendNewEditedMapsEmailCommand);
+    		try {
+				Email.sendEmail(command);
+			} catch (MessagingException e) {
+				e.printStackTrace();
+			}
+    	}
+        
         return 1;
     }
     
@@ -687,9 +711,6 @@ public class Database {
         sql = "INSERT INTO GCMAttractions SELECT * FROM Attractions WHERE cityName = '" + cityName + "'";
         stmt.executeUpdate(sql);
 
-        sql = "INSERT INTO GCMAttractionsMaps SELECT * FROM AttractionsMaps WHERE cityName = '" + cityName + "'";
-        stmt.executeUpdate(sql);
-
         sql = "INSERT INTO GCMTours SELECT * FROM Tours WHERE cityName = '" + cityName + "'";
         stmt.executeUpdate(sql);
 
@@ -698,7 +719,18 @@ public class Database {
         
         sql = "UPDATE CitiesQueue SET answer = 0 , date = '" + LocalDate.now() + "', version = '" + version + "' WHERE name = '" + cityName + "' AND answer = -1";
         stmt.execute(sql);
-        //deleteFromCitiesQueue(cityName);
+
+        sql = "SELECT emailAddress FROM  Users WHERE role = 'GCMWorker'";
+    	ResultSet rs = stmt.executeQuery(sql);
+    	
+    	while(rs.next()) {
+    		Command command = new Command(new SendEditedMapsDecisionCommand(0, rs.getString(1), cityName), CommandType.SendEditedMapsDecisionCommand);
+    		try {
+				Email.sendEmail(command);
+			} catch (MessagingException e) {
+				e.printStackTrace();
+			}
+    	}
     }
 
     public void updateDBAfterAccept(String cityName) throws SQLException {
@@ -715,9 +747,6 @@ public class Database {
         sql = "INSERT INTO Attractions SELECT * FROM GCMAttractions WHERE cityName = '" + cityName + "'";
         stmt.executeUpdate(sql);
 
-        sql = "INSERT INTO AttractionsMaps SELECT * FROM GCMAttractionsMaps WHERE cityName = '" + cityName + "'";
-        stmt.executeUpdate(sql);
-
         sql = "INSERT INTO Tours SELECT * FROM GCMTours WHERE cityName = '" + cityName + "'";
         stmt.executeUpdate(sql);
 
@@ -730,6 +759,29 @@ public class Database {
         sql = "UPDATE CitiesQueue SET answer = 1 , date = '" + LocalDate.now() + "', version = '" + newVersion + "' WHERE name = '" + cityName + "' AND answer = -1";
         stmt.execute(sql);
 
+        sql = "SELECT emailAddress FROM  Users WHERE role = 'Customer'";
+    	ResultSet rs = stmt.executeQuery(sql);
+    	
+    	while(rs.next()) {
+    		Command command = new Command(new SendNewVersionCommand(rs.getString(1), cityName), CommandType.SendNewVersionCommand);
+    		try {
+				Email.sendEmail(command);
+			} catch (MessagingException e) {
+				e.printStackTrace();
+			}
+    	}
+    	
+        sql = "SELECT emailAddress FROM  Users WHERE role = 'GCMWorker'";
+    	rs = stmt.executeQuery(sql);
+    	
+    	while(rs.next()) {
+    		Command command = new Command(new SendEditedMapsDecisionCommand(1, rs.getString(1), cityName), CommandType.SendEditedMapsDecisionCommand);
+    		try {
+				Email.sendEmail(command);
+			} catch (MessagingException e) {
+				e.printStackTrace();
+			}
+    	}
     }
     
     /*public void updateCitiesQueue(String cityName) throws SQLException {
@@ -776,6 +828,18 @@ public class Database {
         else if (!newSubsPrice.isEmpty())
             sql = "UPDATE Prices SET nextSubscriptionPrice = '" + newSubsPrice +  "'";
         stmt.executeUpdate(sql);
+        
+        sql = "SELECT emailAddress FROM  Users WHERE role = 'CompanyManager'";
+    	ResultSet rs = stmt.executeQuery(sql);
+    	
+    	while(rs.next()) {
+    		Command command = new Command(new SendNewPricesRequestEmailCommand(rs.getString(1)), CommandType.SendNewPricesRequestEmailCommand);
+    		try {
+				Email.sendEmail(command);
+			} catch (MessagingException e) {
+				e.printStackTrace();
+			}
+    	}
     }
 
     public ArrayList<String> getPrices(String oldSubsPrice, String oldOnePrice, String newSubsPrice, String newOnePrice) throws SQLException {
@@ -793,12 +857,36 @@ public class Database {
     public void updatePricesAfterAccept(String newSubsPrice, String newOnePrice) throws SQLException {
        String sql = "UPDATE Prices SET subscriptionPrice = '" + newSubsPrice + "', oneTimePurchasePrice = '" + newOnePrice + "', nextSubscriptionPrice = '" + -1 + "', nextOneTimePurchasePrice = '" + -1 + "'";
        stmt.executeUpdate(sql);
+       
+       sql = "SELECT emailAddress FROM  Users WHERE role = 'GCMManager'";
+	   	ResultSet rs = stmt.executeQuery(sql);
+	   	
+	   	while(rs.next()) {
+	   		Command command = new Command(new SendNewPricesDecisionEmailCommand(1, rs.getString(1)), CommandType.SendNewPricesDecisionEmailCommand);
+	   		try {
+					Email.sendEmail(command);
+				} catch (MessagingException e) {
+					e.printStackTrace();
+				}
+	   	}
 
     }
 
     public void updatePricesAfterDecline() throws SQLException {
         String sql = "UPDATE Prices SET nextSubscriptionPrice = '" + -1 + "', nextOneTimePurchasePrice = '" + -1 + "'";
         stmt.executeUpdate(sql);
+        
+        sql = "SELECT emailAddress FROM  Users WHERE role = 'GCMWorker'";
+ 	   	ResultSet rs = stmt.executeQuery(sql);
+ 	   	
+ 	   	while(rs.next()) {
+ 	   		Command command = new Command(new SendNewPricesDecisionEmailCommand(0, rs.getString(1)), CommandType.SendNewPricesDecisionEmailCommand);
+ 	   		try {
+ 					Email.sendEmail(command);
+ 				} catch (MessagingException e) {
+ 					e.printStackTrace();
+ 				}
+ 	   	}
     }
     
     public arrayOfStrings getCustomersCities() throws SQLException {
@@ -982,6 +1070,7 @@ public class Database {
         	version = rs.getInt(4);
         	notifis.add(new updateCityRequest(name, answer, date, version));
         }
+        
         return notifis;
 	}
 	
@@ -1073,5 +1162,15 @@ public class Database {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+    public void sendRenewalReminder() throws SQLException, MessagingException {
+    	String sql = "SELECT Users.emailAddress, Subscriptions.cityName FROM  Subscriptions INNER JOIN Users ON Users.username"
+    			+ " = Subscriptions.customerUsername WHERE Subscriptions.expirationDate = '" + LocalDate.now().plusDays(3) + "'";
+    	ResultSet rs = stmt.executeQuery(sql);
+    	while(rs.next()) {
+	        Command command = new Command(new SendRenewalEmailCommand(rs.getString(1), rs.getString(2)), CommandType.SendRenewalEmailCommand);
+    		Email.sendEmail(command);
+    	}
+    	
     }
 }

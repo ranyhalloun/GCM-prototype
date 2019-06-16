@@ -1,4 +1,7 @@
 package server;
+import commands.Command;
+import commands.CommandType;
+import commands.RegisterCommand;
 import database.Database;
 
 public class DailyThread {
@@ -15,6 +18,7 @@ public class DailyThread {
 		{
 			try{
 				db.removeExpiredSubscriptions();
+				db.sendRenewalReminder();
 				Thread.sleep(1000*86400);
 			}
 			catch(Exception e)
