@@ -27,6 +27,7 @@ import application.customer.Customer;
 import commands.AddAttractionToTourCommand;
 import commands.CheckCityExistanceCommand;
 import commands.CheckCustomerCommand;
+import commands.CheckOneTimePurchaseCommand;
 import commands.CheckSubscriptionCommand;
 import commands.AddTourToCityCommand;
 import commands.Command;
@@ -816,7 +817,7 @@ public class GCMClient extends AbstractClient {
     
     public void handleUpdateDBAfterPurchasingFromServer(){
         System.out.println("handleUpdateDBAfterPurchasingFromServer");
-    }    
+    }
     
     public boolean handleCheckSubscription(String cityName) throws IOException {
         commandRequest = true;

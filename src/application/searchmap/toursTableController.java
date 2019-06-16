@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import Entities.Attraction;
 import Entities.Tour;
+import Users.UserType;
 import application.Main;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -21,10 +22,13 @@ public class toursTableController {
 
 	private String cityName;
 	private ArrayList<Tour> tours;
-	public toursTableController(ArrayList<Tour> tours, String cityName)
+	private UserType userType;
+	
+	public toursTableController(ArrayList<Tour> tours, String cityName, UserType userType)
 	{
 		this.cityName = cityName;
 		this.tours = tours;
+		this.userType = userType;
 		System.out.println("Number of Tours:" + tours.size());
 		for (Tour tour : tours) {
 		    tour.print();
@@ -97,6 +101,17 @@ public class toursTableController {
         title.setText(cityName + "'s Tours");
         this.tourInfoBtn.setDisable(true);
         this.removeTourBtn.setDisable(true);
+        
+        switch (userType) {
+        case Anonymous:
+        case Customer:
+        case Worker:
+            this.addTourBtn.setVisible(false);
+            this.removeTourBtn.setVisible(false);
+            break;
+        default:
+            break;
+        }
     }
     
     public ObservableList<Tour> getTours(){
