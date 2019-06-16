@@ -41,6 +41,7 @@ import commands.SearchMapCommand;
 import commands.InsertMapCommand;
 import commands.CheckCityExistanceCommand;
 import commands.CheckCustomerCommand;
+import commands.CheckOneTimePurchaseCommand;
 import commands.CheckSubscriptionCommand;
 import commands.GetNewExternalMapsCommand;
 import commands.GetNewVersionsCommand;
@@ -913,6 +914,14 @@ public class GCMServer extends AbstractServer
     	String customerUsername = client.getInfo("username").toString();
     	checkSubscriptionCommand.setExists(db.checkSubscription(customerUsername, cityName));
     }
+
+    private void handleCheckOneTimePurchaseCommand(Command command, ConnectionToClient client) {
+        System.out.println("handleCheckOneTimePurchaseCommand");
+        CheckOneTimePurchaseCommand checkOneTimePurchaseCommand  = command.getCommand(CheckOneTimePurchaseCommand.class);
+        String cityName = checkOneTimePurchaseCommand.getCityName();
+        String customerUsername = client.getInfo("username").toString();
+    }
+
     
     private void handleGetExpirationDateCommand(Command command, ConnectionToClient client) throws SQLException{
     	System.out.println("handleGetExpirationDateCommand");

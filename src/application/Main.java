@@ -151,7 +151,7 @@ public class Main extends Application {
 	    Tour tour = gcmClient.handleGetTourInfoFromID(tourID);
 	    // Go To Tour Info Windows
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("searchmap/tourView.fxml"));
-	    loader.setController(new tourController(tour));
+	    loader.setController(new tourController(tour, userType));
         AnchorPane tourView = loader.load();
         mainLayout.getChildren().setAll(tourView);
 	}
@@ -172,7 +172,7 @@ public class Main extends Application {
    	    ArrayList<Tour> tours = gcmClient.handleGetCityTours(cityName);
    	    // Go To Tours Windows.
         FXMLLoader loader = new FXMLLoader(getClass().getResource("searchmap/toursTable.fxml"));
-        loader.setController(new toursTableController(tours, cityName));
+        loader.setController(new toursTableController(tours, cityName, userType));
         AnchorPane toursTableView = loader.load();
         mainLayout.getChildren().setAll(toursTableView);
    	}

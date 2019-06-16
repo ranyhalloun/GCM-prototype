@@ -52,7 +52,8 @@ public enum CommandType
     SendNewPricesRequestEmailCommand(47),
     SendNewPricesDecisionEmailCommand(48),
     SendNewEditedMapsEmailCommand(49),
-    SendEditedMapsDecisionCommand(50);
+    SendEditedMapsDecisionCommand(50),
+    CheckOneTimePurchaseCommand(51);
     
     
     

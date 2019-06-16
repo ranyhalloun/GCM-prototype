@@ -154,11 +154,18 @@ public class mapImageController {
                 ImageIO.write(renderedImage, "png", file);
             } catch (IOException ex) { ex.printStackTrace(); }
         }
-        try {
-            Main.getInstance().incrementNumDownloadsOfMap(this.map.getMapID(), this.cityName);
-        } catch (IOException e) {
-            e.printStackTrace();
+        switch (Main.getInstance().getUserType()) {
+        case Customer:
+            try {
+                Main.getInstance().incrementNumDownloadsOfMap(this.map.getMapID(), this.cityName);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        break;
+        default:
+            break;
         }
+        this.msgToUser.setText("Downloaded.");
     }
 
     @FXML
@@ -454,5 +461,17 @@ public class mapImageController {
         System.out.println("Image URL: " + this.map.getImagePath());
         setEnableEditing(false);
         showAttractionsInMap();
+        switch (Main.getInstance().getUserType()) {
+        case Customer:
+        case Worker:
+            this.addAttractionBtn.setVisible(false);
+            this.removeAttractionBtn.setVisible(false);
+            this.editAttractionBtn.setVisible(false);
+            this.saveBtn.setVisible(false);
+            this.discardBtn.setVisible(false);
+            break;
+        default:
+            break;
+        }
     }
 }

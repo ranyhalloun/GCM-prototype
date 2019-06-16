@@ -7,6 +7,7 @@ import java.util.ResourceBundle;
 
 import Entities.Map;
 import Entities.SearchMapResult;
+import Users.UserType;
 import application.Main;
 import application.customer.customerServicesController;
 import javafx.scene.control.ListView;
@@ -32,7 +33,7 @@ public class searchMapResultController {
     private String cityName;
     private String description;
     private ArrayList<Map> maps;
-    private String date; 
+    private String date;
     
     public searchMapResultController(ArrayList<Map> maps, String attraction, String cityName, String description, String date)
     {

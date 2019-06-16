@@ -7,6 +7,7 @@ import Entities.AttractionTimePair;
 import Entities.Map;
 import Entities.StringIntPair;
 import Entities.Tour;
+import Users.UserType;
 import application.Main;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -23,11 +24,13 @@ public class tourController {
 	private int tourID;
 	private String cityName;
 	private ArrayList<AttractionTimePair> attractionTimePairs;
+	private UserType userType;
 	
-	public tourController(Tour tour) {
+	public tourController(Tour tour, UserType userType) {
 		this.attractionTimePairs = tour.getAttractionsTimePair();
 		this.cityName = tour.getCityName();
 		this.tourID = tour.getId();
+		this.userType = userType;
 	}
 
     @FXML
@@ -84,6 +87,17 @@ public class tourController {
         
         tourTable.setItems(getAttractionTimePairs());
         this.removeBtn.setDisable(true);
+        
+        switch (userType) {
+        case Anonymous:
+        case Customer:
+        case Worker:
+            this.addBtn.setVisible(false);
+            this.removeBtn.setVisible(false);
+            break;
+        default:
+            break;
+        }
     }
     
     public ObservableList<AttractionTimePair> getAttractionTimePairs() {
