@@ -53,6 +53,9 @@ public class registrationController {
     
     @FXML
     private Label errorMessageText;
+    
+    @FXML
+    private TextField creditCard;
 
     @FXML
     void registration(ActionEvent event) throws IOException, InterruptedException {
@@ -62,9 +65,11 @@ public class registrationController {
         String password_ = password.getText();
         String email_ = email.getText();
         String phone_ = phone.getText();
+        String creditCard_ = creditCard.getText();
         
         if (firstname_.isEmpty() || lastname_.isEmpty() || username_.isEmpty()
-                || password_.isEmpty() || email_.isEmpty() || phone_.isEmpty()) {
+                || password_.isEmpty() || email_.isEmpty() || phone_.isEmpty()
+                || creditCard_.isEmpty()) {
             Main.getInstance().goToRegistration("Fill all the fields to register");
         } else {
             Main.getInstance().registerNewUser(firstname_, lastname_, username_, password_, email_, phone_);

@@ -21,5 +21,6 @@
       <Button fx:id="backBtn" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#back" text="Back" />
       <TextField fx:id="cityName" layoutX="76.0" layoutY="151.0" prefHeight="43.0" prefWidth="149.0" promptText="City Name" />
       <Label fx:id="errorText" layoutX="84.0" layoutY="212.0" prefHeight="17.0" prefWidth="168.0" textFill="RED" />
+      <Label fx:id="successText" layoutX="85.0" layoutY="229.0" prefHeight="17.0" prefWidth="133.0" textFill="#2000d7" />
    </children>
 </AnchorPane>

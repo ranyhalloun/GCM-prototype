@@ -855,7 +855,13 @@ public class Database {
     }
 
     public void updatePricesAfterAccept(String newSubsPrice, String newOnePrice) throws SQLException {
-       String sql = "UPDATE Prices SET subscriptionPrice = '" + newSubsPrice + "', oneTimePurchasePrice = '" + newOnePrice + "', nextSubscriptionPrice = '" + -1 + "', nextOneTimePurchasePrice = '" + -1 + "'";
+    	String sql = "";
+       if(!newSubsPrice.equals("-1") && !newOnePrice.equals("-1"))
+    	   sql = "UPDATE Prices SET subscriptionPrice = '" + newSubsPrice + "', oneTimePurchasePrice = '" + newOnePrice + "', nextSubscriptionPrice = '" + -1 + "', nextOneTimePurchasePrice = '" + -1 + "'";
+       else if(!newSubsPrice.equals("-1"))
+    	   sql = "UPDATE Prices SET subscriptionPrice = '" + newSubsPrice + "', nextSubscriptionPrice = '" + -1 + "'";
+       else if(!newOnePrice.equals("-1"))
+    	   sql = "UPDATE Prices SET oneTimePurchasePrice = '" + newOnePrice + "', nextOneTimePurchasePrice = '" + -1 + "'";
        stmt.executeUpdate(sql);
        
        sql = "SELECT emailAddress FROM  Users WHERE role = 'GCMManager'";

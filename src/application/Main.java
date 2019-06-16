@@ -192,18 +192,18 @@ public class Main extends Application {
         gcmClient.handleRequestApproval(cityName);
     }
 	
-	public void goToGCMManagerServices() throws IOException
+	public void goToGCMManagerServices(String message) throws IOException
     {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("gcmManager/gcmManagerServicesView.fxml"));
-        loader.setController(new gcmManagerServicesController());
+        loader.setController(new gcmManagerServicesController(message));
         AnchorPane gcmManagerServicesView = loader.load();
         mainLayout.getChildren().setAll(gcmManagerServicesView);
     }
 	
-	public void goToCompanyManagerServices() throws IOException
+	public void goToCompanyManagerServices(String message) throws IOException
     {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("companyManager/companyManagerServicesView.fxml"));
-        loader.setController(new companyManagerServicesController());
+        loader.setController(new companyManagerServicesController(message));
         AnchorPane companyManagerServicesView = loader.load();
         mainLayout.getChildren().setAll(companyManagerServicesView);
     }
@@ -229,9 +229,9 @@ public class Main extends Application {
 
     }
 
-    public void goToRequestApproval(String errorMessage) throws IOException{
+    public void goToRequestApproval(String errorMessage, String successMessage) throws IOException{
         FXMLLoader loader = new FXMLLoader(getClass().getResource("gcmWorker/requestApprovalView.fxml"));
-        loader.setController(new requestApprovalController(errorMessage));
+        loader.setController(new requestApprovalController(errorMessage, successMessage));
         AnchorPane requestApprovalView = loader.load();
         mainLayout.getChildren().setAll(requestApprovalView);
     }
@@ -329,9 +329,9 @@ public class Main extends Application {
         mainLayout.getChildren().setAll(addAttractionToTourView);
     }
     
-    public void goToInsertNewCity(ArrayList<Map> maps, String errorMessage, String successMessage) throws IOException {
+    public void goToInsertNewCity(ArrayList<Map> maps, String errorMessage, String successMessage, String cityName) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("insertMap/insertCityView.fxml"));
-        loader.setController(new insertCityController(maps, errorMessage, successMessage));
+        loader.setController(new insertCityController(maps, errorMessage, successMessage, cityName));
         AnchorPane insertCityView = loader.load();
         mainLayout.getChildren().setAll(insertCityView);
     }

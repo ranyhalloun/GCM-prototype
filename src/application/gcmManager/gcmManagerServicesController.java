@@ -6,9 +6,15 @@ import application.Main;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 
 public class gcmManagerServicesController {
 
+	private String message;
+	public gcmManagerServicesController(String message) {
+		this.message = message;
+	}
+	
     @FXML
     private Button insertMapBtn;
 
@@ -33,6 +39,9 @@ public class gcmManagerServicesController {
     
     @FXML
     private Button myProfileBtn;
+    
+    @FXML
+    private Label messageText;
     
     @FXML
     void customersReports(ActionEvent event) throws IOException {
@@ -88,5 +97,6 @@ public class gcmManagerServicesController {
         assert logOutBtn != null : "fx:id=\"logoutBtn\" was not injected: check your FXML file 'gcmManagerView.fxml'.";
         assert checkRequestsBtn != null : "fx:id=\"checkRequestsBtn\" was not injected: check your FXML file 'gcmManagerView.fxml'.";
         assert searchMapBtn != null : "fx:id=\"searchMapBtn\" was not injected: check your FXML file 'gcmManagerView.fxml'.";
+        messageText.setText(message);
     }
 }
