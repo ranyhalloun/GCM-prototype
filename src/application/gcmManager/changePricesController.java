@@ -55,7 +55,7 @@ public class changePricesController {
 
     @FXML
     void back(ActionEvent event) throws IOException {
-        Main.getInstance().goToGCMManagerServices();
+        Main.getInstance().goToGCMManagerServices("");
     }
 
     @FXML

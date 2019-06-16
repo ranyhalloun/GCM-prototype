@@ -20,5 +20,6 @@
       <Button fx:id="citiesReportsBtn" layoutX="155.0" layoutY="103.0" mnemonicParsing="false" onAction="#citiesReports" prefHeight="35.0" prefWidth="118.0" text="Cities Reports" />
       <Button fx:id="customersReportsBtn" layoutX="155.0" layoutY="147.0" mnemonicParsing="false" onAction="#customersReports" prefHeight="35.0" prefWidth="118.0" text="Customers Reports" />
       <Button fx:id="myProfieBtn" layoutX="14.0" layoutY="4.0" mnemonicParsing="false" onAction="#myProfile" prefHeight="35.0" prefWidth="85.0" text="My Profile" />
+      <Label fx:id="message" layoutX="23.0" layoutY="270.0" prefHeight="17.0" prefWidth="254.0" textFill="#2600ff" />
    </children>
 </AnchorPane>

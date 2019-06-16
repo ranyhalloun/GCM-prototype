@@ -21,5 +21,6 @@
       <Button fx:id="citiesReportsBtn" layoutX="150.0" layoutY="182.0" mnemonicParsing="false" onAction="#citiesReports" prefHeight="36.0" prefWidth="117.0" text="Cities Reports" />
       <Button fx:id="customersReportsBtn" layoutX="150.0" layoutY="231.0" mnemonicParsing="false" onAction="#customersReports" prefHeight="36.0" prefWidth="117.0" text="Customers Reports" />
       <Button fx:id="myProfileBtn" layoutX="14.0" layoutY="17.0" mnemonicParsing="false" onAction="#myProfile" prefHeight="36.0" prefWidth="71.0" text="My Profile" />
+      <Label fx:id="messageText" layoutX="49.0" layoutY="296.0" prefHeight="17.0" prefWidth="209.0" textFill="#1600ff" />
    </children>
 </AnchorPane>

@@ -11,9 +11,11 @@ import javafx.scene.control.Label;
 public class requestApprovalController {
     
     private String errorMessage;
-
-    public requestApprovalController(String errorMessage) {
+    private String successMessage;
+    
+    public requestApprovalController(String errorMessage, String successMessage) {
         this.errorMessage = errorMessage;
+        this.successMessage = successMessage;
     }
 
     @FXML
@@ -29,14 +31,18 @@ public class requestApprovalController {
     private Label errorText;
 
     @FXML
+    private Label successText;
+
+    @FXML
     void send(ActionEvent event) throws IOException {
         System.out.println("Sending city to waiting approval queue");
         if(cityName.getText().isEmpty())
-            Main.getInstance().goToRequestApproval("Fill enter city name please!");
+            Main.getInstance().goToRequestApproval("Fill enter city name please!", "");
         else {
             Main.getInstance().requestApproval(cityName.getText());
             cityName.setText("");
             errorText.setText("");
+            successText.setText("Request sent");
         }
     }
 
@@ -49,6 +55,7 @@ public class requestApprovalController {
     @FXML
     void initialize() {
         errorText.setText(errorMessage);
+        successText.setText(successMessage);
     }
 
 }

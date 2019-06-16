@@ -17,10 +17,12 @@ public class insertCityController {
     private ArrayList<Map> maps;
     private String errorMessage;
     private String successMessage;
-    public insertCityController(ArrayList<Map> maps, String errorMessage, String successMessage) {
+    private String city;
+    public insertCityController(ArrayList<Map> maps, String errorMessage, String successMessage, String city) {
         this.maps = maps;
         this.errorMessage = errorMessage;
         this.successMessage = successMessage;
+        this.city = city;
     }
 
     @FXML
@@ -43,10 +45,7 @@ public class insertCityController {
 
     @FXML
     void create(ActionEvent event) throws IOException {
-        if(cityName.getText().isEmpty())
-            Main.getInstance().goToInsertNewCity(maps,"Enter city name please!", "");
-        else    
-            Main.getInstance().insertNewCity(maps, cityName.getText(), descriptionFT.getText());
+        Main.getInstance().insertNewCity(maps, cityName.getText(), descriptionFT.getText());
     }
 
     @FXML
@@ -58,5 +57,7 @@ public class insertCityController {
     void initialize() {
         errorText.setText(errorMessage);
         successText.setText(successMessage);
+        cityName.setText(city);
+        cityName.setEditable(false);
     }
 }

@@ -147,10 +147,10 @@ public class GCMClient extends AbstractClient {
                     Main.getInstance().goToGCMWorkerServices();
                     break;
                 case GCMManager:
-                    Main.getInstance().goToGCMManagerServices();
+                    Main.getInstance().goToGCMManagerServices("");
                     break;
                 case CompanyManager:
-                    Main.getInstance().goToCompanyManagerServices();
+                    Main.getInstance().goToCompanyManagerServices("");
                     break;
             }
         }
@@ -390,14 +390,14 @@ public class GCMClient extends AbstractClient {
                 break;
             case -1:
                 try {
-                    Main.getInstance().goToRequestApproval("CityName doesn't exist!");
+                    Main.getInstance().goToRequestApproval("CityName doesn't exist!", "");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
                 break;
             default: 
                 try {
-                    Main.getInstance().goToRequestApproval("CityName already sent!");
+                    Main.getInstance().goToRequestApproval("CityName already sent!", "");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -641,16 +641,16 @@ public class GCMClient extends AbstractClient {
         Command command = new Command(new InsertNewCityCommand(cityName, description), CommandType.InsertNewCityCommand);
         sendToServer(command);
         waitForServerResponse();
-        handleInsertNewCityFromServer(maps);
+        handleInsertNewCityFromServer(maps, cityName);
     }
 
-    public void handleInsertNewCityFromServer(ArrayList<Map> maps) throws IOException {
+    public void handleInsertNewCityFromServer(ArrayList<Map> maps, String cityName) throws IOException {
         System.out.println("handleInsertNewCityFromServer");
         boolean success = command.getCommand(InsertNewCityCommand.class).getSuccess();
         if (success) {
-            Main.getInstance().goToInsertNewCity(maps, "", "City inserted");        }
+            Main.getInstance().goToInsertNewCity(maps, "", "City inserted", cityName);        }
         else
-            Main.getInstance().goToInsertNewCity(maps, "City Exists", "");
+            Main.getInstance().goToInsertNewCity(maps, "City Exists", "", cityName);
     }
 
     public ArrayList<String> handleChangePrices() throws IOException {
@@ -683,7 +683,7 @@ public class GCMClient extends AbstractClient {
 
     public void handleSendNewPricesFromServer() throws IOException{
         System.out.println("handleSendNewPricesFromServer");
-        Main.getInstance().goToGCMManagerServices();
+        Main.getInstance().goToGCMManagerServices("Change sent to Company Manager");
     }
 
     public void handleGetPrices() throws IOException{
@@ -715,7 +715,7 @@ public class GCMClient extends AbstractClient {
 
     public void handleUpdatePricesAfterAcceptFromServer() throws IOException{
         System.out.println("handleUpdatePricesAfterAcceptFromServer");
-        Main.getInstance().goToCompanyManagerServices();
+        Main.getInstance().goToCompanyManagerServices("Accept decision sent to GCM Managers!");
     }
 
     public void handleUpdatePricesAfterDecline() throws IOException{
@@ -729,7 +729,7 @@ public class GCMClient extends AbstractClient {
 
     public void handleUpdatePricesAfterDeclineFromServer() throws IOException{
         System.out.println("handleUpdatePricesAfterDeclineFromServer");
-        Main.getInstance().goToCompanyManagerServices();
+        Main.getInstance().goToCompanyManagerServices("Decline decision sent to GCM Managers");
     }
     
     public Report handleGetCityReport(String cityName, LocalDate fromDate, LocalDate toDate) throws IOException{

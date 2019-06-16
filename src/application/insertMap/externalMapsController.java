@@ -64,7 +64,7 @@ public class externalMapsController {
             { 
                 descriptionFT.setText(tableView.getSelectionModel().getSelectedItem().getDescription());
                 this.importBtn.setDisable(false);
-
+                this.insertCityBtn.setDisable(false);
             }
         }
 
@@ -76,10 +76,10 @@ public class externalMapsController {
                     Main.getInstance().goToGCMWorkerServices();
                     break;
                 case GCMManager:
-                    Main.getInstance().goToGCMManagerServices();
+                    Main.getInstance().goToGCMManagerServices("");
                     break;
                 case CompanyManager:
-                    Main.getInstance().goToCompanyManagerServices();
+                    Main.getInstance().goToCompanyManagerServices("");
                     break;
             }
         }
@@ -92,7 +92,8 @@ public class externalMapsController {
 
         @FXML
         void insertCity(ActionEvent event) throws IOException {
-            Main.getInstance().goToInsertNewCity(maps, "", "");
+        	String cityName = tableView.getSelectionModel().getSelectedItem().getCityName();
+            Main.getInstance().goToInsertNewCity(maps, "", "", cityName);
         }
 
         @FXML
@@ -103,6 +104,7 @@ public class externalMapsController {
             tableView.setItems(getMaps());
 
             this.importBtn.setDisable(true);
+            this.insertCityBtn.setDisable(true);
             successText.setText(successMessage);
             errorText.setText(errorMessage);
 

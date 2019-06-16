@@ -68,10 +68,10 @@ public class citiesAndDatesController {
         System.out.println("Going back to Services");
     	switch(Main.getInstance().getUserType()) {
 	        case GCMManager:
-	            Main.getInstance().goToGCMManagerServices();
+	            Main.getInstance().goToGCMManagerServices("");
 	            break;
 	        case CompanyManager:
-	            Main.getInstance().goToCompanyManagerServices();
+	            Main.getInstance().goToCompanyManagerServices("");
 	            break;
 		}
     }

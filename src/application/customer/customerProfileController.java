@@ -66,10 +66,10 @@ public class customerProfileController {
 	    			Main.getInstance().goToGCMWorkerServices();
 	    			break;
 	            case GCMManager:
-	                Main.getInstance().goToGCMManagerServices();
+	                Main.getInstance().goToGCMManagerServices("");
 	                break;
 	            case CompanyManager:
-	                Main.getInstance().goToCompanyManagerServices();
+	                Main.getInstance().goToCompanyManagerServices("");
 	                break;
 	            	
 	    	}
@@ -117,6 +117,8 @@ public class customerProfileController {
 	    void cancel(ActionEvent event) {
 	    	getCustomer(customer);
 	    	viewState();
+	    	errorText.setText("");
+	    	successText.setText("");
 	    }
 	    
 	    public void getCustomer(Customer customer) {

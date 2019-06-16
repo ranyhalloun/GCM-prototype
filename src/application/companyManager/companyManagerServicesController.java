@@ -5,9 +5,15 @@ import application.Main;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 
 public class companyManagerServicesController {
 
+	private String messageText;
+	public companyManagerServicesController(String messageText) {
+		this.messageText = messageText;
+	}
+	
     @FXML
     private Button logoutBtn;
 
@@ -30,6 +36,9 @@ public class companyManagerServicesController {
     @FXML
     private Button myProfileBtn;
 
+    @FXML
+    private Label message;
+    
     @FXML
     void logout(ActionEvent event) throws IOException {
         System.out.println("Logging out");
@@ -69,6 +78,11 @@ public class companyManagerServicesController {
     @FXML
     void myProfile(ActionEvent event) throws IOException {
     	Main.getInstance().goToMyProfile();
+    }
+    
+    @FXML
+    void initialize() {
+    	message.setText(messageText);
     }
 
 }

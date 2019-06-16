@@ -32,6 +32,10 @@ public class gcmWorkerController {
     
     @FXML
     private Button notfiticationsBtn;
+    
+    @FXML
+    private Button myProfileBtn;
+
 
     @FXML
     void notfitications(ActionEvent event) throws IOException {
@@ -59,9 +63,14 @@ public class gcmWorkerController {
     @FXML
     void requestApproval(ActionEvent event) throws IOException {
         System.out.println("Going to requestApproval");
-        Main.getInstance().goToRequestApproval("");
+        Main.getInstance().goToRequestApproval("", "");
     }
-
+    
+    @FXML
+    void myProfile(ActionEvent event) throws IOException {
+    	Main.getInstance().goToMyProfile();
+    }
+    
     @FXML
     void initialize() {
         assert insertMapBtn != null : "fx:id=\"insertMapBtn\" was not injected: check your FXML file 'gcmWorkerView.fxml'.";

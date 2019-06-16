@@ -24,5 +24,6 @@
             <Font size="14.0" />
          </font>
       </Button>
+      <Button fx:id="myProfileBtn" layoutX="6.0" layoutY="6.0" mnemonicParsing="false" onAction="#myProfile" prefHeight="29.0" prefWidth="79.0" text="My Profile" />
   </children>
 </AnchorPane>

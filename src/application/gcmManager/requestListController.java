@@ -42,7 +42,7 @@ public class requestListController {
     @FXML
     void back(ActionEvent event) throws IOException {
         System.out.println("Going back to GCM Manger services");
-        Main.getInstance().goToGCMManagerServices();
+        Main.getInstance().goToGCMManagerServices("");
     }
 
     @FXML
